@@ -1,0 +1,481 @@
+---
+bibliography: ../references.bib
+format: 
+  revealjs:
+    margin: 0.05
+    max-scale: 4
+    fontsize: "10px"
+    chalkboard: true
+    theme: [default, ../style.scss]
+    slide-number: c
+    show-slide-number: all
+    preview-links: auto
+    footer: "&copy; 2022 Rodolfo Lourenzutti & Eugenia Yu -- Material Licensed under [CC By-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/)"
+---
+
+```{python}
+from IPython.display import Markdown
+from tabulate import tabulate
+import pandas as pd
+import numpy as np
+import altair as alt
+import plotly.express as px
+from vega_datasets import data
+```
+
+# Exploratory Data Analysis {background-image="imgs/caravel-transparent.png" background-size="contain" background-opacity="0.15"}
+
+STAT 200 - Lecture 2
+
+## Exploratory Data Analysis (EDA)
+
+-   One of the most critical steps when studying a new problem and data set.
+
+-   EDA helps us to:
+
+    -   better understand the data;
+    -   find new and frequently unexpected relationships between variables;
+    -   raise interesting questions about the study;
+
+## Disclaimer
+
+-   You are in the driver's seat of your EDA.
+    -   There's no recipe;
+    -   Little thought yields small findings
+-   In general, EDA findings are preliminary that require more investigation.
+
+# Categorical Variables
+
+## Data
+
+-   For this section, let's consider the dataset of [schools in Vancouver](https://opendata.vancouver.ca/explore/dataset/schools/information/).
+
+<iframe src="https://opendata.vancouver.ca/explore/embed/dataset/schools/table/?&amp;static=false&amp;datasetcard=false" width="800" height="300" frameborder="0" style="margin-left:12vh; margin-right:5vh;">
+
+</iframe>
+
+## Frequency Tables
+
+::: {style="margin-top: 10vh;"}
+:::
+
+```{python}
+schools = pd.read_csv('https://opendata.vancouver.ca/explore/dataset/schools/download/?format=csv&timezone=America/Los_Angeles&lang=en&use_labels_for_header=true&csv_separator=%3B', sep=';')
+frequency_table = schools.groupby('SCHOOL_CATEGORY').count()[['ADDRESS']].rename({'ADDRESS': 'count'}, axis=1)
+frequency_table['prop'] = np.round(frequency_table['count']/frequency_table['count'].sum(),4)
+frequency_table.transpose()
+
+Markdown(tabulate(frequency_table[['count']].transpose().head(10),
+                  frequency_table.transpose().columns))
+```
+
+## Bar Chart
+
+```{python}
+alt.Chart(schools)\
+   .mark_bar()\
+   .encode(
+     x=alt.X('SCHOOL_CATEGORY:N', sort='-y', title='School Category'),
+     y='count(SCHOOL_CATEGORY)'
+   )\
+   .properties(
+     height=300,
+     width=450,
+     title='Schools in Vancouver'
+   )\
+   .configure_axis(
+     labelFontSize=16,
+     titleFontSize=20
+   )\
+   .configure_title(fontSize=26)
+
+```
+
+```{python}
+fig = px.pie(schools, values='SCHOOL_CATEGORY', names='SCHOOL_CATEGORY')
+fig.show()
+```
+
+## Pie Chart
+
+```{python}
+alt.Chart(schools).mark_arc().encode(
+     color=alt.Color(field='SCHOOL_CATEGORY', type='nominal', title='School Category'),
+     theta=alt.Theta(field='SCHOOL_CATEGORY', aggregate='count',  type='quantitative')
+   )\
+   .properties(
+     height=400,
+     width=400,
+     title='Schools in Vancouver'
+   )\
+   .configure_axis(
+     labelFontSize=16,
+     titleFontSize=20
+   )\
+   .configure_title(fontSize=26)\
+   .configure_legend(labelFontSize=20, titleFontSize=20, titleLimit=200, labelLimit=200)
+```
+
+# Two categorical Variables
+
+## Contigency tables
+
+-   Great to summarize the counts of two categorical variables;
+
+-   Facilitates the analysis of the relationship between two categorical variables;
+
+## Case Study: Aspirin and Heart Attack
+
+-   A controlled, randomized, double-blind study on the effects of aspirin was conducted in the 80s.
+
+::: two-way-tbl
+| Drug    | Heart Attack | No Heart Attack | Total  |
+|---------|--------------|-----------------|--------|
+| Aspirin | 104          | 10,933          | 11,037 |
+| Placebo | 189          | 10,845          | 11,034 |
+| Total   | 293          | 21,778          | 22,071 |
+
+: Data from the Aspirin Study {#tbl-aspirin-study}
+:::
+
+::: {.fragment .fade-in style="font-size:0.75em;"}
+*The study was reported on the front page of the New York Times on January 27, 1988. (See the article [here](https://www.nytimes.com/1988/01/27/us/heart-attack-risk-found-to-be-cut-by-taking-aspirin.html).)*
+:::
+
+## A few questions of interest
+
+:::{style='font-size:0.9em;'}
+<ul>
+  <li style='margin:0.75em 0 !important;'> What is the proportion of individuals who did not have a heart attack? </li>
+  <li style='margin:0.75em 0 !important;'> What is the proportion of individuals who received a placebo? </li>
+  <li style='margin:0.75em 0 !important;'> What proportion of individuals who had a heart attack were on aspirin? </li>
+  <li style='margin:0.75em 0 !important;'> What proportion of individuals who were on aspirin had a heart attack? </li>
+  <li style='margin:0.75em 0 !important;'> What is the proportion of individuals who were on placebo and had a heart attack? </li>
+</ul>
+:::
+
+## Marginal Distribution
+
+-   What is the proportion of individuals who did not have a heart attack?
+
+::: {.fragment .fade-in-then-out .absolute .two-way-tbl style='margin-left: 20vh;'}
+| Drug    | Heart Attack | No Heart Attack | Total  |
+|---------|--------------|-----------------|--------|
+| Aspirin | 104          | 10,933          | 11,037 |
+| Placebo | 189          | 10,845          | 11,034 |
+| Total   | 293          | 21,778          | 22,071 |
+
+: Data from the Aspirin Study
+:::
+
+:::{.fragment style='margin-left: 8vh;'}
+| Heart Attack | No Heart Attack |
+|--------------|-----------------|
+| 293 (1.33%)  | 21,778 (98.67%) |
+
+: Marginal distribution of heart attack {#tbl-marginal-dist-heart}
+:::
+
+::: {.fragment style="margin-top: 1em;"}
+Answer: 98.67%
+:::
+
+## Marginal Distribution
+
+-   What is the proportion of individuals who received placebo?
+
+::: {.fragment .fade-in-then-out .absolute .two-way-tbl  style='margin-left: 20vh;'}
+| Drug    | Heart Attack | No Heart Attack | Total  |
+|---------|--------------|-----------------|--------|
+| Aspirin | 104          | 10,933          | 11,037 |
+| Placebo | 189          | 10,845          | 11,034 |
+| Total   | 293          | 21,778          | 22,071 |
+
+: Data from the Aspirin Study
+:::
+
+::: {.fragment style='margin-left: 8vh;'}
+| Aspirin      | Placebo      |
+|--------------|--------------|
+| 11,037 (50%) | 11,034 (50%) |
+
+: Marginal distribution of drug {#tbl-marginal-dist-drug}
+:::
+
+::: {.fragment style="margin-top: 1em;"}
+Answer: 50%
+:::
+
+## Conditional Distribution
+
+-   What proportion of individuals who had a heart attack were on aspirin?
+
+::: {.fragment .fade-in-then-out .absolute .two-way-tbl  style='margin-left: 20vh;'}
+| Drug    | Heart Attack | No Heart Attack | Total  |
+|---------|--------------|-----------------|--------|
+| Aspirin | 104          | 10,933          | 11,037 |
+| Placebo | 189          | 10,845          | 11,034 |
+| Total   | 293          | 21,778          | 22,071 |
+
+: Data from the Aspirin Study
+:::
+
+::: {.fragment style="margin-left: 8vh;"}
+| Aspirin      | Placebo      |
+|--------------|--------------|
+| 104 (35.49%) | 189 (64.51%) |
+
+: Conditional distribution of drugs among people who had a heart attack {#tbl-conditional-dist-drug}
+:::
+
+::: {.fragment .absolute .fade-in-then-out style="margin-top: 1em;"}
+Answer: 35.49%
+:::
+
+::: {.fragment style="margin-top: 1em;"}
+*Note that we fix the condition of `heart attack` and look at the distribution of `drugs`.*
+:::
+
+## Conditional Distribution
+
+-   What proportion of individuals who were on aspirin had a heart attack?
+
+::: {.fragment .fade-in-then-out .absolute .two-way-tbl  style='margin-left: 20vh;'}
+| Drug    | Heart Attack | No Heart Attack | Total  |
+|---------|--------------|-----------------|--------|
+| Aspirin | 104          | 10,933          | 11,037 |
+| Placebo | 189          | 10,845          | 11,034 |
+| Total   | 293          | 21,778          | 22,071 |
+
+: Data from the Aspirin Study
+:::
+
+::: {.fragment style="margin-left: 8vh;"}
+| heart attack | no heart attack |
+|--------------|-----------------|
+| 104 (0.94%)  | 10,933 (99.06%) |
+
+: Conditional distribution of `heart attack` among people who were on `aspirin` {#tbl-conditional-dist-heart}
+:::
+
+::: {.fragment .absolute .fade-in-then-out style="margin-top: 1em;"}
+Answer: 0.94%
+:::
+
+::: {.fragment style="margin-top: 1em;"}
+*Note that we fix the condition of `drug` and look at the distribution of `heart attack`.*
+:::
+
+## Intersection
+
+-   What is the proportion of individuals who were on placebo and had a heart attack?
+
+::: {.fragment .two-way-tbl}
+| Drug    | Heart Attack | No Heart Attack | Total  |
+|---------|--------------|-----------------|--------|
+| Aspirin | 104          | 10,933          | 11,037 |
+| Placebo | 189          | 10,845          | 11,034 |
+| Total   | 293          | 21,778          | 22,071 |
+
+: Data from the Aspirin Study
+:::
+
+::: {.fragment style="margin-top: 1em;"}
+Answer: $\frac{189}{22071} = 0.86\%$
+:::
+
+## Association
+
+-   We can use the contingency table to explore the relationship between the variables;
+
+::: {.fragment .fade-in-then-out .absolute}
+-   What would you expect to see if there was no association between having a heart attack and the drug taken?
+:::
+::: {.fragment .fade-in-then-out .absolute}
+
+-   What would you expect to see if there was no association between having a heart attack and the drug taken?
+    -   [roughly the same proportion of individuals who `had a heart attack` in the `placebo` and `aspirin` groups;]{style='font-size:0.9em;'}
+:::
+::: {.fragment .fade-in-then-out .absolute}
+
+-   What would you expect to see if there was no association between having a heart attack and the drug taken?
+    -   [the proportion in the marginal distribution should match the one in the conditional distribution;]{style='font-size:0.9em;'}
+:::
+
+
+## Association
+
+::: {.two-way-tbl style='margin-bottom:1em;'}
+| Drug    | Heart Attack | No Heart Attack | Total  |
+|---------|--------------|-----------------|--------|
+| Aspirin | 104          | 10,933          | 11,037 |
+| Placebo | 189          | 10,845          | 11,034 |
+| Total   | 293          | 21,778          | 22,071 |
+
+: Data from the Aspirin Study
+:::
+
+:::{.fragment .absolute .fade-in-then-out style='font-size:0.85em;'}
+- Proportion of people who had a heart attack:
+- Proportion of people on aspirin who had a heart attack: 
+:::
+
+:::{.fragment .absolute .fade-in-then-out style='font-size:0.85em;'}
+- Proportion of people who had a heart attack: $\frac{293}{22071}=$ 1.33%
+- Proportion of people on aspirin who had a heart attack: $\frac{104}{11037}=$ 0.94%
+:::
+
+# Case study
+
+## Race and Death Penalty in Florida
+
+-   Does race affect the chance of receiving a death penalty sentence in Florida?
+
+-   @radelet_1981 examined data on homicide indictments in 20 Florida counties between 1976 and 1977.
+
+------------------------------------------------------------------------
+
+:::{.two-way-tbl }
+<table style='width: 80vh; margin-top:3em;'>
+<caption>Table 6: Death Penalty sentences from homicide indictments between 1976 and 1977 in Florida [@radelet_1981] </caption>
+<thead>
+  <tr>
+    <th></th>
+    <th colspan="2">Death Penalty</th>
+    <th></th>
+  </tr>
+  <tr>
+    <th>Race</th>
+    <th>Yes</th>
+    <th>No</th>
+    <th>Total</th>
+  </tr>
+</thead>
+<tbody>
+  <tr>
+    <td>White</td>
+    <td>19</td>
+    <td>141</td>
+    <td>160</td>
+  </tr>
+  <tr>
+    <td>Black</td>
+    <td>17</td>
+    <td>149</td>
+    <td>166</td>
+  </tr>
+  <tr>
+    <td>Total</td>
+    <td>36</td>
+    <td>290</td>
+    <td>326</td>
+  </tr>
+</tbody>
+</table>
+:::
+
+
+## Case Study: Questions of interest
+-   <u>**Question 1:**</u> what proportion of indictments resulted in a death sentence?
+-   <u>**Question 2:**</u> among those who were sentenced to death, what is the proportion of white defendants?
+-   <u>**Question 3:**</u> Compare the proportion of white defendants sentenced to death against that of black defendants.
+
+## Case Study: Diving Deeper
+
+
+:::{#tbl-panel layout-ncol=2 style='margin-top:2em;'}
+:::{.two-way-tbl}
+<table style='min-width: 40vh;'>
+<caption>Table 7: White victims [@radelet_1981] </caption>
+<thead>
+  <tr>
+    <th></th>
+    <th colspan="2">Death Penalty</th>
+    <th></th>
+  </tr>
+  <tr>
+    <th>Race</th>
+    <th>Yes</th>
+    <th>No</th>
+    <th>Total</th>
+  </tr>
+</thead>
+<tbody>
+  <tr>
+    <td>White</td>
+    <td>19</td>
+    <td>132</td>
+    <td>151</td>
+  </tr>
+  <tr>
+    <td>Black</td>
+    <td>11</td>
+    <td>52</td>
+    <td>63</td>
+  </tr>
+  <tr>
+    <td>Total</td>
+    <td>30</td>
+    <td>184</td>
+    <td>214</td>
+  </tr>
+</tbody>
+</table>
+:::
+
+:::{.two-way-tbl }
+<table style='min-width: 40vh;'>
+<caption>Table 8: Black victims [@radelet_1981] </caption>
+<thead>
+  <tr>
+    <th></th>
+    <th colspan="2">Death Penalty</th>
+    <th></th>
+  </tr>
+  <tr>
+    <th>Race</th>
+    <th>Yes</th>
+    <th>No</th>
+    <th>Total</th>
+  </tr>
+</thead>
+<tbody>
+  <tr>
+    <td>White</td>
+    <td>0</td>
+    <td>9</td>
+    <td>9</td>
+  </tr>
+  <tr>
+    <td>Black</td>
+    <td>6</td>
+    <td>97</td>
+    <td>103</td>
+  </tr>
+  <tr>
+    <td>Total</td>
+    <td>6</td>
+    <td>106</td>
+    <td>112</td>
+  </tr>
+</tbody>
+</table>
+:::
+
+Death Penalty sentences grouped per victims' races
+:::
+
+## Case Study: Questions of interest
+-   <u>**Question 4:**</u> compare the proportions of indictments that resulted in a death sentence for black and white victims.
+-   <u>**Question 5:**</u> for black victims, compare the proportion of white defendants who were sentenced to death against black defendants.
+-   <u>**Question 6:**</u> for white victims, compare the proportion of white defendants who were sentenced to death against black defendants.
+
+## Simpson's Paradox
+- <u>**Question 7:**</u> compare your results in Questions 6 and 7 with the result you obtained in Question 3. Is it surprising?
+
+:::{.fragment}
+- This reversal in the direction of association when accounting for a third variable is called *Simpson's Paradox*; 
+:::
+
+## References
+

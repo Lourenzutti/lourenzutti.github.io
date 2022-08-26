@@ -1,0 +1,191 @@
+---
+title: "Introduction"
+subtitle: "STAT 200 - Lecture 1"
+format: 
+  revealjs:
+    margin: 0.05
+    max-scale: 4
+    fontsize: "10px"
+    chalkboard: true
+    theme: [default, ../style.scss]
+    slide-number: c
+    show-slide-number: all
+    footer: "&copy; 2022 Rodolfo Lourenzutti & Eugenia Yu -- Material Licensed under [CC By-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/)"
+---
+
+# Randomness and Uncertainty {.r-fit-text}
+
+## Is smoking bad for your health? {background-color="black" background-image="imgs\\cigarretes.jpg" background-size="fill" background-repeat="repeat" background-opacity="0.12"}
+
+-   How did the medical community conclude that smoking is harmful?
+
+-   Why is this not a trivial conclusion?
+
+-   In fact, this conclusion was disputed for years before becoming accepted.
+
+::: img-attr
+Image Attribution: Marcus Quigmire [CC BY-SA 2.0](https://creativecommons.org/licenses/by-sa/2.0), via Wikimedia Commons
+:::
+
+## Is smoking bad for your health? {background-color="black" background-image="imgs\\cigarretes.jpg" background-size="fill" background-repeat="repeat" background-opacity="0.12"}
+
+-   In 1950, Richard Doll and Richard Peto launched a huge prospective observational study with over 40,000 doctors in England.
+
+-   This study was the first widely accepted evidence that smoking is associated with many diseases.
+
+-   You can learn more about this study [here](https://en.wikipedia.org/wiki/British_Doctors_Study) and [here](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5298160/#:~:text=The%20study%20was%20conducted%20by,a%20day%20than%20in%20nonsmokers).
+
+::: img-attr
+Image Attribution: Marcus Quigmire [CC BY-SA 2.0](https://creativecommons.org/licenses/by-sa/2.0), via Wikimedia Commons
+:::
+
+## New drugs {background-color="black" background-image="imgs\\injection.jpg" background-size="fill" background-repeat="repeat" background-opacity="0.12"}
+
+-   There were over 100 different types of vaccines being tested for COVID-19.
+
+-   But how do we determine that a vaccine actually works?
+
+    -   some vaccinated people get sick; others don't.
+
+-   Is the vaccine safe?
+
+    -   Some vaccinated people develop serious side effects; others don't.
+
+::: img-attr
+Image Attribution: Neilsmith38, [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0), via Wikimedia Commons
+:::
+
+## How do we deal with uncertainties?
+
+::: incremental
+-   We need data!
+
+-   From the data, we can study the variability and capture any signal present in the data.
+:::
+
+::: {.fragment .fade-in}
+::: {.fragment .highlight-red}
+-   But we need to be careful!
+:::
+
+::: {.fragment .fade-in}
+-   How we collect the data affects how we analyze the data and the type of conclusions we can make.
+:::
+:::
+
+## Here enters Statistics
+
+-   Statistics is the science that studies variability.
+
+-   It provides us with techniques to:
+
+    1.  design studies;
+    2.  collect, summarize, and analyze data;
+    3.  interpret models and make conclusions;
+
+## Confirmation bias {.r-fit-text}
+
+-   Data are interpreted by people.
+
+-   The strong convictions some people have may affect how they collect and interpret the data.
+
+-   For example, people tend to focus on evidence that supports their beliefs and disregard other pieces of evidence.
+
+-   This phenomenon is called [confirmation biased](https://en.wikipedia.org/wiki/Confirmation_bias).
+
+::: notes
+-   It is not uncommon to see two experts, say a CNN expert and a Fox News expert, talking about the same topic, using the same data, and reaching opposite conclusions.
+:::
+
+## Data subtleties
+
+::: {.incremental}
+-   Frequently, people miss some subtleties in the data and make conclusions that are not supported by the data.
+
+-   For example, what is your read on the following article: "[Soaring markets helped the richest 1% gain \$6.5 trillion in wealth last year, according to the Fed](https://www.cnbc.com/2022/04/01/richest-one-percent-gained-trillions-in-wealth-2021.html)"
+:::
+
+::: notes
+-   The category richest 1% is not static. People move between the categories.
+:::
+
+## Statistics for all!
+
+-   Understanding statistical concepts will enable you to assess and question people's analyses and conclusions properly.
+
+-   Do not just accept someone's findings. Think!
+
+    -   What evidence did they present?
+    -   Is there any evidence they had missed (or buried 😈);
+    -   Do the data and their analysis actually allow them to reach such conclusions?
+
+## You are awesome!
+
+::: {style="height: fit-content;"}
+-   You are very capable. **THINK!** Make your own conclusions!
+
+-   Don't feel intimidated by titles. Skepticism and detailed questioning are part of Science!
+:::
+
+::: {style="text-align: center;"}
+<iframe src="https://giphy.com/embed/xGdvlOVSWaDvi" width="240" height="180" frameBorder="0" class="giphy-embed" allowFullScreen>
+
+</iframe>
+:::
+
+# Datasets and variables
+
+
+## Datasets
+
+-   Statistics is all about using data to analyze the variability and uncertainties involved in a study.
+
+-   Typically, you can think of a dataset as a table where:
+
+    -   every row corresponds to an individual/object.
+
+    -   every column corresponds to a variable.
+
+## Example: Palmer Penguins Dataset {.smaller .scrollable transition="slide"}
+
+```{r}
+library(tidyverse)
+library(palmerpenguins)
+knitr::kable(
+  penguins %>% 
+    rename(bill_length = bill_length_mm,
+           bill_depth = bill_depth_mm,
+           flipper_length = flipper_length_mm,
+           body_mass = body_mass_g) %>% 
+    select(-bill_depth, -island, -year) %>% 
+    sample_n(30)
+)
+```
+
+## Variables
+
+-   A variable is a characteristic of each individual (or object) of interest.
+
+-   Variables can be classified as `Categorical` or `Quantitative`.
+
+## Categorical Variables
+
+-   Categorical variables are variables whose values are categories (e.g., hair color, marital status);
+
+-   If there is an intrinsic order for the categories, we say the variable is `Ordinal`.
+
+    -   Pain level: mild, moderate, severe;
+
+    -   Your rank in League of Legends: Iron, Silver, Gold, Diamond;
+
+## Quantitative Variables
+
+-   A variable is quantitative if it is measured on a numerical scale (e.g., income, age, height).
+
+-   Note that the units of measurement **must** be provided.
+
+:::{.callout-caution}
+### Caution
+
+A variable is not necessarily quantitative just because its values are numbers. Sometimes numbers are used to represent categories.
+:::
