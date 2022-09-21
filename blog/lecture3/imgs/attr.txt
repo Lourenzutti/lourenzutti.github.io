@@ -1,0 +1,3 @@
+gentoo.jpg -- https://commons.wikimedia.org/wiki/File:Gentoo_penguin_in_Edinburgh_Zoo_01.jpg
+chinstrap.jpg -- https://commons.wikimedia.org/wiki/File:Chinstrap_Penguins_of_Deception_Island_(8400355532).jpg
+adelie.jpg -- https://commons.wikimedia.org/wiki/File:Ad%C3%A9lie_Penguin_(2).jpg
