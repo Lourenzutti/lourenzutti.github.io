@@ -1,0 +1,534 @@
+---
+bibliography: ../references.bib
+format: 
+  revealjs:
+    margin: 0.05
+    max-scale: 4
+    fontsize: "10px"
+    chalkboard: true
+    theme: [default, ../style.scss, lecture5.scss]
+    slide-number: c
+    show-slide-number: all
+    preview-links: auto
+    footer: "&copy; 2022 Rodolfo Lourenzutti & Eugenia Yu -- Material Licensed under [CC By-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/)"
+---
+
+```{python}
+from IPython.display import Markdown
+from tabulate import tabulate
+import pandas as pd
+import numpy as np
+import altair as alt
+import plotly.express as px
+from vega_datasets import data
+```
+
+
+# Association between variables {background-image="..." background-size="contain" background-opacity="0.15"}
+STAT 200 - Lecture 5
+
+## Association
+
+- Earlier, we explored association between categorical variables; 
+
+- We will now extend this discussion for quantitative variables;
+
+## Association
+
+::: {.incremental}
+
+- Do people with bigger brains **tend** to be more
+intelligent?
+
+- Do students with higher attendance **tend** to have better performance in a course? 
+
+- Do taller athletes **tend** to be faster in 100m? 
+
+- Do taller penguins **tend** to be heavier? 
+
+:::
+
+## Scatterplot
+
+- In scatterplot, each observation is represented by a point;
+  - *explanatory variable* goes in the $x$-axis;
+  - *response variable* goes in the $y$-axis; 
+
+- Scatterplots are really useful to visualize relationship between two quantitative variables;
+
+## Scatterplot: Example 1
+
+:::: {.columns}
+::: {.column width="60%"}
+```{python}
+cars = data.cars()
+
+alt.Chart(cars)\
+  .mark_point()\
+  .encode(
+      x = 'Horsepower:Q',
+      y = alt.Y('Miles_per_Gallon', title='Miles per gallon', type='quantitative'))\
+  .properties(
+      title='Cars Data',
+      height=300,
+      width=500)\
+  .configure_title(
+      fontSize=20,
+      anchor='middle',
+      color='Black')\
+  .configure_axis(
+      labelFontSize=16,
+      titleFontSize=17
+  )
+```
+:::
+
+::: {.column width="40%"}
+:::{.data_table .center_text style='height:350px;'}
+```{python}
+Markdown(tabulate(
+  cars[['Miles_per_Gallon', 'Horsepower']].to_numpy().tolist(), 
+  headers=['Miles per Gallon', 'Horsepower']
+))
+```
+:::
+:::
+
+::::
+
+## Scatterplot: Example 2
+
+:::: {.columns}
+::: {.column width="60%"}
+```{python}
+alt.Chart(cars)\
+  .mark_point()\
+  .encode(
+      x = alt.X('Weight_in_lbs:Q', title='Weight (lbs)', scale=alt.Scale(zero=False)),
+      y = alt.Y('Acceleration:Q', title='Time from 0 to 60 mph (sec)'))\
+  .properties(
+      title='Cars Data',
+      height=300,
+      width=500)\
+  .configure_title(
+      fontSize=20,
+      anchor='middle',
+      color='Black')\
+  .configure_axis(
+      labelFontSize=16,
+      titleFontSize=17
+  )
+```
+:::
+
+::: {.column width="40%"}
+:::{.data_table .center_text style='height:350px;'}
+```{python}
+Markdown(tabulate(
+  cars[['Weight_in_lbs', 'Acceleration']].to_numpy().tolist(), 
+  headers=['Weight_in_lbs', 'Acceleration']
+))
+```
+:::
+:::
+::::
+
+::: {.notes}
+- Correlation is weaker, as many other things affect acceleration besides weight, such as horsepower;
+:::
+
+## Scatterplot: Example 3
+
+:::: {.columns}
+::: {.column width="60%"}
+```{python}
+penguins = pd.read_csv("https://raw.githubusercontent.com/allisonhorst/palmerpenguins/main/inst/extdata/penguins.csv")
+penguins = penguins.dropna(axis=0)
+penguins.columns = [column.replace('_mm','') for column in penguins.columns]
+penguins.columns = [column.replace('_g','') for column in penguins.columns]
+penguins = penguins.drop(['year'], axis=1)
+
+
+alt.Chart(penguins)\
+  .mark_point()\
+  .encode(
+      x = alt.X('body_mass:Q', title='Body Mass (g)', scale=alt.Scale(zero=False)),
+      y = alt.Y('flipper_length:Q', title='Flipper Length (mm)', scale=alt.Scale(zero=False)))\
+  .properties(
+      title='Penguins Data',
+      height=300,
+      width=500)\
+  .configure_title(
+      fontSize=20,
+      anchor='middle',
+      color='Black')\
+  .configure_axis(
+      labelFontSize=16,
+      titleFontSize=17
+  )
+```
+:::
+
+::: {.column width="40%"}
+:::{.data_table .center_text style='height:350px;'}
+```{python}
+Markdown(tabulate(
+  penguins[['body_mass', 'flipper_length']].to_numpy().tolist(), 
+  headers=['body_mass', 'flipper_length']
+))
+```
+:::
+:::
+::::
+
+::: {.notes}
+- Correlation is weaker, as many other things affect acceleration besides weight, such as horsepower;
+:::
+
+## Scatterplot: what to look for? 
+
+**[Direction]{style='margin-left:35vh; text-decoration: bold; color: blue; margin-bottom: 0;'}**
+
+:::: {.columns style='margin-top: 0;'}
+::: {.column width="50%"}
+```{python}
+alt.Chart(penguins)\
+  .mark_point()\
+  .encode(
+      x = alt.X('body_mass:Q', title='Body Mass (g)', scale=alt.Scale(zero=False)),
+      y = alt.Y('flipper_length:Q', title='Flipper Length (mm)', scale=alt.Scale(zero=False)))\
+  .properties(
+      title='Penguins Data',
+      height=350,
+      width=400)\
+  .configure_title(
+      fontSize=20,
+      anchor='middle',
+      color='Black')\
+  .configure_axis(
+      labelFontSize=16,
+      titleFontSize=17
+  )
+```
+:::{style='position: relative; bottom: 55px; left: 100px; margin-top:0;'}
+Positive Correlation
+:::
+:::
+
+::: {.column width="50%"}
+```{python}
+alt.Chart(cars)\
+  .mark_point()\
+  .encode(
+      x = alt.X('Weight_in_lbs:Q', title='Weight (lbs)', scale=alt.Scale(zero=False)),
+      y = alt.Y('Acceleration:Q', title='Time from 0 to 60 mph (sec)'))\
+  .properties(
+      title='Cars Data',
+      height=350,
+      width=400)\
+  .configure_title(
+      fontSize=20,
+      anchor='middle',
+      color='Black')\
+  .configure_axis(
+      labelFontSize=16,
+      titleFontSize=17
+  )
+```
+:::{style='position: relative; bottom: 55px; left: 100px; margin-top:0;'}
+Negative Correlation
+:::
+:::
+::::
+
+## Scatterplot: what to look for? 
+
+**[Form of relationship]{style='margin-left:28vh; text-decoration: bold; color: blue; margin-bottom: 0;'}**
+
+:::: {.columns style='margin-top: 0;'}
+::: {.column width="50%"}
+```{python}
+alt.Chart(penguins)\
+  .mark_point()\
+  .encode(
+      x = alt.X('body_mass:Q', title='Body Mass (g)', scale=alt.Scale(zero=False)),
+      y = alt.Y('flipper_length:Q', title='Flipper Length (mm)', scale=alt.Scale(zero=False)))\
+  .properties(
+      title='Penguins Data',
+      height=350,
+      width=400)\
+  .configure_title(
+      fontSize=20,
+      anchor='middle',
+      color='Black')\
+  .configure_axis(
+      labelFontSize=16,
+      titleFontSize=17
+  )
+```
+:::{style='position: relative; bottom: 55px; left: 100px; margin-top:0;'}
+Linear Relationship
+:::
+:::
+
+::: {.column width="50%"}
+```{python}
+alt.Chart(cars)\
+  .mark_point()\
+  .encode(
+      x = 'Horsepower:Q',
+      y = alt.Y('Miles_per_Gallon', title='Miles per gallon', type='quantitative'))\
+  .properties(
+      title='Cars Data',
+      height=350,
+      width=400)\
+  .configure_title(
+      fontSize=20,
+      anchor='middle',
+      color='Black')\
+  .configure_axis(
+      labelFontSize=16,
+      titleFontSize=17
+  )
+```
+:::{style='position: relative; bottom: 65px; left: 55px; margin-top:0;'}
+Non-linear Relationship
+:::
+:::
+::::
+
+
+## Scatterplot: what to look for? 
+
+**[Strength of Relationship]{style='margin-left:28vh; text-decoration: bold; color: blue; margin-bottom: 0;'}**
+
+:::: {.columns style='margin-top: 0;'}
+::: {.column width="50%"}
+```{python}
+x = np.random.uniform(2500, 6500, 500)
+synthetic_data = pd.DataFrame({
+  'X': x ,
+  'Y-strong': x / 10 + np.random.normal(0, 20, 500),
+  'Y-weak': x / 10 + np.random.normal(0, 75, 500)
+})
+
+alt.Chart(synthetic_data)\
+  .mark_point()\
+  .encode(
+      x = alt.X('X:Q', title='X', scale=alt.Scale(zero=False)),
+      y = alt.Y('Y-strong:Q', title='Y', scale=alt.Scale(zero=False, domain=[100, 900])))\
+  .properties(
+      title='',
+      height=350,
+      width=380)\
+  .configure_title(
+      fontSize=20,
+      anchor='middle',
+      color='Black')\
+  .configure_axis(
+      labelFontSize=16,
+      titleFontSize=17
+  )
+```
+:::{style='position: relative; bottom: 55px; left: 65px; margin-top:0;'}
+Stronger Relationship
+:::
+:::
+
+::: {.column width="50%"}
+```{python}
+alt.Chart(synthetic_data)\
+  .mark_point()\
+  .encode(
+      x = alt.X('X:Q', title='X', scale=alt.Scale(zero=False)),
+      y = alt.Y('Y-weak:Q', title='Y', scale=alt.Scale(zero=False, domain=[100, 900])))\
+  .properties(
+      title='',
+      height=350,
+      width=380)\
+  .configure_title(
+      fontSize=20,
+      anchor='middle',
+      color='Black')\
+  .configure_axis(
+      labelFontSize=16,
+      titleFontSize=17
+  )
+```
+:::{style='position: relative; bottom: 55px; left: 80px; margin-top:0;'}
+Weaker Relationship
+:::
+:::
+::::
+
+
+## The correlation coefficient
+
+- The correlation coefficient, $r$, measures the strength of the **linear** association between two
+**quantitative** variables; 
+
+. . . 
+
+- The correlation coefficient is always between -1 and 1:
+  - [**Positive correlation**: an increase in $X$ **tends** to be followed by an increase in $Y$;]{style='font-size:.85em;'}
+  - [**Negative correlation**: an increase in $X$ **tends** to be followed by an decrease in $Y$;]{style='font-size:.85em;'}
+
+
+## Properties of Correlation
+
+:::{.fragment .fade-in-then-out}
+- $r$ has no unit;
+
+- $r=-1$ for perfect negative correlation
+
+- $r=1$ for perfect positive correlation
+
+- $r\approx 0$ implies very weak or no linear relationship between the variables;
+:::
+
+. . .
+
+:::{style="position: absolute; top: 17vh; background-color: white;"}
+
+:::{.callout-important}
+## Warning
+$r$ close to zero **does not** imply two variables are not related. They could still have a non-linear relationship.
+
+:::
+
+:::
+
+## Properties of Correlation
+
+- Cor($X$, $Y$) = Cor($Y$, $X$)
+
+- the correlation does not change if all values of either variable are added
+a constant or multiplied by a positive constant
+
+- $r$ is sensitive to outliers; 
+
+
+```{ojs}
+n = 1000;
+x = 
+{
+  const values = Array(n);
+  for (let i = 0; i < n; i++){
+    values[i] = Math.random() * (900 - 300) + 300;
+  }
+  return values;
+}
+mean_x = x.reduce((a,b) => a+b, 0) / n;
+vx = x.reduce((a,b) => a+(b-mean_x)**2/(n-1), 0);
+
+noise = 
+{
+  const values = Array(n);
+  for (let i = 0; i < n; i++){
+    values[i] = Math.random() * 2 - 1;
+  }
+  
+  const mean_noise = values.reduce((a,b) => a+b, 0) / n;
+  const vnoise = values.reduce((a,b) => a+(b-mean_noise)**2/(n-1), 0);
+  return values.map(item => {
+    return (item - mean_noise)/Math.sqrt(vnoise);
+  });
+}
+```
+
+```{ojs}
+// Create the interactive bars for size and variability
+a = 1
+<!-- viewof corr_bar = Inputs.range([-1, 1],  -->
+<!--                            {value: 0, -->
+<!--                             step: 0.0001,  -->
+<!--                             label: "Correlation Coefficient: "}); -->
+```
+
+```{ojs}
+//slope = Math.sign(corr_bar)*100;
+b =1 
+<!-- slope = { -->
+<!--   if (corr_bar != 1 && corr_bar != -1){ -->
+<!--     return Math.sign(corr_bar) * Math.sqrt(corr_bar**2/(vx * (1-corr_bar**2))); -->
+<!--   } -->
+<!--   else { -->
+<!--     return Math.sign(corr_bar) * .1; -->
+<!--   } -->
+<!-- } -->
+
+<!-- y =  -->
+<!-- { -->
+<!--   const values = Array(n); -->
+<!--   for (let i = 0; i<n; i++){ -->
+<!--    // values[i] = slope * x[i] + noise[i] * Math.sqrt(slope**2 * vx * (1 - corr_bar**2)/corr_bar**2) -->
+<!--    if (corr_bar != 1 && corr_bar != -1){ -->
+<!--      values[i] = slope * x[i] + noise[i]; -->
+<!--    } -->
+<!--    else { -->
+<!--      values[i] = slope * x[i]; -->
+<!--    } -->
+<!--   } -->
+<!--   return values; -->
+<!-- } -->
+
+<!-- data =  -->
+<!-- { -->
+<!--   const values = Array(n); -->
+<!--   for (let i = 0; i<n; i++){ -->
+<!--     values[i] = {'x': x[i], 'y': y[i]}; -->
+<!--   } -->
+<!--   return values; -->
+<!-- } -->
+
+
+<!-- Plot.plot({ -->
+<!--   inset: 8, -->
+<!--   grid: false, -->
+<!--   marks: [ -->
+<!--     Plot.dot(data, {x: "x", y: "y"}) -->
+<!--   ], -->
+<!--   x: { -->
+<!--     ticks: 0, -->
+<!--     tickSize: 0, -->
+<!--     line: true, -->
+<!--     labelAnchor: "center" -->
+<!--   }, -->
+<!--   y: { -->
+<!--     ticks: 0, -->
+<!--     tickSize: 0, -->
+<!--     line: true, -->
+<!--     labelAnchor: "center" -->
+<!--   } -->
+<!-- }); -->
+```
+
+
+```{python}
+# house = pd.read_csv("cadata.txt", sep="\t", header=None) 
+# house.columns = ["Median House Price", "Median Income", "Housing Median Age", "Total Rooms", "Total Bedrooms", "Population", "Households", "latitude", "longitude"]
+# alt.Chart(house.iloc[0:500,:])\
+#   .mark_point()\
+#   .encode(
+#       x = alt.X('Housing Median Age:Q', scale=alt.Scale(zero=False)),
+#       y = alt.Y('Median House Price:Q', title='Median House Price', scale=alt.Scale(zero=False)))\
+#   .properties(
+#       title='House Prices',
+#       height=350,
+#       width=400)\
+#   .configure_title(
+#       fontSize=20,
+#       anchor='middle',
+#       color='Black')\
+#   .configure_axis(
+#       labelFontSize=16,
+#       titleFontSize=17
+#   )
+```
+
+
+## Correlation Game
+
+<iframe src="http://guessthecorrelation.com/" width="800" height="300" frameborder="0" style="margin-left:12vh; margin-right:5vh;">
+
+</iframe>
