@@ -77,7 +77,7 @@ ga('send', {
 
 <link rel="stylesheet" href="../../styles/main.css">
 <link rel="stylesheet" href="../../styles/tutorials.css">
-<link rel="stylesheet" href="../../styles/chapter.css">
+<link rel="stylesheet" href="../../styles/tutorials-chapters.css">
 <meta property="og:title" content="Rodolfo Lourenzutti - Sampling Distribution">
 <meta property="og:description" content="In 2020, there was a presidential election in the United States. Every election year, we see many surveys trying to draw a picture of how people will vote. But how do they do these surveys?">
 <meta property="og:site-name" content="Rodolfo Lourenzutti">
@@ -202,10 +202,10 @@ ga('send', {
 <!--Load local scripts-->
 <script defer="" src="../../scripts/controller.js"></script>
 <script defer="" src="../../scripts/random.js"></script>
-<script defer="" src="../../scripts/sampling-distribution-sample-mean/sampling-dist.js"></script>
+<script defer="" src="scripts/sampling-dist.js"></script>
 <p>In 2020, there was a presidential election in the United States. Every election year, we see many surveys trying to draw a picture of how people will vote. But how do they do these surveys? Do these polls check how all the people are going to vote? According to this <a href="https://www2.census.gov/programs-surveys/demo/tables/voting/table01.xlsx">table</a> from <a href="https://www.census.gov/en.html">US Census Bureau</a> there are approximately 233.5 million voting-age citizens. It would certainly require a lot of resources to ask all 233.5 million voting-age American citizens (in fact, this is what the election period is for, right? and we all know how complicated and expensive is organizing the election).</p>
 <div style="display: flex; flex-flow: row nowrap; align-items: center;">
-<p><img src="../../imgs/sampling-distribution-sample-mean/biden.jpg" width="13%"> <img src="../../imgs/sampling-distribution-sample-mean/us_election_map.png" width="60%"> <img src="../../imgs/sampling-distribution-sample-mean/trump.jpeg" width="13%"></p>
+<p><img src="imgs/biden.jpg" width="13%"> <img src="imgs/us_election_map.png" width="60%"> <img src="imgs/trump.jpeg" width="13%"></p>
 </div>
 <div class="source-img">
 <p>Map by Free Vector Maps: <a href="http://freevectormaps.com">http://freevectormaps.com</a></p>
@@ -717,7 +717,7 @@ Repeat Steps 2. and 3. <em>n</em> times.
 <p>Now that you know the concept of <em>sample</em>, we need to revisit the concept of population. As it was mentioned, a sample is a subset of the population. But frequently the population that the sample is drawn from is not the same population we are interested in. Let us see an example.</p>
 <p><span class="example"></span> In times of Covid-19, the Canadian government started providing some aid to Canadian workers that lost their jobs. The provincial government of British Columbia (BC) is studying if it should also provide some aid to university students. To make the decision, BC’s government wants to know the average income of university students in the province. There are many universities in BC, and sampling students from all universities can be costly and time-consuming. The government decides to sample students only from the University of British Columbia (UBC). By doing this, the sample that the government will be taking, comes from the population of all UBC students, which is a more restricted group than the group of all university students in BC.</p>
 <div style="display: flex; flex-flow: row nowrap; align-items: center;">
-<p><img width="100%" src="../../imgs/sampling-distribution-sample-mean/sampled_population.png" style="margin-left: auto; margin-right: auto; max-width:450px;"></p>
+<p><img width="100%" src="../..imgs/sampled_population.png" style="margin-left: auto; margin-right: auto; max-width:450px;"></p>
 </div>
 <p>Example 2.1 shows us that we need to improve our definition of population and make a distinction between the two populations.</p>
 <div class="box-def">
@@ -850,7 +850,7 @@ Great! We now know some of the fundamental concepts we need. Let’s review the 
 <li>
 <p>We are interested in a specific quantity (parameter) of a given population of objects/people. For example, the average income of all UBC students.</p>
 <div style="display: flex; flex-flow: row nowrap; align-items: center;">
-<p><img width="75%" src="../../imgs/sampling-distribution-sample-mean/population_students.png" style="margin-left: auto; margin-right: auto; max-width:450px;"></p>
+<p><img width="75%" src="../..imgs/population_students.png" style="margin-left: auto; margin-right: auto; max-width:450px;"></p>
 </div>
 </li>
 <li>
@@ -859,19 +859,19 @@ Great! We now know some of the fundamental concepts we need. Let’s review the 
 <li>
 <p>We then take a sample at random from the population.</p>
 <div style="display: flex; flex-flow: row nowrap; align-items: center;">
-<p><img width="100%" src="../../imgs/sampling-distribution-sample-mean/population_sample.png" style="margin-left: auto; margin-right: auto; max-width:600px;"></p>
+<p><img width="100%" src="../..imgs/population_sample.png" style="margin-left: auto; margin-right: auto; max-width:600px;"></p>
 </div>
 </li>
 <li>
 <p>Next, we use the sample to learn about the parameter of the population. For example, if we are interested in the average income of a given population, we calculate the average income in the sample. The function/formula you are using is called <strong>estimator</strong> (e.g., sample mean, sample variance, sample quantile) and the value you obtain in a given sample is called <strong>estimate</strong> of the parameter.</p>
 <div style="display: flex; flex-flow: row nowrap; align-items: center;">
-<p><img width="100%" src="../../imgs/sampling-distribution-sample-mean/population_estimate.png" style="margin-left: auto; margin-right: auto; max-width:600px;"></p>
+<p><img width="100%" src="../..imgs/population_estimate.png" style="margin-left: auto; margin-right: auto; max-width:600px;"></p>
 </div>
 </li>
 </ol>
 <p>Great, we are done! But wait for a second; the sample is random. The fact that we are using Chen, Mary, and Amy’s average income is just due chance. It could have been Ronald, Mary, and Lien, or Jean, Wang, and Adebola, or any other three UBC students. Different samples would give different results.</p>
 <div style="display: flex; flex-flow: row nowrap; align-items: center;">
-<p><img width="100%" src="../../imgs/sampling-distribution-sample-mean/population_multi_sample.png" style="margin-left: auto; 
+<p><img width="100%" src="../..imgs/population_multi_sample.png" style="margin-left: auto; 
                         margin-right: auto; 
                         margin-top:10px; 
                         margin-bottom:10px; 
