@@ -39,10 +39,12 @@ website:
       href: https://www.linkedin.com/in/rodolfo-lourenzutti/
     - icon: envelope-fill
       href: "mailto:rodolfo.lourenzutti@gmail.com"
+  page-footer: 
+    center: "Copyright 2022, Rodolfo Lourenzutti -- Powered by Quarto" 
 format:
   html:
     theme: zephyr
-    css: styles/main.css
+    css: /styles/main.css
     toc: true
 
 
