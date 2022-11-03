@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>https://example.com/about.html</loc>
+    <lastmod>2022-11-03T19:41:08.320Z</lastmod>
+  </url>
+  <url>
+    <loc>https://example.com/blog.html</loc>
+    <lastmod>2022-11-03T19:41:08.784Z</lastmod>
+  </url>
+  <url>
+    <loc>https://example.com/index.html</loc>
+    <lastmod>2022-11-03T19:42:56.607Z</lastmod>
+  </url>
+  <url>
+    <loc>https://example.com/teaching.html</loc>
+    <lastmod>2022-11-03T19:41:10.182Z</lastmod>
+  </url>
+  <url>
+    <loc>https://example.com/tutorials/sampling-distribution-sample-mean/sampling-distribution-sample-mean.html</loc>
+    <lastmod>2022-11-03T19:41:15.493Z</lastmod>
+  </url>
+  <url>
+    <loc>https://example.com/tutorials.html</loc>
+    <lastmod>2022-11-03T19:43:02.891Z</lastmod>
+  </url>
+  <url>
+    <loc>https://example.com/tutorials/sampling-distribution/sampling-distribution.html</loc>
+    <lastmod>2022-11-03T19:43:09.178Z</lastmod>
+  </url>
+</urlset>

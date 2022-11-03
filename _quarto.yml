@@ -1,0 +1,51 @@
+project:
+  type: website
+  output-dir: docs
+website:
+  title: "Rodolfo Lourenzutti"
+  favicon: logo.png
+  twitter-card: true
+  open-graph: true
+  site-url: https://lourenzutti.github.io/
+  google-analytics: "UA-124600152"
+  sidebar:
+    title: "Rodolfo Lourenzutti <br>"
+    subtitle: "Lourenzutti"
+    style: "floating"
+    border: true
+    search: true
+    logo: https://avatars.githubusercontent.com/u/5846205?s=400&u=631a3b9a1d0b3651b779b164301c1a6d7719d0f1&v=4
+    contents:
+      - text: '<i class="bi bi-house-fill"></i> Home'
+        file: "index.qmd"
+      - text: '<i class="bi bi-pencil-fill"></i> Blog'
+        file: "blog.qmd"
+      - text: '<i class="bi bi-book"></i> Tutorials'
+        file: "tutorials.qmd"
+      - text: '<i class="bi bi-person-workspace"></i>Teaching'
+        file: "teaching.qmd"
+      - text: '<i class="bi bi-info-circle-fill"></i> About'
+        file: "about.qmd"
+    tools:
+    - icon: twitter
+      href: https://twitter.com/LourenzuttiR
+    - icon: github
+      menu:
+        - text: Source Code
+          url:  https://github.com/Lourenzutti/lourenzutti.github.io
+        - text: Report a Bug
+          url:  https://github.com/Lourenzutti/lourenzutti.github.io/issues
+    - icon: linkedin
+      href: https://www.linkedin.com/in/rodolfo-lourenzutti/
+    - icon: envelope-fill
+      href: "mailto:rodolfo.lourenzutti@gmail.com"
+  page-footer: 
+    center: "Copyright 2022, Rodolfo Lourenzutti -- Powered by Quarto" 
+format:
+  html:
+    theme: zephyr
+    css: styles/main.css
+    toc: true
+
+
+

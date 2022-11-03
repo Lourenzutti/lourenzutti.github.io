@@ -1,0 +1,21 @@
+---
+title: "Tutorials"
+css: styles/tutorials.css
+---
+
+
+<div class="area-title">Statistical Inference</div>
+<div class="area-tutorial">
+<a href="/tutorials/sampling-distribution/sampling-distribution.html">
+<div class="card">
+<img src="/imgs/Blank_Sticky_Note_clip_art.svg" width=100%>
+<span class="tutorial-title">Sampling Distribution</span>
+</div>
+</a>
+<a href="/tutorials/bootstrapping/bootstrapping.html" style="display: none;">
+<div class="card">
+<img src="/imgs/Blank_Sticky_Note_clip_art.svg">
+<span class="tutorial-title">Bootstrapping</span>
+</div>
+</a>
+</div>
