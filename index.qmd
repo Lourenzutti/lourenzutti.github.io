@@ -1,4 +1,4 @@
 ---
-title: "new-website"
+title: "News"
 ---
 

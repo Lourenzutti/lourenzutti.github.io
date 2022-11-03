@@ -385,7 +385,7 @@ By doing this, the sample that the government will be taking, comes from the pop
 which is a more restricted group than the group of all university students in BC.
 
 <div style="display: flex; flex-flow: row nowrap; align-items: center;">
-<img width="100%" src="../..imgs/sampled_population.png"
+<img width="100%" src="imgs/sampled_population.png"
     style="margin-left: auto; margin-right: auto; max-width:450px;">
 </div>
 
@@ -505,7 +505,7 @@ We are interested in a specific quantity (parameter) of a given population of ob
     example, the average income of all UBC students.
 
 <div style="display: flex; flex-flow: row nowrap; align-items: center;">
-<img width="75%" src="../..imgs/population_students.png" style="margin-left: auto; margin-right: auto; max-width:450px;">
+<img width="75%" src="imgs/population_students.png" style="margin-left: auto; margin-right: auto; max-width:450px;">
 </div>
 </li>
 <li>
@@ -516,7 +516,7 @@ Due to limited resources we cannot survey the whole population to obtain the exa
 We then take a sample at random from the population.
 
 <div style="display: flex; flex-flow: row nowrap; align-items: center;">
-<img width="100%" src="../..imgs/population_sample.png"
+<img width="100%" src="imgs/population_sample.png"
     style="margin-left: auto; margin-right: auto; max-width:600px;">
 </div>
 </li>
@@ -524,7 +524,7 @@ We then take a sample at random from the population.
 Next, we use the sample to learn about the parameter of the population. For example, if we are interested in the average income of a given population, we calculate the average income in the sample. The function/formula you are using is called <strong>estimator</strong> (e.g., sample mean, sample variance, sample quantile) and the value you obtain in a given sample is called <strong>estimate</strong> of the parameter.
 
 <div style="display: flex; flex-flow: row nowrap; align-items: center;">
-<img width="100%" src="../..imgs/population_estimate.png"
+<img width="100%" src="imgs/population_estimate.png"
     style="margin-left: auto; margin-right: auto; max-width:600px;">
 </div>
 </li>
@@ -535,7 +535,7 @@ Amy's average income is just due chance. It could have been Ronald, Mary, and Li
 Adebola, or any other three UBC students. Different samples would give different results.
 
 <div style="display: flex; flex-flow: row nowrap; align-items: center;">
-<img width="100%" src="../..imgs/population_multi_sample.png" style="margin-left: auto; 
+<img width="100%" src="imgs/population_multi_sample.png" style="margin-left: auto; 
                         margin-right: auto; 
                         margin-top:10px; 
                         margin-bottom:10px; 

@@ -2,7 +2,3 @@
 title: "Blog"
 ---
 <script src="https://kit.fontawesome.com/9ffc1b7c87.js" crossorigin="anonymous"></script>
-
-This is a Quarto website.
-
-To learn more about Quarto websites visit <https://quarto.org/docs/websites>.
