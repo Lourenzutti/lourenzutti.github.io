@@ -8664,31 +8664,19 @@ Which of the following elements will affect the sampling distribution (keeping e
 
 <dl>
     <dt> Population distribution</dt>
-    <dd>True! The population distribution will certainly affect the sampling distribution. For example,
-        if you
-        have more variability in the population, you will most probably have more variability in the
-        estimates as well. </dd>
+    <dd>True! The population distribution will certainly affect the sampling distribution. For example, if you have more variability in the population, you will most probably have more variability in the estimates as well. </dd>
     <dt> Sample distribution</dt>
     <dd>
-        False! The sample distribution changes according to the sample obtained, and consequently the
-        estimate.
-        But the sampling distribution is not about one sample, it is about all possible samples.
+        False! The sample distribution changes according to the sample obtained, and consequently the estimate. But the sampling distribution is not about one sample, it is about all possible samples.
     </dd>
     <dt> Sample size </dt>
     <dd>
-        As we increase the sample size, the estimator tends to vary less from sample to sample, which
-        would make
-        its sampling distribution narrower.
+        True! As we increase the sample size, the estimator tends to vary less from sample to sample, which would make its sampling distribution narrower.
     </dd>
     <dt> Estimator </dt>
     <dd>
-        The sampling distribution is the distribution of a given estimator. If you change the estimator,
-        you are
-        also changing the sampling distribution. For example, imagine you that you want to estimate the
-        weight of the lightest
-        fish in the aquarium. So, instead of the sample mean, you would calculate the sample minimum.
-        The values in the table shown in Example
-        4.1 would be completely different, and consequently, so would be the sampling distribution.
+        **True!** The sampling distribution is the distribution of a given estimator. If you change the estimator, you are also changing the sampling distribution. For example, imagine that you want to estimate the weight of the lightest
+        fish in the aquarium. So, instead of the sample mean, you would calculate the sample minimum. The values in the table shown in Example 4.1 would be completely different, and consequently, so would be the sampling distribution.
     </dd>
 </dl>
 </div>
