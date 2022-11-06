@@ -90,7 +90,9 @@ main h2 {
     text-decoration: underline;
     border-radius: .5em;
     width: 100%;
+}
 
+main section {
     counter-increment: section;
     counter-reset: example definition exercise figure;
 }
