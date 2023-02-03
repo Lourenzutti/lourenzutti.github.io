@@ -1,0 +1,932 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.2.313">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Rodolfo Lourenzutti - A/B Testing</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1.6em;
+  vertical-align: middle;
+}
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<link href="../../logo.png" rel="icon" type="image/png">
+<script src="../../site_libs/quarto-html/quarto.js"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit"
+  }
+}</script>
+
+<script type="text/javascript">
+
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+ga('create', 'UA-124600152', 'auto');
+
+ga('send', {
+  hitType: 'pageview',
+  'anonymizeIp': true,
+});
+</script>
+
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<link rel="stylesheet" href="../../styles/main.css">
+<link rel="stylesheet" href="../../styles/tutorials.css">
+<link rel="stylesheet" href="../../styles/tutorials-chapters.css">
+<meta property="og:title" content="Rodolfo Lourenzutti - A/B Testing">
+<meta property="og:description" content="Previously, we studied situations where the main interest is not the exact value of a population parameter but, instead, which of the two mutually exclusive possible scenarios, namely \(H_0\) or…">
+<meta property="og:site-name" content="Rodolfo Lourenzutti">
+<meta name="twitter:title" content="Rodolfo Lourenzutti - A/B Testing">
+<meta name="twitter:description" content="Previously, we studied situations where the main interest is not the exact value of a population parameter but, instead, which of the two mutually exclusive possible scenarios, namely \(H_0\) or…">
+<meta name="twitter:card" content="summary">
+</head>
+
+<body class="nav-sidebar floating">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+    <div class="container-fluid d-flex justify-content-between">
+      <h1 class="quarto-secondary-nav-title">A/B Testing</h1>
+      <button type="button" class="quarto-btn-toggle btn" aria-label="Show secondary navigation">
+        <i class="bi bi-chevron-right"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header sidebar-header-stacked">
+      <a href="../../index.html" class="sidebar-logo-link">
+      <img src="https://avatars.githubusercontent.com/u/5846205?s=400&amp;u=631a3b9a1d0b3651b779b164301c1a6d7719d0f1&amp;v=4" alt="" class="sidebar-logo py-0 d-lg-inline d-none">
+      </a>
+    <div class="sidebar-title mb-0 py-0">
+      <a href="../../">Rodolfo Lourenzutti <br></a> 
+        <div class="sidebar-tools-main tools-wide">
+    <a href="https://twitter.com/LourenzuttiR" title="" class="sidebar-tool px-1"><i class="bi bi-twitter"></i></a>
+    <a href="" title="" id="sidebar-tool-dropdown-0" class="sidebar-tool dropdown-toggle px-1" data-bs-toggle="dropdown" aria-expanded="false"><i class="bi bi-github"></i></a>
+    <ul class="dropdown-menu" aria-labelledby="sidebar-tool-dropdown-0">
+        <li>
+          <a class="dropdown-item sidebar-tools-main-item" href="https://github.com/Lourenzutti/lourenzutti.github.io">
+          Source Code
+          </a>
+        </li>
+        <li>
+          <a class="dropdown-item sidebar-tools-main-item" href="https://github.com/Lourenzutti/lourenzutti.github.io/issues">
+          Report a Bug
+          </a>
+        </li>
+    </ul>
+    <a href="https://www.linkedin.com/in/rodolfo-lourenzutti/" title="" class="sidebar-tool px-1"><i class="bi bi-linkedin"></i></a>
+    <a href="mailto:rodolfo.lourenzutti@gmail.com" title="" class="sidebar-tool px-1"><i class="bi bi-envelope-fill"></i></a>
+</div>
+    </div>
+      </div>
+      <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+      </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../index.html" class="sidebar-item-text sidebar-link"><i class="bi bi-house-fill"></i> Home</a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../blog.html" class="sidebar-item-text sidebar-link"><i class="bi bi-pencil-fill"></i> Blog</a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../tutorials.html" class="sidebar-item-text sidebar-link"><i class="bi bi-book"></i> Tutorials</a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../teaching.html" class="sidebar-item-text sidebar-link"><i class="bi bi-person-workspace"></i>Teaching</a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../about.html" class="sidebar-item-text sidebar-link"><i class="bi bi-info-circle-fill"></i> About</a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#motivational-problem" id="toc-motivational-problem" class="nav-link active" data-scroll-target="#motivational-problem">Motivational Problem</a></li>
+  <li><a href="#ab-testing" id="toc-ab-testing" class="nav-link" data-scroll-target="#ab-testing">A/B Testing</a>
+  <ul class="collapse">
+  <li><a href="#comparing-the-two-groups" id="toc-comparing-the-two-groups" class="nav-link" data-scroll-target="#comparing-the-two-groups">Comparing the two groups</a></li>
+  <li><a href="#early-stopping" id="toc-early-stopping" class="nav-link" data-scroll-target="#early-stopping">Early Stopping</a></li>
+  </ul></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title d-none d-lg-block">A/B Testing</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+</header>
+
+<script src="https://d3js.org/d3.v6.min.js"></script>
+<!--Load local scripts-->
+<script defer="" src="../../scripts/controller.js"></script>
+<script defer="" src="../../scripts/random.js"></script>
+<p>Previously, we studied situations where the main interest is not the exact value of a population parameter but, instead, which of the two mutually exclusive possible scenarios, namely <span class="math inline">\(H_0\)</span> or <span class="math inline">\(H_1\)</span>, is true. For example, we are not interested in the exact value of the population mean, <span class="math inline">\(\mu\)</span>, but we are interested in knowing if <span class="math inline">\(\mu\)</span> is higher than <span class="math inline">\(35\)</span>mm or not.</p>
+<p>In a classical hypothesis test, we generally use <span class="math inline">\(H_0\)</span> as the status quo hypothesis (i.e., the hypothesis of nochange, no difference), where <span class="math inline">\(H_1\)</span> represents the anticipated change. Note that <span class="math inline">\(H_1\)</span> is the alternative hypothesis, in the sense that if <span class="math inline">\(H_0\)</span> is false, then <span class="math inline">\(H_1\)</span> is true. It is not allowed for both hypotheses to be false; one of the two hypotheses must be true. Also, the hypotheses are mutually exclusive (i.e., both hypotheses cannot be true simultaneously).</p>
+<p style="text-indent: 0;">
+The general procedure for hypothesis testing is always the same:
+</p>
+<ol type="1">
+<li><p>Define the hypotheses: <span class="math inline">\(H_0\)</span> and <span class="math inline">\(H_1\)</span>;</p></li>
+<li><p>Specify the desired significance level.</p></li>
+<li><p>Define a test statistic, <span class="math inline">\(T\)</span>, appropriate to test the hypothesis.</p></li>
+<li><p>Study the distribution of the test statistic as if <span class="math inline">\(H_0\)</span> were true. This distribution is called the <em>null distribution</em>.</p></li>
+<li><p>Check the actual value of the test statistic using the data you collected.</p></li>
+<li><p>Contrast the value of the test statistic with the null distribution by calculating the <em>p-value</em>.</p></li>
+<li><p>If the p-value is smaller than the significance level, reject <span class="math inline">\(H_0\)</span>, otherwise do not reject <span class="math inline">\(H_0\)</span>.</p></li>
+</ol>
+<section id="motivational-problem" class="level2">
+<h2 class="anchored" data-anchor-id="motivational-problem">Motivational Problem</h2>
+<p>In 2008, Obama’s campaign was looking to increase the total amount of donations to the campaign. To donate online, people needed to subscribe to the campaign e-mail by clicking on a red button saying “Sign Up”.</p>
+<figure class="figure">
+<img src="imgs/obama_homepage_original.png" class="figure-img">
+<figcaption class="figure-caption">
+Original website of the campaign.
+<p class="source-img">
+Source: <a href="https://blog.optimizely.com/2010/11/29/how-obama-raised-60-million-by-running-a-simple-experiment/">Optimizely</a>
+</p>
+</figcaption>
+</figure>
+<p>After a while, they started wondering: Is this website’s design effective? They decided to test it! The campaign created three alternative button designs (with text: <em>SIGN UP NOW</em>, <em>LEARN MORE</em>, <em>JOIN US NOW</em>) and five different media choices to replace the original photo: two alternative photos and three videos. In total, they compared 24 website designs. they measured the subscription rate of each design. As it turns out, the best design had over 40% higher subscription rate than the original website being used. It was estimated that the additional subscription generated an additional 60 million dollars worth of donations and 288,000 additional volunteers. You can learn more about this application of A/B testing <a href="https://www.optimizely.com/insights/blog/how-obama-raised-60-million-by-running-a-simple-experiment/%22">here</a>.</p>
+<p style="text-indent: 0;">
+But how do we compare websites?
+</p>
+<section id="the-response-variable" class="level5">
+<h5 class="anchored" data-anchor-id="the-response-variable">The response variable</h5>
+<p>The first step is to understand the purpose of the website. This is a fundamental step because it guides the creation of useful metrics of success. Defining the main purpose of a website is not always a simple task. For example, in their case:</p>
+<ul>
+<li>
+<p>
+Do they want the website to attract more subscribers?
+</p>
+</li>
+<li>
+<p>
+Do they want a high proportion of visitors to become donors?
+</p>
+</li>
+<li>
+<p>
+Do they want to increase the size of donation per visitor?
+</p>
+</li>
+</ul>
+<p>What is a good metric to measure how effective the website is? Such metric will be the <strong>response variable</strong> of the study. Although the campaign wanted to increase the total amount of donations, this was not the website’s purpose. The purpose of the website was to attract subscribers. For this reason, they used the rate of subscription, i.e., the number of people that subscribed divided by the number of people that visited the website. If the website’s purpose is not very well defined, you might (and probably will) come up with metrics that are misleading on how effective your website is.</p>
+</section>
+<section id="the-covariates" class="level5">
+<h5 class="anchored" data-anchor-id="the-covariates">The covariates</h5>
+<p>The second step is to identify the elements that could be optimized. In their case, they considered the media and the button. But they could consider other factors too, such as the background colour, for example. In essence, they are trying to find the configuration of the covariates, media and button, that would yield the highest subscriber rate.</p>
+</section>
+<section id="randomization" class="level5">
+<h5 class="anchored" data-anchor-id="randomization">Randomization</h5>
+<p>To avoid bias, each visitor saw a randomly chosen website design. This is a key step to be able to conclude that the reason for the increase in the subscription was the website’s design, and not a hidden factor that is not even being considered, <em>lurking variable</em>. The idea is that randomization will “average out” all these hidden differences between the visitors, and the only difference between the groups would be the website seen.</p>
+</section>
+</section>
+<section id="ab-testing" class="level2">
+<h2 class="anchored" data-anchor-id="ab-testing">A/B Testing</h2>
+<p>A/B testing is not only about website optimization. In general, we have two populations (or groups), namely Group A and Group B (hence A/B), and we want to compare these two populations with respect to a variable of interest (response variable). Let’s see a few examples:</p>
+<p><span class="example"></span>A new vaccine has been developed for cancer. The drug company wants to check the efficacy of the vaccine. The company randomly split 50,000 volunteers into two groups, where 25,000 will receive the vaccine (Group A) and 25,000 will receive the placebo (Group B). They measure if the individuals develop cancer in the next ten years.</p>
+<ul>
+<li><p><u><em>Response variable</em></u> (<span class="math inline">\(Y\)</span>): whether the individuals develop cancer;</p></li>
+<li><p><u><em>Covariate</em></u> (<span class="math inline">\(X\)</span>): whether the individuals receives the vaccine or the placebo (two-levels);</p></li>
+<li><p><u><em>Parameters of interest</em></u>: <span class="math inline">\(p_1\)</span> and <span class="math inline">\(p_2\)</span>, the proportions of individuals who develop cancer in Group A and Group B, respectively;</p></li>
+<li><p><u><em>Research question</em></u>: is the vaccine effective? In other words, is <span class="math inline">\(p_1 &lt; p_2\)</span>?</p></li>
+</ul>
+<div class="end-part">
+
+</div>
+<p><span class="example"></span> A phone company wants to reduce the number of complaints against its customer services. They are considering removing the navigation menu from the support service and using support staff instead. Naturally, this will be an expensive move, so they first want to test it to see if it would be effective. They trained a small team and randomly directed the clients to the navigation menu or human support. Then, they monitor whether the clients will open a complaint at the Canadian Radio-television and Telecommunications Commission (CRTC).</p>
+<ul>
+<li><p><u><em>Response variable</em></u> (<span class="math inline">\(Y\)</span>): whether the individual opens a complaint;</p></li>
+<li><p><u><em>Covariate</em></u> (<span class="math inline">\(X\)</span>): whether the individual is directed to the navigation menu or the support staff (two-levels);</p></li>
+<li><p><u><em>Parameters of interest</em></u>: <span class="math inline">\(p_1\)</span> and <span class="math inline">\(p_2\)</span>, the proportion of clients that open a complaint at CRTC in Group A and Group B, respectively;</p></li>
+<li><p><u><em>Research question</em></u>: is the support staff better? In other words, is <span class="math inline">\(p_1 &lt; p_2\)</span>?</p></li>
+</ul>
+<div class="end-part">
+
+</div>
+<p><span class="example"></span> An e-commerce company wants to compare two website designs with respect to sales in dollars. For the following <span class="math inline">\(N\)</span> clients, the design each client will see will be selected at random.</p>
+<ul>
+<li><p><u><em>Response variable</em></u> (<span class="math inline">\(Y\)</span>): the amount of dollars spent;</p></li>
+<li><p><u><em>Covariate (<span class="math inline">\(X\)</span>)</em></u>: two website designs (two-levels);</p></li>
+<li><p><u><em>Parameters of interest</em></u>: <span class="math inline">\(\mu_1\)</span> and <span class="math inline">\(\mu_2\)</span>, the average amount of dollars spent by the clients in each website design;</p></li>
+<li><p><u><em>Research question</em></u>: Is one of the designs better?</p></li>
+</ul>
+<div class="end-part">
+
+</div>
+<p style="text-indent: 0;">
+</p><p>In general, the structure of A/B Testing consists of:</p>
+<ol type="1">
+<li><p>a response variable, <span class="math inline">\(Y\)</span>;</p></li>
+<li><p>a covariate, <span class="math inline">\(X\)</span>, that splits the population into two groups;</p></li>
+<li><p>randomization, individuals are randomly assigned to the groups; and</p></li>
+<li><p>statistical comparison of the groups’ parameter of interest (remember that all we have is a sample, so we need to account for the sampling variability.</p></li>
+</ol>
+<figure class="figure">
+<img src="imgs/ab-diagram.png" width="75%" class="figure-img">
+<figcaption class="figure-caption">
+A/B Testing Workflow
+</figcaption>
+</figure>
+<section id="how-is-obamas-campaign-problem-different" class="level4">
+<h4 class="anchored" data-anchor-id="how-is-obamas-campaign-problem-different">How is Obama’s Campaign Problem Different?</h4>
+<p>Note that in case of the Obama’s campaign website, we have:</p>
+<ol type="1">
+<li><p>Response variable: the subscription rate; ✅</p></li>
+<li><p>Randomization; ✅</p></li>
+<li><p>One covariate that splits the population into two groups; <span style="color: red;">✘</span></p></li>
+</ol>
+<p>We had <strong>two</strong> covariates, <span class="math inline">\(X_1\)</span> and <span class="math inline">\(X_2\)</span>, which are the button design and the media used, respectively. Besides, <span class="math inline">\(X_1\)</span> had four levels (i.e., possible values): the four design options or the button. This would split the population into four groups, not into two. <span class="math inline">\(X_2\)</span>, the media variable, had six levels, three photos and three videos. Combining <span class="math inline">\(X_1\)</span> and <span class="math inline">\(X_2\)</span> results in a total of 24 groups.</p>
+<p>This problem is slightly more complex than having only two groups. If we performed pairwise comparisons, we would need 276 tests to compare all 24 groups. As we learned previously, this would considerably inflate the probability of error. For now, let us restrict our focus to only two groups. We will discuss more groups later.</p>
+</section>
+<section id="comparing-the-two-groups" class="level3">
+<h3 class="anchored" data-anchor-id="comparing-the-two-groups">Comparing the two groups</h3>
+<p>Once the appropriate response variable and covariate have been specified, we start collecting the data. The data collected will be only a sample of the population; therefore, we need to take into account the sampling variability. We are already familiar with the methodology to conduct this statistical analysis, namely two-samples confidence intervals and hypothesis tests. Let’s refresh our memory!</p>
+<p>When estimating or testing hypotheses, the parameter of interest affects which statistic we are going to use. For example, when testing the mean, we want to use the sample mean <span class="math inline">\(\bar{X}\)</span>, when testing difference in proportion, we want to use the difference in sample proportions, <span class="math inline">\(\hat{p}_1 - \hat{p}_2\)</span>, and so on.</p>
+<p>Naturally, the way these statistics behave are different, i.e., the sampling distributions (and null models) of these statistics are different. We have explored two main approaches to approximate the sampling distribution (for confidence intervals) and the null model (for hypothesis testing): (1) the Central Limit Theorem (CLT); and (2) Simulation Based Approaches.</p>
+<section id="central-limit-theorem" class="level4">
+<h4 class="anchored" data-anchor-id="central-limit-theorem">Central Limit Theorem</h4>
+<p>When estimating or testing hypotheses, the parameter of interest affects which statistic we are going to use. For example, when testing the mean, we want to use <span class="math inline">\(\bar{X}\)</span>, whereas when testing the median, we want to use the sample median, and so on. The Central Limit Theorem provides an approximation for the distribution of certain test statistics for large sample size.</p>
+<section id="comparing-two-means" class="level5">
+<h5 class="anchored" data-anchor-id="comparing-two-means">Comparing two means</h5>
+<p>Suppose you want to test the difference between two <em>independent</em> populations’ means. The scenarios to be considered:</p>
+<ul>
+<li><p><span class="math inline">\(H_0: \mu_A - \mu_B = d_0\)</span> vs <span class="math inline">\(H_1: \mu_A - \mu_B \neq d_0\)</span></p></li>
+<li><p><span class="math inline">\(H_0: \mu_A - \mu_B = d_0\)</span> vs <span class="math inline">\(H_1: \mu_A - \mu_B &gt; d_0\)</span></p></li>
+<li><p><span class="math inline">\(H_0: \mu_A - \mu_B = d_0\)</span> vs <span class="math inline">\(H_1: \mu_A - \mu_B &lt; d_0\)</span></p></li>
+</ul>
+<p>To conduct this hypothesis test, we take two independent samples, one from each population. By independent samples, we meant that the individuals are selected independently from each population.</p>
+<p>Suppose Group A has <span class="math inline">\(n_A\)</span> elements drawn at random from Population A, and Group B has <span class="math inline">\(n_B\)</span> elements drawn at random from Population B. Let’s use <span class="math inline">\(x\)</span> to refer to Group A and <span class="math inline">\(y\)</span> to refer to Group B. For large samples sizes, the test statistic given by <span class="math display">\[
+T = \frac{\bar{x}-\bar{y} - d_0}{\sqrt{\frac{s_A^2}{n_A} - \frac{s_B^2}{n_B}} }
+\]</span> follows a <span class="math inline">\(t\)</span>-distribution with approximately <span class="math inline">\(\nu\)</span> degrees of freedom under <span class="math inline">\(H_0\)</span>, where <span class="math display">\[
+\nu = \frac{
+\left(\frac{s_A^2}{n_A}+\frac{s_B^2}{n_B}\right)^2
+}
+{
+\frac{s_A^4}{n_A^2(n_A-1)}+\frac{s_2^4}{n_B^2(n_B-1)}
+}.
+\]</span></p>
+<p style="text-indent: 0;">
+In other words, the <em>null model</em> of the test statistic above is <span class="math inline">\(t_\nu\)</span>. Of course, we are never going to calculate this weird formula by hand! Our computers can do this for us.
+</p>
+<p><span class="example"></span> Suppose Obama’s campaign wanted to test which of two websites, <em>Website A</em> or <em>Website B</em>, results in a larger amount of donations. The next 60 users who visit the campaign’s website will access one of the websites chosen at random until 30 users have seen one of the designs. We have collected (actually simulated!) this data for you and stored it in the <code>sample_money_donated</code> object.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">suppressMessages</span>(<span class="fu">library</span>(tidyverse))</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1</span>)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Simulating a sample of 30 individuals for group A and Group B</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>sample_money_donated <span class="ot">&lt;-</span> </span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="fu">tibble</span>(<span class="at">group =</span> <span class="fu">c</span>(<span class="st">"Website A"</span>, <span class="st">"Website B"</span>), </span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">amount =</span> <span class="fu">list</span>(</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>        <span class="fu">if_else</span>(<span class="fu">runif</span>(<span class="dv">30</span>) <span class="sc">&lt;</span> <span class="fl">0.5</span>, <span class="dv">0</span>, <span class="fu">rnorm</span>(<span class="dv">30</span>, <span class="dv">80</span>, <span class="dv">10</span>) ), </span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>        <span class="fu">if_else</span>(<span class="fu">runif</span>(<span class="dv">30</span>) <span class="sc">&lt;</span> <span class="fl">0.6</span>, <span class="dv">0</span>, <span class="fu">rnorm</span>(<span class="dv">30</span>, <span class="dv">100</span>, <span class="dv">20</span>) ))</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">%&gt;%</span> </span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="fu">unnest</span>(<span class="at">cols =</span> amount) <span class="sc">%&gt;%</span></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="fu">sample_n</span>(<span class="dv">60</span>)</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>sample_money_donated</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 60 × 2
+   group     amount
+   &lt;chr&gt;      &lt;dbl&gt;
+ 1 Website B    0  
+ 2 Website B    0  
+ 3 Website B    0  
+ 4 Website A    0  
+ 5 Website A   87.8
+ 6 Website B    0  
+ 7 Website A   66.2
+ 8 Website A    0  
+ 9 Website B   88.6
+10 Website A    0  
+# … with 50 more rows</code></pre>
+</div>
+</div>
+<p>Next, to test <span class="math inline">\(H_0: \mu_A - \mu_B = d_0\)</span> vs <span class="math inline">\(H_1: \mu_A - \mu_B \neq d_0\)</span>, we can use the <code><a href="https://www.rdocumentation.org/packages/stats/versions/3.6.2/topics/t.test" target="_blank">t.test</a></code> function in R.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">t.test</span>(amount <span class="sc">~</span> group,  <span class="co"># The formula: "website affects amount".</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>       <span class="at">mu =</span> <span class="dv">0</span>, <span class="co"># the value of d0</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>       <span class="at">alternative =</span> <span class="st">"two.sided"</span>, <span class="co"># "less" for &lt; and "greater" for &gt;;</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>       <span class="at">data =</span> sample_money_donated)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+    Welch Two Sample t-test
+
+data:  amount by group
+t = -0.85694, df = 54.453, p-value = 0.3952
+alternative hypothesis: true difference in means between group Website A and group Website B is not equal to 0
+95 percent confidence interval:
+ -35.02343  14.04580
+sample estimates:
+mean in group Website A mean in group Website B 
+               37.16292                47.65173 </code></pre>
+</div>
+</div>
+</section>
+<section id="comparing-two-proportions" class="level5">
+<h5 class="anchored" data-anchor-id="comparing-two-proportions">Comparing two proportions</h5>
+<p>Obama’s campaign wanted the website to increase the number of subscribers and, for this reason, they used the rate of subscription. In this case, the variable of interest, <em>“whether a visitor subscribes”</em>, is not numerical, is dichotomic: “yes” or “no”. Consequently, we would want to compare the proportions of visitors who subscribes using <em>Website A</em> and <em>Website B</em>.</p>
+<p>To test for the equality of proportions between two groups, i.e., <span class="math inline">\(H_0: p_A - p_B = 0\)</span> vs <span class="math inline">\(H_1: p_A - p_B \neq 0\)</span>, we can use the following test statistics: <span class="math display">\[
+Z = \frac{\hat{p}_A-\hat{p}_B}{\sqrt{\hat{p}(1-\hat{p})\left(\frac{1}{n_A}+\frac{1}{n_B}\right)}},
+\]</span></p>
+<p style="text-indent: 0;">
+where <span class="math inline">\(\hat{p}=\frac{n_A\hat{p}_A+n_B\hat{p}_B}{n_A+n_B}\)</span> is the overall proportion. For large sample sizes, the null model of the <span class="math inline">\(Z\)</span> statistic is the Standard Normal distribution, <span class="math inline">\(N(0,1)\)</span>. Again, we will not do this manually, as we can easily calculate using the computer.
+</p>
+<p><span class="example"></span> Suppose Obama’s campaign wanted to test which of two websites, <em>Website A</em> or <em>Website B</em>, results in a higher rate of subscribers. The next 60 users who visit the campaign’s website will access one of the websites chosen at random until 30 users have seen one of the designs. We have collected this data for you and stored it in the <code>sample_subscriber</code> object.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(infer)</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1</span>)</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Simulating a sample of 30 individuals for group A and Group B</span></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>sample_subscriber <span class="ot">&lt;-</span> </span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a><span class="fu">tibble</span>(<span class="at">website =</span> <span class="fu">factor</span>(<span class="fu">c</span>(<span class="st">"A"</span>, <span class="st">"B"</span>)), </span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">subscribed =</span> <span class="fu">list</span>(</span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>        <span class="fu">sample</span>(<span class="fu">factor</span>(<span class="fu">c</span>(<span class="st">"yes"</span>, <span class="st">"no"</span>)), <span class="dv">30</span>, <span class="at">replace =</span> <span class="cn">TRUE</span>, <span class="at">p=</span><span class="fu">c</span>(<span class="fl">0.42</span>, <span class="fl">0.58</span>)), </span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>        <span class="fu">sample</span>(<span class="fu">factor</span>(<span class="fu">c</span>(<span class="st">"yes"</span>, <span class="st">"no"</span>)), <span class="dv">30</span>, <span class="at">replace =</span> <span class="cn">TRUE</span>, <span class="at">p=</span><span class="fu">c</span>(<span class="fl">0.37</span>, <span class="fl">0.58</span>)))</span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">%&gt;%</span> </span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a><span class="fu">unnest</span>(<span class="at">cols =</span> subscribed) <span class="sc">%&gt;%</span></span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a><span class="fu">sample_n</span>(<span class="dv">60</span>)</span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a>sample_subscriber</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 60 × 2
+   website subscribed
+   &lt;fct&gt;   &lt;fct&gt;     
+ 1 B       no        
+ 2 B       yes       
+ 3 A       yes       
+ 4 A       no        
+ 5 B       no        
+ 6 A       no        
+ 7 A       no        
+ 8 B       no        
+ 9 A       yes       
+10 A       no        
+# … with 50 more rows</code></pre>
+</div>
+</div>
+<p>Once the data is collected, we can run <code><a href="https://www.rdocumentation.org/packages/stats/versions/3.6.2/topics/prop.test" target="_blank">prop.test</a></code> in R to test the hypothesis.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">prop.test</span>(</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>    sample_subscriber <span class="sc">%&gt;%</span> </span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">group_by</span>(website) <span class="sc">%&gt;%</span> </span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">summarise</span>(<span class="at">n_successes =</span> <span class="fu">sum</span>(subscribed <span class="sc">==</span> <span class="st">"yes"</span>), </span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>            <span class="at">n_failures =</span> <span class="fu">sum</span>(subscribed <span class="sc">==</span> <span class="st">"no"</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">select</span>(<span class="sc">-</span>website) <span class="sc">%&gt;%</span> </span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>    <span class="fu">as.matrix</span>())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+    2-sample test for equality of proportions with continuity correction
+
+data:  sample_subscriber %&gt;% group_by(website) %&gt;% summarise(n_successes = sum(subscribed == "yes"), n_failures = sum(subscribed == "no")) %&gt;% select(-website) %&gt;% as.matrix()
+X-squared = 1.4459e-30, df = 1, p-value = 1
+alternative hypothesis: two.sided
+95 percent confidence interval:
+ -0.2493486  0.3160153
+sample estimates:
+   prop 1    prop 2 
+0.4333333 0.4000000 </code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="simulation-based-approach" class="level4">
+<h4 class="anchored" data-anchor-id="simulation-based-approach">Simulation Based Approach</h4>
+<p>Alternatively to the CLT, we could use computer simulations to compare the groups. The same idea we discussed previously:</p>
+<ol type="1">
+<li><p>Collect the samples of Group A and Group B;</p></li>
+<li><p>Calculate the observed test statistic;</p></li>
+<li><p>Put the sample of both groups together;</p></li>
+<li><p>Select <span class="math inline">\(n_1\)</span> elements at random, <strong>without</strong> replacement, from the two samples combined.</p></li>
+<li><p>The selected elements will be your “new” Group A, and the remaining will be your “new” Group B.</p></li>
+<li><p>Calculate the appropriate test statistic (e.g., the difference of sample proportions or of sample means).</p></li>
+<li><p>Perform Steps 4, 5 and 6, multiple times to obtain a sample from the <em>Null Distribution </em>.</p></li>
+<li><p>Compare the observed test statistic with the simulated null model.</p></li>
+</ol>
+<p>Note that by randomizing the groups in the sample (Steps 3, 4, and 5), we are trying to remove the difference between the groups, except for those differences due to sampling variability. But why are we doing that again? Because we want to simulate a sample from the Null Model, which is the model under the assumption that there is no difference between the groups.</p>
+<p><span class="example"></span> Let’s return to Obama’s campaign problem in the example above. We want to test which website, Website A or Website B, has a higher subscription rate. The data is stored in <code>sample_subscriber</code>.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>sample_subscriber</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 60 × 2
+   website subscribed
+   &lt;fct&gt;   &lt;fct&gt;     
+ 1 B       no        
+ 2 B       yes       
+ 3 A       yes       
+ 4 A       no        
+ 5 B       no        
+ 6 A       no        
+ 7 A       no        
+ 8 B       no        
+ 9 A       yes       
+10 A       no        
+# … with 50 more rows</code></pre>
+</div>
+</div>
+<p>First, we calculate the observed test statistic. Since we are comparing the proportions, we can use the difference of sample proportions as our test statistic.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>obs_test_statistic <span class="ot">&lt;-</span> </span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>    sample_subscriber <span class="sc">%&gt;%</span> </span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">specify</span>(<span class="at">formula =</span> subscribed <span class="sc">~</span> website, <span class="at">success =</span> <span class="st">"yes"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">calculate</span>(<span class="at">stat =</span> <span class="st">"diff in props"</span>, <span class="at">order =</span> <span class="fu">c</span>(<span class="st">"A"</span>, <span class="st">"B"</span>))</span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>obs_test_statistic</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Response: subscribed (factor)
+Explanatory: website (factor)
+# A tibble: 1 × 1
+    stat
+   &lt;dbl&gt;
+1 0.0333</code></pre>
+</div>
+</div>
+<p>Next, we simulate a sample from the null model by following Steps 3-6. Luckily for us, we don’t need to do this manually as we are already familiar with <code>infer</code>’s workflow.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>sample_null_model <span class="ot">&lt;-</span> </span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>    sample_subscriber <span class="sc">%&gt;%</span> </span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">specify</span>(<span class="at">formula =</span> subscribed <span class="sc">~</span> website, <span class="at">success =</span> <span class="st">"yes"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">hypothesise</span>(<span class="at">null =</span> <span class="st">"independence"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">generate</span>(<span class="at">reps =</span> <span class="dv">5000</span>, <span class="at">type =</span> <span class="st">"permute"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">calculate</span>(<span class="at">stat =</span> <span class="st">"diff in props"</span>, <span class="at">order =</span> <span class="fu">c</span>(<span class="st">"A"</span>, <span class="st">"B"</span>))</span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>sample_null_model</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Response: subscribed (factor)
+Explanatory: website (factor)
+Null Hypothesis: independence
+# A tibble: 5,000 × 2
+   replicate    stat
+       &lt;int&gt;   &lt;dbl&gt;
+ 1         1  0.1   
+ 2         2 -0.1   
+ 3         3 -0.0333
+ 4         4 -0.233 
+ 5         5 -0.0333
+ 6         6 -0.0333
+ 7         7  0.0333
+ 8         8  0.167 
+ 9         9 -0.1   
+10        10  0.233 
+# … with 4,990 more rows</code></pre>
+</div>
+</div>
+<p>Finally, we compare the observed test statistic with the null model. Since the observed test statistic is <span class="math inline">\(0.0333\)</span>, we calculate the proportion of values generated from the null model that are above <span class="math inline">\(0.0333\)</span> or below <span class="math inline">\(-0.0333\)</span>. This will be the estimated p-value of the test.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>sample_null_model <span class="sc">%&gt;%</span> </span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">get_p_value</span>(obs_test_statistic, <span class="at">direction =</span> <span class="st">"both"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 1 × 1
+  p_value
+    &lt;dbl&gt;
+1   0.998</code></pre>
+</div>
+</div>
+<div class="end-part">
+
+</div>
+<p>There’s nothing new in these analyses, right? We have already discussed statistical inference involving two-sample. So, why are we discussing this again? As it turns out, A/B Testing is just another name that was coined in the industry for Randomized Experiments, a well-established statistical methodology for experimentation. Hence the familiarity of the methods above. That would be the end of it, except that some challenges arise in practice that requires close attention.</p>
+</section>
+</section>
+<section id="early-stopping" class="level3">
+<h3 class="anchored" data-anchor-id="early-stopping">Early Stopping</h3>
+<p>In many situations, there is crushing evidence that a group is performing better than the other. So, should a company keep spending resources and time to continue the experiment as planned? Continuing with the experiment could be unnecessarily costly.</p>
+<p style="margin-bottom: 0;">
+</p><p><span class="example"></span> Suppose Pfizer, a pharmaceutical company, is conducting a clinical trial to test the effectiveness of a new treatment. They planned to have 1,000 participants in total, 500 of which will receive the new drug, and the remaining 500 will receive the placebo. However, at the current point in time, they have data of 600 participants, where 300 received the drug and 300 received the placebo. Among the 300 who received the drug, nobody died. On the other hand, among the 300 who received the placebo, 200 died. Should the FDA (Food and Drug Administration) still wait for the result of the remaining 400 participants? Or should they stop the clinical trial early and start distributing the medicine to people in need?</p>
+<div class="end-part">
+
+</div>
+<!--Make the following two paragraphs an exercise-->
+<p>In general, we not only want to compare Groups A and B, but we also want to reach a conclusion as soon as possible. To do so, one would have to “peek” at the partially collected data to conduct the proper statistical analysis. However, when should we peek at the partially collected data?</p>
+<p>A reasonable answer could be to monitor the data online. In other words, for every new observation in each group we have, we take a peek at the data.</p>
+<p><span class="example"></span>Suppose Obama’s campaign wanted to test two website designs, and they are interested in the amount of money donated per visitor. So, they decided to conduct an A/B Test and start monitoring as soon as they had ten visitors for each design. Then, they would peek at the data again once both designs had received another visitor, and so on. If they detect a difference, they will immediately stop the experiment and make the best website version available to all visitors. They will allow a maximum number of visitors of 1,000 per design.</p>
+<figure class="figure">
+<img src="imgs/obama-experiment-1.png" width="100%" class="figure-img">
+<figcaption class="figure-caption">
+A/B Test with two versions of Obama’s campaign website.
+<p class="source-img">
+Source: Obama’s pictures<a href="https://blog.optimizely.com/2010/11/29/how-obama-raised-60-million-by-running-a-simple-experiment/">Optimizely</a>
+</p>
+</figcaption>
+</figure>
+<figure class="figure">
+<img src="imgs/obama-online-pvalues.png" width="85%" class="figure-img">
+<figcaption class="figure-caption">
+Multiple checks of p-value for different sample sizes
+</figcaption>
+</figure>
+<div class="end-part">
+
+</div>
+<p>In the example above, Obama’s campaign wants to use a strategy that does not specify the sample size. So far, we have been discussing inference scenarios where the sample size is determined <strong>prior to the study</strong>. But in this case, the methodology will not change because the sample size will be fixed at each <em>peek</em>. The problem is that we are experimenting multiple times with different sample sizes.</p>
+<div class="box-def box-exercise">
+<p>
+</p>
+<p>
+When conducting hypothesis testing, what are the effects that sample size has on:
+</p>
+<ol>
+<li class="question-item">
+<p>
+Probability of Type I Error
+</p>
+<textarea class="answer" style="height:50px;"></textarea>
+<br>
+</li>
+<li class="question-item">
+<p>
+Probability of Type II Error
+</p>
+<textarea class="answer" style="height:50px;"></textarea>
+<br>
+</li>
+<li class="question-item">
+<p>
+Power of the test
+</p>
+<textarea class="answer" style="height:50px;"></textarea>
+</li>
+</ol>
+<button class="btn-show-answers">
+Show answers
+</button>
+<div class="solution proof">
+<p><span class="proof-title"><em>Solution</em>. </span></p>
+<dl>
+<dt>
+Probability of Type I Error
+</dt>
+<dd>
+None. Remember that the probability of Type I Error is the significance level, which is specified by us before the test is conducted.
+</dd>
+<dt>
+Probability of Type II Error
+</dt>
+<dd>
+The Probability of Type II Error decreases as the sample size increases. The reason is that both the null model and the sampling distribution of the test statistic will become narrower, hence reducing their overlap.
+</dd>
+<dt>
+Power of the test
+</dt>
+<dd>
+The power of the test is just one minus the probability of Type II Error. Since the probability of Type II Error decreases as the sample size increases, the power of the test increases as the sample size increases.
+</dd>
+</dl>
+</div>
+</div>
+<p>Ok, so Obama’s campaign seems to have a good plan. The probability of Type I Error at each peek will be the same; the power of the test will be smaller, but if it is already big enough to detect a difference, kudos! No downside here, right? Wrong!While the probability of Type I Error is the same at each peek, they only need to reject the hypothesis once in multiple tests.</p>
+<div class="box-def box-exercise">
+<p>
+</p>
+<p style="text-indent: 0;">
+When conducting multiple hypothesis testing, what happens to the family-wise errors?
+</p>
+<textarea class="answer" style="height:50px; width: 90%;"></textarea>
+<br> <button class="btn-show-answers">Show answers</button>
+<div class="solution proof">
+<p><span class="proof-title"><em>Solution</em>. </span>Since you need to make the right decision multiple times, and each time there is a chance that you make the wrong decision, when you consider whether <strong>all</strong> the decisions you made are right, there is a much lower chance of that happening compared to each hypothesis testing individually.</p>
+</div>
+</div>
+<p><span class="example"></span> Let’s continue our previous example of Obama’s campaign. The first thing we should do is to test if the plan is good. But how can we do that if we do not know the truth (i.e., if there’s actually a difference between the two websites): Here’s our we are going to do it:</p>
+<ol>
+<li>
+Let’s run the experiment 100 times.
+<figure class="figure">
+<img src="imgs/obama-experiment-100.png" width="100%" class="figure-img">
+<figcaption class="figure-caption">
+One hundred A/B Tests with two versions of Obama’s campaign website.
+<p class="source-img">
+Source: Obama’s pictures <a href="https://blog.optimizely.com/2010/11/29/how-obama-raised-60-million-by-running-a-simple-experiment/">Optimizely</a>
+</p>
+</figcaption>
+</figure>
+</li>
+<li>
+But this time, we are going to use the same website for both groups. This way, we know the truth – there’s no difference!!
+<figure class="figure">
+<img src="imgs/obama-aa-experiment-100.png" width="100%" class="figure-img">
+<figcaption class="figure-caption">
+One hundred A/B Test with the same version of Obama’s campaign website.
+<p class="source-img">
+Source: Obama’s pictures <a href="https://blog.optimizely.com/2010/11/29/how-obama-raised-60-million-by-running-a-simple-experiment/">Optimizely</a>
+</p>
+</figcaption>
+</figure>
+<figure class="figure">
+<img src="imgs/obama-online-monitoring-pvalue-100.png" width="100%" class="figure-img">
+<figcaption class="figure-caption">
+Multiple checks of p-value for different sample sizes in each of the 100 experiments.
+</figcaption>
+</figure>
+</li>
+<li>
+Let’s see in how many of the 100 experiments the null hypothesis is rejected at least once. That will estimate how bad the chance of our <em>family-wise</em> Type I Error will be.
+</li>
+</ol>
+<p>In this case, using a significance level of <span class="math inline">\(5\%\)</span>, approximately <span class="math inline">\(22\%\)</span> of the <span class="math inline">\(100\)</span> A/B tests would have wrongly rejected <span class="math inline">\(H_0\)</span> and concluded that the same version of the website is different from itself. This is way above our specified significance level of <span class="math inline">\(5\%\)</span>. Terrible, isn’t it? Obama’s campaign is in a bit of a pickle now. It seems they have to wait for 2000 people to visit the website before they can examine whether there’s a difference. Do they, though?</p>
+<p>We have learned about p-value adjustments to control for Type I Error. Remember Bonferroni’s correction? So we could propose a compromise to them:</p>
+<p><em>- “Hey, don’t peek at the data for every two people that visit your website. Instead, pick a reasonable number of tests, and I’ll adjust the p-value so we can control the probability of Type I Error.”</em></p>
+<p style="text-indent: 0;">
+They can decide when to conduct the test, say for example, <span class="math inline">\(n = 50\)</span>, <span class="math inline">\(n = 100\)</span>, <span class="math inline">\(n = 250\)</span>, <span class="math inline">\(n = 500\)</span>, and <span class="math inline">\(n = 1000\)</span>. Doing this in the Obama’s problem would reduce the number of rejection to 7 experiment, much closer to the <span class="math inline">\(5\%\)</span> specified. This approach is called <em>principled peeking</em>.
+</p>
+<div style="height: 400px;">
+
+</div>
+
+
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+      <div class="nav-footer-center">Copyright 2022, Rodolfo Lourenzutti – Powered by Quarto</div>
+  </div>
+</footer>
+
+
+
+</body></html>
