@@ -1,0 +1,8 @@
+- source: lecture2-eda.qmd
+  quarto-pub:
+    - id: 6f4f1f8e-9f8f-42b6-8248-edbceb8c727c
+      url: 'https://quartopub.com/sites/lourenzutti/lecture2-eda'
+- source: lecture02-eda.qmd
+  quarto-pub:
+    - id: bce3d740-2328-4645-aa72-56531229b5bb
+      url: 'https://quartopub.com/sites/lourenzutti/lecture02-eda-b0c3'
