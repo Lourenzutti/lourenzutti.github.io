@@ -7,7 +7,7 @@ website:
   twitter-card: true
   open-graph: true
   site-url: https://lourenzutti.github.io/
-  google-analytics: "UA-124600152"
+  google-analytics: "G-PLRMKTQGZJ"
   sidebar:
     title: "Rodolfo Lourenzutti <br>"
     subtitle: "Lourenzutti"
@@ -40,7 +40,7 @@ website:
     - icon: envelope-fill
       href: "mailto:rodolfo.lourenzutti@gmail.com"
   page-footer: 
-    center: "Copyright 2022, Rodolfo Lourenzutti -- Powered by Quarto" 
+    center: "Copyright 2023, Rodolfo Lourenzutti -- Powered by Quarto" 
 format:
   html:
     theme: zephyr
