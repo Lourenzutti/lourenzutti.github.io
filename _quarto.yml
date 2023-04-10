@@ -18,7 +18,7 @@ website:
     contents:
       - text: '<i class="bi bi-house-fill"></i> Home'
         file: "index.qmd"
-      - text: '<i class="bi bi-pencil-fill"></i> Blog'
+      - text: '<i class="bi bi-pencil-fill"></i> Courses'
         file: "blog.qmd"
       - text: '<i class="bi bi-book"></i> Tutorials'
         file: "tutorials.qmd"
