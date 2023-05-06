@@ -1,0 +1,1665 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.2.475">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Rodolfo Lourenzutti - LASSO</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1.6em;
+  vertical-align: middle;
+}
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<link href="../../logo.png" rel="icon" type="image/png">
+<script src="../../site_libs/quarto-html/quarto.js"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit"
+  }
+}</script>
+<script async="" src="https://www.googletagmanager.com/gtag/js?id=G-PLRMKTQGZJ"></script>
+
+<script type="text/javascript">
+
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-PLRMKTQGZJ', { 'anonymize_ip': true});
+</script>
+
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<link rel="stylesheet" href="../../styles/main.css">
+<meta property="og:title" content="Rodolfo Lourenzutti - LASSO">
+<meta property="og:description" content="Prerequisites:">
+<meta property="og:site-name" content="Rodolfo Lourenzutti">
+<meta name="twitter:title" content="Rodolfo Lourenzutti - LASSO">
+<meta name="twitter:description" content="Prerequisites:">
+<meta name="twitter:card" content="summary">
+</head>
+
+<body class="nav-sidebar floating">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+    <div class="container-fluid d-flex justify-content-between">
+      <h1 class="quarto-secondary-nav-title">LASSO</h1>
+      <button type="button" class="quarto-btn-toggle btn" aria-label="Show secondary navigation">
+        <i class="bi bi-chevron-right"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header sidebar-header-stacked">
+      <a href="../../index.html" class="sidebar-logo-link">
+      <img src="https://avatars.githubusercontent.com/u/5846205?s=400&amp;u=631a3b9a1d0b3651b779b164301c1a6d7719d0f1&amp;v=4" alt="" class="sidebar-logo py-0 d-lg-inline d-none">
+      </a>
+    <div class="sidebar-title mb-0 py-0">
+      <a href="../../">Rodolfo Lourenzutti <br></a> 
+        <div class="sidebar-tools-main tools-wide">
+    <a href="https://twitter.com/LourenzuttiR" title="" class="sidebar-tool px-1"><i class="bi bi-twitter"></i></a>
+    <a href="" title="" id="sidebar-tool-dropdown-0" class="sidebar-tool dropdown-toggle px-1" data-bs-toggle="dropdown" aria-expanded="false"><i class="bi bi-github"></i></a>
+    <ul class="dropdown-menu" aria-labelledby="sidebar-tool-dropdown-0">
+        <li>
+          <a class="dropdown-item sidebar-tools-main-item" href="https://github.com/Lourenzutti/lourenzutti.github.io">
+          Source Code
+          </a>
+        </li>
+        <li>
+          <a class="dropdown-item sidebar-tools-main-item" href="https://github.com/Lourenzutti/lourenzutti.github.io/issues">
+          Report a Bug
+          </a>
+        </li>
+    </ul>
+    <a href="https://www.linkedin.com/in/rodolfo-lourenzutti/" title="" class="sidebar-tool px-1"><i class="bi bi-linkedin"></i></a>
+    <a href="mailto:rodolfo.lourenzutti@gmail.com" title="" class="sidebar-tool px-1"><i class="bi bi-envelope-fill"></i></a>
+</div>
+    </div>
+      </div>
+      <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+      </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../index.html" class="sidebar-item-text sidebar-link"><i class="bi bi-house-fill"></i> Home</a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../blog.html" class="sidebar-item-text sidebar-link"><i class="bi bi-pencil-fill"></i> Courses</a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../tutorials.html" class="sidebar-item-text sidebar-link"><i class="bi bi-book"></i> Tutorials</a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../teaching.html" class="sidebar-item-text sidebar-link"><i class="bi bi-person-workspace"></i>Teaching</a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../about.html" class="sidebar-item-text sidebar-link"><i class="bi bi-info-circle-fill"></i> About</a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#linear-regression" id="toc-linear-regression" class="nav-link active" data-scroll-target="#linear-regression">Linear regression</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title d-none d-lg-block">LASSO</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+</header>
+
+<style>
+    main {
+        text-align: justify;    
+    }
+</style>
+<p><strong>Prerequisites:</strong> <br></p>
+<p>For this tutorial, we assume that you have a basic knowledge of linear regression, especifically the least squares method and inference for the regression coefficients; and that you have been introduced to cross-validation, generalization, error and overfitting/underfitting concepts.</p>
+<p><strong>Learning Objectives:</strong> <br></p>
+<p>At end of this tutorial you should be able to:</p>
+<ul>
+<li>Describe the Lasso method and its advantages over the least squares;</li>
+<li>Constrast Lasso with the least squares;</li>
+<li>Recognize the impact the Lasso method has on the inference of the regression coefficients;</li>
+<li>Identify the problem of applying Lasso with categorical variables;</li>
+<li>Apply Lasso and Group Lasso to a dataset using R;</li>
+</ul>
+<hr>
+<section id="linear-regression" class="level3">
+<h3 class="anchored" data-anchor-id="linear-regression">Linear regression</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>?Prostate</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>starting httpd help server ... done</code></pre>
+</div>
+</div>
+<div style="height: 300px; overflow-y: scroll; scroll-behavior: smooth; overflow-x: scroll;">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(cancer_prostate)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<table class="table table-sm table-striped">
+<colgroup>
+<col style="width: 14%">
+<col style="width: 12%">
+<col style="width: 5%">
+<col style="width: 14%">
+<col style="width: 5%">
+<col style="width: 14%">
+<col style="width: 10%">
+<col style="width: 8%">
+<col style="width: 14%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: right;">lcavol</th>
+<th style="text-align: right;">lweight</th>
+<th style="text-align: right;">age</th>
+<th style="text-align: right;">lbph</th>
+<th style="text-align: right;">svi</th>
+<th style="text-align: right;">lcp</th>
+<th style="text-align: right;">gleason</th>
+<th style="text-align: right;">pgg45</th>
+<th style="text-align: right;">lpsa</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">-0.5798185</td>
+<td style="text-align: right;">2.769459</td>
+<td style="text-align: right;">50</td>
+<td style="text-align: right;">-1.3862944</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">-1.3862944</td>
+<td style="text-align: right;">6</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">-0.4307829</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">-0.9942523</td>
+<td style="text-align: right;">3.319626</td>
+<td style="text-align: right;">58</td>
+<td style="text-align: right;">-1.3862944</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">-1.3862944</td>
+<td style="text-align: right;">6</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">-0.1625189</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">-0.5108256</td>
+<td style="text-align: right;">2.691243</td>
+<td style="text-align: right;">74</td>
+<td style="text-align: right;">-1.3862944</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">-1.3862944</td>
+<td style="text-align: right;">7</td>
+<td style="text-align: right;">20</td>
+<td style="text-align: right;">-0.1625189</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">-1.2039728</td>
+<td style="text-align: right;">3.282789</td>
+<td style="text-align: right;">58</td>
+<td style="text-align: right;">-1.3862944</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">-1.3862944</td>
+<td style="text-align: right;">6</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">-0.1625189</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">0.7514161</td>
+<td style="text-align: right;">3.432373</td>
+<td style="text-align: right;">62</td>
+<td style="text-align: right;">-1.3862944</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">-1.3862944</td>
+<td style="text-align: right;">6</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0.3715636</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">-1.0498221</td>
+<td style="text-align: right;">3.228826</td>
+<td style="text-align: right;">50</td>
+<td style="text-align: right;">-1.3862944</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">-1.3862944</td>
+<td style="text-align: right;">6</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0.7654678</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">0.7371641</td>
+<td style="text-align: right;">3.473518</td>
+<td style="text-align: right;">64</td>
+<td style="text-align: right;">0.6151856</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">-1.3862944</td>
+<td style="text-align: right;">6</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0.7654678</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">0.6931472</td>
+<td style="text-align: right;">3.539509</td>
+<td style="text-align: right;">58</td>
+<td style="text-align: right;">1.5368672</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">-1.3862944</td>
+<td style="text-align: right;">6</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0.8544153</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">-0.7765288</td>
+<td style="text-align: right;">3.539509</td>
+<td style="text-align: right;">47</td>
+<td style="text-align: right;">-1.3862944</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">-1.3862944</td>
+<td style="text-align: right;">6</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1.0473190</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">0.2231436</td>
+<td style="text-align: right;">3.244544</td>
+<td style="text-align: right;">63</td>
+<td style="text-align: right;">-1.3862944</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">-1.3862944</td>
+<td style="text-align: right;">6</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1.0473190</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">0.2546422</td>
+<td style="text-align: right;">3.604138</td>
+<td style="text-align: right;">65</td>
+<td style="text-align: right;">-1.3862944</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">-1.3862944</td>
+<td style="text-align: right;">6</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1.2669476</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">-1.3470736</td>
+<td style="text-align: right;">3.598681</td>
+<td style="text-align: right;">63</td>
+<td style="text-align: right;">1.2669476</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">-1.3862944</td>
+<td style="text-align: right;">6</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1.2669476</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">1.6134299</td>
+<td style="text-align: right;">3.022861</td>
+<td style="text-align: right;">63</td>
+<td style="text-align: right;">-1.3862944</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">-0.5978370</td>
+<td style="text-align: right;">7</td>
+<td style="text-align: right;">30</td>
+<td style="text-align: right;">1.2669476</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">1.4770487</td>
+<td style="text-align: right;">2.998229</td>
+<td style="text-align: right;">67</td>
+<td style="text-align: right;">-1.3862944</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">-1.3862944</td>
+<td style="text-align: right;">7</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">1.3480731</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">1.2059708</td>
+<td style="text-align: right;">3.442019</td>
+<td style="text-align: right;">57</td>
+<td style="text-align: right;">-1.3862944</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">-0.4307829</td>
+<td style="text-align: right;">7</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">1.3987169</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">1.5411591</td>
+<td style="text-align: right;">3.061052</td>
+<td style="text-align: right;">66</td>
+<td style="text-align: right;">-1.3862944</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">-1.3862944</td>
+<td style="text-align: right;">6</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1.4469190</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">-0.4155154</td>
+<td style="text-align: right;">3.516013</td>
+<td style="text-align: right;">70</td>
+<td style="text-align: right;">1.2441546</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">-0.5978370</td>
+<td style="text-align: right;">7</td>
+<td style="text-align: right;">30</td>
+<td style="text-align: right;">1.4701758</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">2.2884862</td>
+<td style="text-align: right;">3.649359</td>
+<td style="text-align: right;">66</td>
+<td style="text-align: right;">-1.3862944</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0.3715636</td>
+<td style="text-align: right;">6</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1.4929041</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">-0.5621189</td>
+<td style="text-align: right;">3.267666</td>
+<td style="text-align: right;">41</td>
+<td style="text-align: right;">-1.3862944</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">-1.3862944</td>
+<td style="text-align: right;">6</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1.5581446</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">0.1823216</td>
+<td style="text-align: right;">3.825375</td>
+<td style="text-align: right;">70</td>
+<td style="text-align: right;">1.6582281</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">-1.3862944</td>
+<td style="text-align: right;">6</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1.5993876</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">1.1474025</td>
+<td style="text-align: right;">3.419365</td>
+<td style="text-align: right;">59</td>
+<td style="text-align: right;">-1.3862944</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">-1.3862944</td>
+<td style="text-align: right;">6</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1.6389967</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">2.0592388</td>
+<td style="text-align: right;">3.501043</td>
+<td style="text-align: right;">60</td>
+<td style="text-align: right;">1.4747630</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1.3480731</td>
+<td style="text-align: right;">7</td>
+<td style="text-align: right;">20</td>
+<td style="text-align: right;">1.6582281</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">-0.5447272</td>
+<td style="text-align: right;">3.375880</td>
+<td style="text-align: right;">59</td>
+<td style="text-align: right;">-0.7985077</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">-1.3862944</td>
+<td style="text-align: right;">6</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1.6956156</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">1.7817091</td>
+<td style="text-align: right;">3.451574</td>
+<td style="text-align: right;">63</td>
+<td style="text-align: right;">0.4382549</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1.1786550</td>
+<td style="text-align: right;">7</td>
+<td style="text-align: right;">60</td>
+<td style="text-align: right;">1.7137979</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">0.3852624</td>
+<td style="text-align: right;">3.667400</td>
+<td style="text-align: right;">69</td>
+<td style="text-align: right;">1.5993876</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">-1.3862944</td>
+<td style="text-align: right;">6</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1.7316555</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">1.4469190</td>
+<td style="text-align: right;">3.124565</td>
+<td style="text-align: right;">68</td>
+<td style="text-align: right;">0.3001046</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">-1.3862944</td>
+<td style="text-align: right;">6</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1.7664417</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">0.5128236</td>
+<td style="text-align: right;">3.719651</td>
+<td style="text-align: right;">65</td>
+<td style="text-align: right;">-1.3862944</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">-0.7985077</td>
+<td style="text-align: right;">7</td>
+<td style="text-align: right;">70</td>
+<td style="text-align: right;">1.8000583</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">-0.4004776</td>
+<td style="text-align: right;">3.865979</td>
+<td style="text-align: right;">67</td>
+<td style="text-align: right;">1.8164521</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">-1.3862944</td>
+<td style="text-align: right;">7</td>
+<td style="text-align: right;">20</td>
+<td style="text-align: right;">1.8164521</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">1.0402767</td>
+<td style="text-align: right;">3.128951</td>
+<td style="text-align: right;">67</td>
+<td style="text-align: right;">0.2231436</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0.0487902</td>
+<td style="text-align: right;">7</td>
+<td style="text-align: right;">80</td>
+<td style="text-align: right;">1.8484548</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">2.4096442</td>
+<td style="text-align: right;">3.375880</td>
+<td style="text-align: right;">65</td>
+<td style="text-align: right;">-1.3862944</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1.6193882</td>
+<td style="text-align: right;">6</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1.8946169</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">0.2851789</td>
+<td style="text-align: right;">4.090169</td>
+<td style="text-align: right;">65</td>
+<td style="text-align: right;">1.9629077</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">-0.7985077</td>
+<td style="text-align: right;">6</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1.9242487</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">0.1823216</td>
+<td style="text-align: right;">6.107579</td>
+<td style="text-align: right;">65</td>
+<td style="text-align: right;">1.7047481</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">-1.3862944</td>
+<td style="text-align: right;">6</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">2.0082140</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">1.2753628</td>
+<td style="text-align: right;">3.037354</td>
+<td style="text-align: right;">71</td>
+<td style="text-align: right;">1.2669476</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">-1.3862944</td>
+<td style="text-align: right;">6</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">2.0082140</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">0.0099503</td>
+<td style="text-align: right;">3.267666</td>
+<td style="text-align: right;">54</td>
+<td style="text-align: right;">-1.3862944</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">-1.3862944</td>
+<td style="text-align: right;">6</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">2.0215476</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">-0.0100503</td>
+<td style="text-align: right;">3.216874</td>
+<td style="text-align: right;">63</td>
+<td style="text-align: right;">-1.3862944</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">-0.7985077</td>
+<td style="text-align: right;">6</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">2.0476928</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">1.3083328</td>
+<td style="text-align: right;">4.119850</td>
+<td style="text-align: right;">64</td>
+<td style="text-align: right;">2.1713368</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">-1.3862944</td>
+<td style="text-align: right;">7</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">2.0856721</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">1.4231083</td>
+<td style="text-align: right;">3.657131</td>
+<td style="text-align: right;">73</td>
+<td style="text-align: right;">-0.5798185</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1.6582281</td>
+<td style="text-align: right;">8</td>
+<td style="text-align: right;">15</td>
+<td style="text-align: right;">2.1575593</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">0.4574248</td>
+<td style="text-align: right;">2.374906</td>
+<td style="text-align: right;">64</td>
+<td style="text-align: right;">-1.3862944</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">-1.3862944</td>
+<td style="text-align: right;">7</td>
+<td style="text-align: right;">15</td>
+<td style="text-align: right;">2.1916535</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">2.6609586</td>
+<td style="text-align: right;">4.085136</td>
+<td style="text-align: right;">68</td>
+<td style="text-align: right;">1.3737156</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">1.8325815</td>
+<td style="text-align: right;">7</td>
+<td style="text-align: right;">35</td>
+<td style="text-align: right;">2.2137539</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">0.7975072</td>
+<td style="text-align: right;">3.013081</td>
+<td style="text-align: right;">56</td>
+<td style="text-align: right;">0.9360934</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">-0.1625189</td>
+<td style="text-align: right;">7</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">2.2772673</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">0.6205765</td>
+<td style="text-align: right;">3.141995</td>
+<td style="text-align: right;">60</td>
+<td style="text-align: right;">-1.3862944</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">-1.3862944</td>
+<td style="text-align: right;">9</td>
+<td style="text-align: right;">80</td>
+<td style="text-align: right;">2.2975726</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">1.4422020</td>
+<td style="text-align: right;">3.682610</td>
+<td style="text-align: right;">68</td>
+<td style="text-align: right;">-1.3862944</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">-1.3862944</td>
+<td style="text-align: right;">7</td>
+<td style="text-align: right;">10</td>
+<td style="text-align: right;">2.3075726</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">0.5822156</td>
+<td style="text-align: right;">3.865979</td>
+<td style="text-align: right;">62</td>
+<td style="text-align: right;">1.7137979</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">-0.4307829</td>
+<td style="text-align: right;">6</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">2.3272777</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">1.7715568</td>
+<td style="text-align: right;">3.896909</td>
+<td style="text-align: right;">61</td>
+<td style="text-align: right;">-1.3862944</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0.8109302</td>
+<td style="text-align: right;">7</td>
+<td style="text-align: right;">6</td>
+<td style="text-align: right;">2.3749058</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">1.4861397</td>
+<td style="text-align: right;">3.409496</td>
+<td style="text-align: right;">66</td>
+<td style="text-align: right;">1.7491999</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">-0.4307829</td>
+<td style="text-align: right;">7</td>
+<td style="text-align: right;">20</td>
+<td style="text-align: right;">2.5217206</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">1.6639261</td>
+<td style="text-align: right;">3.392829</td>
+<td style="text-align: right;">61</td>
+<td style="text-align: right;">0.6151856</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">-1.3862944</td>
+<td style="text-align: right;">7</td>
+<td style="text-align: right;">15</td>
+<td style="text-align: right;">2.5533438</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">2.7278528</td>
+<td style="text-align: right;">3.995445</td>
+<td style="text-align: right;">79</td>
+<td style="text-align: right;">1.8794650</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">2.6567569</td>
+<td style="text-align: right;">9</td>
+<td style="text-align: right;">100</td>
+<td style="text-align: right;">2.5687881</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">1.1631508</td>
+<td style="text-align: right;">4.035125</td>
+<td style="text-align: right;">68</td>
+<td style="text-align: right;">1.7137979</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">-0.4307829</td>
+<td style="text-align: right;">7</td>
+<td style="text-align: right;">40</td>
+<td style="text-align: right;">2.5687881</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">1.7457155</td>
+<td style="text-align: right;">3.498022</td>
+<td style="text-align: right;">43</td>
+<td style="text-align: right;">-1.3862944</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">-1.3862944</td>
+<td style="text-align: right;">6</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">2.5915164</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">1.2208299</td>
+<td style="text-align: right;">3.568123</td>
+<td style="text-align: right;">70</td>
+<td style="text-align: right;">1.3737156</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">-0.7985077</td>
+<td style="text-align: right;">6</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">2.5915164</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">1.0919233</td>
+<td style="text-align: right;">3.993603</td>
+<td style="text-align: right;">68</td>
+<td style="text-align: right;">-1.3862944</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">-1.3862944</td>
+<td style="text-align: right;">7</td>
+<td style="text-align: right;">50</td>
+<td style="text-align: right;">2.6567569</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">1.6601310</td>
+<td style="text-align: right;">4.234831</td>
+<td style="text-align: right;">64</td>
+<td style="text-align: right;">2.0731719</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">-1.3862944</td>
+<td style="text-align: right;">6</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">2.6775910</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">0.5128236</td>
+<td style="text-align: right;">3.633631</td>
+<td style="text-align: right;">64</td>
+<td style="text-align: right;">1.4929041</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0.0487902</td>
+<td style="text-align: right;">7</td>
+<td style="text-align: right;">70</td>
+<td style="text-align: right;">2.6844403</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">2.1270405</td>
+<td style="text-align: right;">4.121473</td>
+<td style="text-align: right;">68</td>
+<td style="text-align: right;">1.7664417</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1.4469190</td>
+<td style="text-align: right;">7</td>
+<td style="text-align: right;">40</td>
+<td style="text-align: right;">2.6912431</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">3.1535904</td>
+<td style="text-align: right;">3.516013</td>
+<td style="text-align: right;">59</td>
+<td style="text-align: right;">-1.3862944</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">-1.3862944</td>
+<td style="text-align: right;">7</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">2.7047113</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">1.2669476</td>
+<td style="text-align: right;">4.280132</td>
+<td style="text-align: right;">66</td>
+<td style="text-align: right;">2.1222615</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">-1.3862944</td>
+<td style="text-align: right;">7</td>
+<td style="text-align: right;">15</td>
+<td style="text-align: right;">2.7180005</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">0.9745596</td>
+<td style="text-align: right;">2.865054</td>
+<td style="text-align: right;">47</td>
+<td style="text-align: right;">-1.3862944</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0.5007753</td>
+<td style="text-align: right;">7</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">2.7880929</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">0.4637340</td>
+<td style="text-align: right;">3.764682</td>
+<td style="text-align: right;">49</td>
+<td style="text-align: right;">1.4231083</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">-1.3862944</td>
+<td style="text-align: right;">6</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">2.7942279</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">0.5423243</td>
+<td style="text-align: right;">4.178226</td>
+<td style="text-align: right;">70</td>
+<td style="text-align: right;">0.4382549</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">-1.3862944</td>
+<td style="text-align: right;">7</td>
+<td style="text-align: right;">20</td>
+<td style="text-align: right;">2.8063861</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">1.0612565</td>
+<td style="text-align: right;">3.851211</td>
+<td style="text-align: right;">61</td>
+<td style="text-align: right;">1.2947272</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">-1.3862944</td>
+<td style="text-align: right;">7</td>
+<td style="text-align: right;">40</td>
+<td style="text-align: right;">2.8124102</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">0.4574248</td>
+<td style="text-align: right;">4.524502</td>
+<td style="text-align: right;">73</td>
+<td style="text-align: right;">2.3263016</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">-1.3862944</td>
+<td style="text-align: right;">6</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">2.8419982</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">1.9974177</td>
+<td style="text-align: right;">3.719651</td>
+<td style="text-align: right;">63</td>
+<td style="text-align: right;">1.6193882</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">1.9095425</td>
+<td style="text-align: right;">7</td>
+<td style="text-align: right;">40</td>
+<td style="text-align: right;">2.8535925</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">2.7757088</td>
+<td style="text-align: right;">3.524889</td>
+<td style="text-align: right;">72</td>
+<td style="text-align: right;">-1.3862944</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1.5581446</td>
+<td style="text-align: right;">9</td>
+<td style="text-align: right;">95</td>
+<td style="text-align: right;">2.8535925</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">2.0347056</td>
+<td style="text-align: right;">3.917010</td>
+<td style="text-align: right;">66</td>
+<td style="text-align: right;">2.0082140</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">2.1102132</td>
+<td style="text-align: right;">7</td>
+<td style="text-align: right;">60</td>
+<td style="text-align: right;">2.8820035</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">2.0731719</td>
+<td style="text-align: right;">3.623007</td>
+<td style="text-align: right;">64</td>
+<td style="text-align: right;">-1.3862944</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">-1.3862944</td>
+<td style="text-align: right;">6</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">2.8820035</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">1.4586150</td>
+<td style="text-align: right;">3.836221</td>
+<td style="text-align: right;">61</td>
+<td style="text-align: right;">1.3217558</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">-0.4307829</td>
+<td style="text-align: right;">7</td>
+<td style="text-align: right;">20</td>
+<td style="text-align: right;">2.8875901</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">2.0228712</td>
+<td style="text-align: right;">3.878466</td>
+<td style="text-align: right;">68</td>
+<td style="text-align: right;">1.7833912</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1.3217558</td>
+<td style="text-align: right;">7</td>
+<td style="text-align: right;">70</td>
+<td style="text-align: right;">2.9204698</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">2.1983351</td>
+<td style="text-align: right;">4.050915</td>
+<td style="text-align: right;">72</td>
+<td style="text-align: right;">2.3075726</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">-0.4307829</td>
+<td style="text-align: right;">7</td>
+<td style="text-align: right;">10</td>
+<td style="text-align: right;">2.9626924</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">-0.4462871</td>
+<td style="text-align: right;">4.408547</td>
+<td style="text-align: right;">69</td>
+<td style="text-align: right;">-1.3862944</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">-1.3862944</td>
+<td style="text-align: right;">6</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">2.9626924</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">1.1939225</td>
+<td style="text-align: right;">4.780383</td>
+<td style="text-align: right;">72</td>
+<td style="text-align: right;">2.3263016</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">-0.7985077</td>
+<td style="text-align: right;">7</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">2.9729753</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">1.8640801</td>
+<td style="text-align: right;">3.593194</td>
+<td style="text-align: right;">60</td>
+<td style="text-align: right;">-1.3862944</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">1.3217558</td>
+<td style="text-align: right;">7</td>
+<td style="text-align: right;">60</td>
+<td style="text-align: right;">3.0130809</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">1.1600209</td>
+<td style="text-align: right;">3.341093</td>
+<td style="text-align: right;">77</td>
+<td style="text-align: right;">1.7491999</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">-1.3862944</td>
+<td style="text-align: right;">7</td>
+<td style="text-align: right;">25</td>
+<td style="text-align: right;">3.0373539</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">1.2149127</td>
+<td style="text-align: right;">3.825375</td>
+<td style="text-align: right;">69</td>
+<td style="text-align: right;">-1.3862944</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">0.2231436</td>
+<td style="text-align: right;">7</td>
+<td style="text-align: right;">20</td>
+<td style="text-align: right;">3.0563569</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">1.8389611</td>
+<td style="text-align: right;">3.236716</td>
+<td style="text-align: right;">60</td>
+<td style="text-align: right;">0.4382549</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">1.1786550</td>
+<td style="text-align: right;">9</td>
+<td style="text-align: right;">90</td>
+<td style="text-align: right;">3.0750055</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">2.9992262</td>
+<td style="text-align: right;">3.849083</td>
+<td style="text-align: right;">69</td>
+<td style="text-align: right;">-1.3862944</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">1.9095425</td>
+<td style="text-align: right;">7</td>
+<td style="text-align: right;">20</td>
+<td style="text-align: right;">3.2752562</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">3.1411305</td>
+<td style="text-align: right;">3.263849</td>
+<td style="text-align: right;">68</td>
+<td style="text-align: right;">-0.0512933</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">2.4203681</td>
+<td style="text-align: right;">7</td>
+<td style="text-align: right;">50</td>
+<td style="text-align: right;">3.3375474</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">2.0108950</td>
+<td style="text-align: right;">4.433789</td>
+<td style="text-align: right;">72</td>
+<td style="text-align: right;">2.1222615</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0.5007753</td>
+<td style="text-align: right;">7</td>
+<td style="text-align: right;">60</td>
+<td style="text-align: right;">3.3928291</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">2.5376572</td>
+<td style="text-align: right;">4.354784</td>
+<td style="text-align: right;">78</td>
+<td style="text-align: right;">2.3263016</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">-1.3862944</td>
+<td style="text-align: right;">7</td>
+<td style="text-align: right;">10</td>
+<td style="text-align: right;">3.4355988</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">2.6483002</td>
+<td style="text-align: right;">3.582129</td>
+<td style="text-align: right;">69</td>
+<td style="text-align: right;">-1.3862944</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">2.5839976</td>
+<td style="text-align: right;">7</td>
+<td style="text-align: right;">70</td>
+<td style="text-align: right;">3.4578927</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">2.7794402</td>
+<td style="text-align: right;">3.823192</td>
+<td style="text-align: right;">63</td>
+<td style="text-align: right;">-1.3862944</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0.3715636</td>
+<td style="text-align: right;">7</td>
+<td style="text-align: right;">50</td>
+<td style="text-align: right;">3.5130369</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">1.4678743</td>
+<td style="text-align: right;">3.070376</td>
+<td style="text-align: right;">66</td>
+<td style="text-align: right;">0.5596158</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0.2231436</td>
+<td style="text-align: right;">7</td>
+<td style="text-align: right;">40</td>
+<td style="text-align: right;">3.5160131</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">2.5136561</td>
+<td style="text-align: right;">3.473518</td>
+<td style="text-align: right;">57</td>
+<td style="text-align: right;">0.4382549</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">2.3272777</td>
+<td style="text-align: right;">7</td>
+<td style="text-align: right;">60</td>
+<td style="text-align: right;">3.5307626</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">2.6130067</td>
+<td style="text-align: right;">3.888754</td>
+<td style="text-align: right;">77</td>
+<td style="text-align: right;">-0.5276327</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">0.5596158</td>
+<td style="text-align: right;">7</td>
+<td style="text-align: right;">30</td>
+<td style="text-align: right;">3.5652984</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">2.6775910</td>
+<td style="text-align: right;">3.838376</td>
+<td style="text-align: right;">65</td>
+<td style="text-align: right;">1.1151416</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1.7491999</td>
+<td style="text-align: right;">9</td>
+<td style="text-align: right;">70</td>
+<td style="text-align: right;">3.5709402</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">1.5623463</td>
+<td style="text-align: right;">3.709907</td>
+<td style="text-align: right;">60</td>
+<td style="text-align: right;">1.6956156</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0.8109302</td>
+<td style="text-align: right;">7</td>
+<td style="text-align: right;">30</td>
+<td style="text-align: right;">3.5876769</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">3.3028493</td>
+<td style="text-align: right;">3.518980</td>
+<td style="text-align: right;">64</td>
+<td style="text-align: right;">-1.3862944</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">2.3272777</td>
+<td style="text-align: right;">7</td>
+<td style="text-align: right;">60</td>
+<td style="text-align: right;">3.6309855</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">2.0241931</td>
+<td style="text-align: right;">3.731699</td>
+<td style="text-align: right;">58</td>
+<td style="text-align: right;">1.6389967</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">-1.3862944</td>
+<td style="text-align: right;">6</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">3.6800909</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">1.7316555</td>
+<td style="text-align: right;">3.369019</td>
+<td style="text-align: right;">62</td>
+<td style="text-align: right;">-1.3862944</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">0.3001046</td>
+<td style="text-align: right;">7</td>
+<td style="text-align: right;">30</td>
+<td style="text-align: right;">3.7123518</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">2.8075938</td>
+<td style="text-align: right;">4.718052</td>
+<td style="text-align: right;">65</td>
+<td style="text-align: right;">-1.3862944</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">2.4638532</td>
+<td style="text-align: right;">7</td>
+<td style="text-align: right;">60</td>
+<td style="text-align: right;">3.9843437</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">1.5623463</td>
+<td style="text-align: right;">3.695110</td>
+<td style="text-align: right;">76</td>
+<td style="text-align: right;">0.9360934</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">0.8109302</td>
+<td style="text-align: right;">7</td>
+<td style="text-align: right;">75</td>
+<td style="text-align: right;">3.9936030</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">3.2464910</td>
+<td style="text-align: right;">4.101817</td>
+<td style="text-align: right;">68</td>
+<td style="text-align: right;">-1.3862944</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">-1.3862944</td>
+<td style="text-align: right;">6</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">4.0298060</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">2.5329028</td>
+<td style="text-align: right;">3.677566</td>
+<td style="text-align: right;">61</td>
+<td style="text-align: right;">1.3480731</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">-1.3862944</td>
+<td style="text-align: right;">7</td>
+<td style="text-align: right;">15</td>
+<td style="text-align: right;">4.1295508</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">2.8302678</td>
+<td style="text-align: right;">3.876396</td>
+<td style="text-align: right;">68</td>
+<td style="text-align: right;">-1.3862944</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">1.3217558</td>
+<td style="text-align: right;">7</td>
+<td style="text-align: right;">60</td>
+<td style="text-align: right;">4.3851468</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">3.8210036</td>
+<td style="text-align: right;">3.896909</td>
+<td style="text-align: right;">44</td>
+<td style="text-align: right;">-1.3862944</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">2.1690537</td>
+<td style="text-align: right;">7</td>
+<td style="text-align: right;">40</td>
+<td style="text-align: right;">4.6844434</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">2.9074474</td>
+<td style="text-align: right;">3.396185</td>
+<td style="text-align: right;">52</td>
+<td style="text-align: right;">-1.3862944</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">2.4638532</td>
+<td style="text-align: right;">7</td>
+<td style="text-align: right;">10</td>
+<td style="text-align: right;">5.1431245</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">2.8825636</td>
+<td style="text-align: right;">3.773910</td>
+<td style="text-align: right;">68</td>
+<td style="text-align: right;">1.5581446</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">1.5581446</td>
+<td style="text-align: right;">7</td>
+<td style="text-align: right;">80</td>
+<td style="text-align: right;">5.4775090</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">3.4719665</td>
+<td style="text-align: right;">3.974998</td>
+<td style="text-align: right;">68</td>
+<td style="text-align: right;">0.4382549</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">2.9041651</td>
+<td style="text-align: right;">7</td>
+<td style="text-align: right;">20</td>
+<td style="text-align: right;">5.5829322</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<p>A baby’s weight at the moment of birth is an important indication of the baby’s health. For example, there have been some associations between high birth weight and increased risk of developing certain types of cancer (e.g., High Birth Weight Increases the Risk for Bone Tumor: A Systematic Review and Meta-Analysis - PubMed (nih.gov)) and low birth weight might increase the risk of childhood asthma (Effect of low birth weight on childhood asthma: a meta-analysis - PubMed (nih.gov)) among other complications. Below is a dataset about 189 mothers and their babies weight at birth.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(<span class="fu">head</span>(birth_weight))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<table class="table table-sm table-striped">
+<colgroup>
+<col style="width: 2%">
+<col style="width: 3%">
+<col style="width: 9%">
+<col style="width: 5%">
+<col style="width: 5%">
+<col style="width: 16%">
+<col style="width: 3%">
+<col style="width: 17%">
+<col style="width: 20%">
+<col style="width: 16%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: right;">id</th>
+<th style="text-align: right;">age</th>
+<th style="text-align: right;">weight_lbs</th>
+<th style="text-align: left;">race</th>
+<th style="text-align: left;">smoke</th>
+<th style="text-align: left;">had_premature_labor</th>
+<th style="text-align: left;">ht</th>
+<th style="text-align: left;">uterine_irritability</th>
+<th style="text-align: left;">n_visit_first_trimester</th>
+<th style="text-align: right;">baby_birth_weight_g</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">28</td>
+<td style="text-align: right;">120</td>
+<td style="text-align: left;">Other</td>
+<td style="text-align: left;">Yes</td>
+<td style="text-align: left;">One</td>
+<td style="text-align: left;">No</td>
+<td style="text-align: left;">Yes</td>
+<td style="text-align: left;">None</td>
+<td style="text-align: right;">709</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">10</td>
+<td style="text-align: right;">29</td>
+<td style="text-align: right;">130</td>
+<td style="text-align: left;">White</td>
+<td style="text-align: left;">No</td>
+<td style="text-align: left;">None</td>
+<td style="text-align: left;">No</td>
+<td style="text-align: left;">Yes</td>
+<td style="text-align: left;">Two, etc.</td>
+<td style="text-align: right;">1021</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">11</td>
+<td style="text-align: right;">34</td>
+<td style="text-align: right;">187</td>
+<td style="text-align: left;">Black</td>
+<td style="text-align: left;">Yes</td>
+<td style="text-align: left;">None</td>
+<td style="text-align: left;">Yes</td>
+<td style="text-align: left;">No</td>
+<td style="text-align: left;">None</td>
+<td style="text-align: right;">1135</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">13</td>
+<td style="text-align: right;">25</td>
+<td style="text-align: right;">105</td>
+<td style="text-align: left;">Other</td>
+<td style="text-align: left;">No</td>
+<td style="text-align: left;">One</td>
+<td style="text-align: left;">Yes</td>
+<td style="text-align: left;">No</td>
+<td style="text-align: left;">None</td>
+<td style="text-align: right;">1330</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">15</td>
+<td style="text-align: right;">25</td>
+<td style="text-align: right;">85</td>
+<td style="text-align: left;">Other</td>
+<td style="text-align: left;">No</td>
+<td style="text-align: left;">None</td>
+<td style="text-align: left;">No</td>
+<td style="text-align: left;">Yes</td>
+<td style="text-align: left;">None</td>
+<td style="text-align: right;">1474</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">16</td>
+<td style="text-align: right;">27</td>
+<td style="text-align: right;">150</td>
+<td style="text-align: left;">Other</td>
+<td style="text-align: left;">No</td>
+<td style="text-align: left;">None</td>
+<td style="text-align: left;">No</td>
+<td style="text-align: left;">No</td>
+<td style="text-align: left;">None</td>
+<td style="text-align: right;">1588</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>In regression, we want to model the relationship between a numerical variable <span class="math inline">\(Y\)</span> and some, say <span class="math inline">\(p\)</span>, explanatory variables <span class="math inline">\(X_1, X_2, \ldots, X_p\)</span>. There are different ways we can model such a relationship. Linear regression is one of the simplest (although still quite powerful) models. The linear regression is given by:</p>
+<p><span class="math display">\[
+Y_i = \beta_0 + \beta_1X_{1i} + \beta_2X_{2i} + \ldots + \beta_3X_{pi} + \varepsilon,\quad i=1,\ldots,n
+\]</span></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> plotly.graph_objects <span class="im">as</span> go</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Read data from a csv</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>z_data <span class="op">=</span> pd.read_csv(<span class="st">'https://raw.githubusercontent.com/plotly/datasets/master/api_docs/mt_bruno_elevation.csv'</span>)</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>fig <span class="op">=</span> go.Figure(data<span class="op">=</span>[go.Surface(z<span class="op">=</span>z_data.values)])</span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>fig.update_layout(title<span class="op">=</span><span class="st">'Mt Bruno Elevation'</span>, autosize<span class="op">=</span><span class="va">False</span>,</span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>                  width<span class="op">=</span><span class="dv">800</span>, height<span class="op">=</span><span class="dv">500</span>,</span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>                  margin<span class="op">=</span><span class="bu">dict</span>(l<span class="op">=</span><span class="dv">65</span>, r<span class="op">=</span><span class="dv">50</span>, b<span class="op">=</span><span class="dv">65</span>, t<span class="op">=</span><span class="dv">90</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+
+<div>                        <script type="text/javascript">window.PlotlyConfig = {MathJaxConfig: 'local'};</script>
+        <script src="https://cdn.plot.ly/plotly-2.18.0.min.js"></script>                <div id="b583f24a-52b5-400f-b7de-afef2da494c8" class="plotly-graph-div" style="height:500px; width:800px;"></div>            <script type="text/javascript">                                    window.PLOTLYENV=window.PLOTLYENV || {};                                    if (document.getElementById("b583f24a-52b5-400f-b7de-afef2da494c8")) {                    Plotly.newPlot(                        "b583f24a-52b5-400f-b7de-afef2da494c8",                        [{"z":[[0.0,27.80985,49.61936,83.08067,116.6632,130.414,150.7206,220.1871,156.1536,148.6416,203.7845,206.0386,107.1618,68.36975,45.3359,49.96142,21.89279,17.02552,11.74317,14.75226,13.6671,5.677561,3.31234,1.156517,-0.147662],[1.0,27.71966,48.55022,65.21374,95.27666,116.9964,133.9056,152.3412,151.934,160.1139,179.5327,147.6184,170.3943,121.8194,52.58537,33.08871,38.40972,44.24843,69.5786,4.019351,3.050024,3.039719,2.996142,2.967954,1.999594],[2.0,30.4267,33.47752,44.80953,62.47495,77.43523,104.2153,102.7393,137.0004,186.0706,219.3173,181.7615,120.9154,143.1835,82.40501,48.47132,74.71461,60.0909,7.073525,6.089851,6.53745,6.666096,7.306965,5.73684,3.625628],[3.0,16.66549,30.1086,39.96952,44.12225,59.57512,77.56929,106.8925,166.5539,175.2381,185.2815,154.5056,83.0433,62.61732,62.33167,60.55916,55.92124,15.17284,8.248324,36.68087,61.93413,20.26867,68.58819,46.49812,0.2360095],[4.0,8.815617,18.3516,8.658275,27.5859,48.62691,60.18013,91.3286,145.7109,116.0653,106.2662,68.69447,53.10596,37.92797,47.95942,47.42691,69.20731,44.95468,29.17197,17.91674,16.25515,14.65559,17.26048,31.22245,46.71704],[5.0,6.628881,10.41339,24.81939,26.08952,30.1605,52.30802,64.71007,76.30823,84.63686,99.4324,62.52132,46.81647,55.76606,82.4099,140.2647,81.26501,56.45756,30.42164,17.28782,8.302431,2.981626,2.698536,5.886086,5.268358],[6.0,21.83975,6.63927,18.97085,32.89204,43.15014,62.86014,104.6657,130.2294,114.8494,106.9873,61.89647,55.55682,86.80986,89.27802,122.4221,123.9698,109.0952,98.41956,77.61374,32.49031,14.67344,7.370775,0.03711011,0.6423392],[7.0,53.34303,26.79797,6.63927,10.88787,17.2044,56.18116,79.70141,90.8453,98.27675,80.87243,74.7931,75.54661,73.4373,74.11694,68.1749,46.24076,39.93857,31.21653,36.88335,40.02525,117.4297,12.70328,1.729771,0.0],[8.0,25.66785,63.05717,22.1414,17.074,41.74483,60.27227,81.42432,114.444,102.3234,101.7878,111.031,119.2309,114.0777,110.5296,59.19355,42.47175,14.63598,6.944074,6.944075,27.74936,0.0,0.0,0.09449376,0.07732264],[9.0,12.827,69.20554,46.76293,13.96517,33.88744,61.82613,84.74799,121.122,145.2741,153.1797,204.786,227.9242,236.3038,228.3655,79.34425,25.93483,6.944074,6.944074,6.944075,7.553681,0.0,0.0,0.0,0.0],[10.0,0.0,68.66396,59.0435,33.35762,47.45282,57.8355,78.91689,107.8275,168.0053,130.9597,212.5541,165.8122,210.2429,181.1713,189.7617,137.3378,84.65395,8.677168,6.956576,8.468093,0.0,0.0,0.0,0.0],[11.0,0.0,95.17499,80.03818,59.89862,39.58476,50.28058,63.81641,80.61302,66.37824,198.7651,244.3467,294.2474,264.3517,176.4082,60.21857,77.41475,53.16981,56.16393,6.949235,7.531059,3.780177,0.0,0.0,0.0],[12.0,0.0,134.9879,130.3696,96.86325,75.70494,58.86466,57.20374,55.18837,78.128,108.5582,154.3774,319.1686,372.8826,275.4655,130.2632,54.93822,25.49719,8.047439,8.084393,5.115252,5.678269,0.0,0.0,0.0],[13.0,0.0,48.08919,142.5558,140.3777,154.7261,87.9361,58.11092,52.83869,67.14822,83.66798,118.9242,150.0681,272.9709,341.1366,238.664,190.2,116.8943,91.48672,14.0157,42.29277,5.115252,0.0,0.0,0.0],[14.0,0.0,54.1941,146.3839,99.48143,96.19411,102.9473,76.14089,57.7844,47.0402,64.36799,84.23767,162.7181,121.3275,213.1646,328.482,285.4489,283.8319,212.815,164.549,92.29631,7.244015,1.167,0.0,0.0],[15.0,0.0,6.919659,195.1709,132.5253,135.2341,89.85069,89.45549,60.29967,50.33806,39.17583,59.06854,74.52159,84.93402,187.1219,123.9673,103.7027,128.986,165.1283,249.7054,95.39966,10.00284,2.39255,0.0,0.0],[16.0,0.0,21.73871,123.1339,176.7414,158.2698,137.235,105.3089,86.63255,53.11591,29.03865,30.40539,39.04902,49.23405,63.27853,111.4215,101.1956,40.00962,59.84565,74.51253,17.06316,2.435141,2.287471,-0.0003636982,0.0],[17.0,0.0,0.0,62.04672,136.3122,201.7952,168.1343,95.2046,58.90624,46.94091,49.27053,37.10416,17.97011,30.93697,33.39257,44.03077,55.64542,78.22423,14.42782,9.954997,7.768213,13.0254,21.73166,2.156372,0.5317867],[18.0,0.0,0.0,79.62993,139.6978,173.167,192.8718,196.3499,144.6611,106.5424,57.16653,41.16107,32.12764,13.8566,10.91772,12.07177,22.38254,24.72105,6.803666,4.200841,16.46857,15.70744,33.96221,7.575688,-0.04880907],[19.0,0.0,0.0,33.2664,57.53643,167.2241,196.4833,194.7966,182.1884,119.6961,73.02113,48.36549,33.74652,26.2379,16.3578,6.811293,6.63927,6.639271,8.468093,6.194273,3.591233,3.81486,8.600739,5.21889,0.0],[20.0,0.0,0.0,29.77937,54.97282,144.7995,207.4904,165.3432,171.4047,174.9216,100.2733,61.46441,50.19171,26.08209,17.18218,8.468093,6.63927,6.334467,6.334467,5.666687,4.272203,0.0,0.0,0.0,0.0],[21.0,0.0,0.0,31.409,132.7418,185.5796,121.8299,185.3841,160.6566,116.1478,118.1078,141.7946,65.56351,48.84066,23.13864,18.12932,10.28531,6.029663,6.044627,5.694764,3.739085,3.896037,0.0,0.0,0.0],[22.0,0.0,0.0,19.58994,42.30355,96.26777,187.1207,179.6626,221.3898,154.2617,142.1604,148.5737,67.17937,40.69044,39.74512,26.10166,14.48469,8.65873,3.896037,3.571392,3.896037,3.896037,3.896037,1.077756,0.0],[23.0,0.001229679,3.008948,5.909858,33.50574,104.3341,152.2165,198.1988,191.841,228.7349,168.1041,144.2759,110.7436,57.65214,42.63504,27.91891,15.41052,8.056102,3.90283,3.879774,3.936718,3.968634,0.1236256,3.985531,-0.1835741],[24.0,0.0,5.626141,7.676256,63.16226,45.99762,79.56688,227.311,203.9287,172.5618,177.1462,140.4554,123.9905,110.346,65.12319,34.31887,24.5278,9.561069,3.334991,5.590495,5.487353,5.909499,5.868994,5.833817,3.568177]],"type":"surface"}],                        {"template":{"data":{"histogram2dcontour":[{"type":"histogram2dcontour","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"choropleth":[{"type":"choropleth","colorbar":{"outlinewidth":0,"ticks":""}}],"histogram2d":[{"type":"histogram2d","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"heatmap":[{"type":"heatmap","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"heatmapgl":[{"type":"heatmapgl","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"contourcarpet":[{"type":"contourcarpet","colorbar":{"outlinewidth":0,"ticks":""}}],"contour":[{"type":"contour","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"surface":[{"type":"surface","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"mesh3d":[{"type":"mesh3d","colorbar":{"outlinewidth":0,"ticks":""}}],"scatter":[{"fillpattern":{"fillmode":"overlay","size":10,"solidity":0.2},"type":"scatter"}],"parcoords":[{"type":"parcoords","line":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatterpolargl":[{"type":"scatterpolargl","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"bar":[{"error_x":{"color":"#2a3f5f"},"error_y":{"color":"#2a3f5f"},"marker":{"line":{"color":"#E5ECF6","width":0.5},"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"bar"}],"scattergeo":[{"type":"scattergeo","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatterpolar":[{"type":"scatterpolar","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"histogram":[{"marker":{"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"histogram"}],"scattergl":[{"type":"scattergl","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatter3d":[{"type":"scatter3d","line":{"colorbar":{"outlinewidth":0,"ticks":""}},"marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scattermapbox":[{"type":"scattermapbox","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatterternary":[{"type":"scatterternary","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scattercarpet":[{"type":"scattercarpet","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"carpet":[{"aaxis":{"endlinecolor":"#2a3f5f","gridcolor":"white","linecolor":"white","minorgridcolor":"white","startlinecolor":"#2a3f5f"},"baxis":{"endlinecolor":"#2a3f5f","gridcolor":"white","linecolor":"white","minorgridcolor":"white","startlinecolor":"#2a3f5f"},"type":"carpet"}],"table":[{"cells":{"fill":{"color":"#EBF0F8"},"line":{"color":"white"}},"header":{"fill":{"color":"#C8D4E3"},"line":{"color":"white"}},"type":"table"}],"barpolar":[{"marker":{"line":{"color":"#E5ECF6","width":0.5},"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"barpolar"}],"pie":[{"automargin":true,"type":"pie"}]},"layout":{"autotypenumbers":"strict","colorway":["#636efa","#EF553B","#00cc96","#ab63fa","#FFA15A","#19d3f3","#FF6692","#B6E880","#FF97FF","#FECB52"],"font":{"color":"#2a3f5f"},"hovermode":"closest","hoverlabel":{"align":"left"},"paper_bgcolor":"white","plot_bgcolor":"#E5ECF6","polar":{"bgcolor":"#E5ECF6","angularaxis":{"gridcolor":"white","linecolor":"white","ticks":""},"radialaxis":{"gridcolor":"white","linecolor":"white","ticks":""}},"ternary":{"bgcolor":"#E5ECF6","aaxis":{"gridcolor":"white","linecolor":"white","ticks":""},"baxis":{"gridcolor":"white","linecolor":"white","ticks":""},"caxis":{"gridcolor":"white","linecolor":"white","ticks":""}},"coloraxis":{"colorbar":{"outlinewidth":0,"ticks":""}},"colorscale":{"sequential":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"sequentialminus":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"diverging":[[0,"#8e0152"],[0.1,"#c51b7d"],[0.2,"#de77ae"],[0.3,"#f1b6da"],[0.4,"#fde0ef"],[0.5,"#f7f7f7"],[0.6,"#e6f5d0"],[0.7,"#b8e186"],[0.8,"#7fbc41"],[0.9,"#4d9221"],[1,"#276419"]]},"xaxis":{"gridcolor":"white","linecolor":"white","ticks":"","title":{"standoff":15},"zerolinecolor":"white","automargin":true,"zerolinewidth":2},"yaxis":{"gridcolor":"white","linecolor":"white","ticks":"","title":{"standoff":15},"zerolinecolor":"white","automargin":true,"zerolinewidth":2},"scene":{"xaxis":{"backgroundcolor":"#E5ECF6","gridcolor":"white","linecolor":"white","showbackground":true,"ticks":"","zerolinecolor":"white","gridwidth":2},"yaxis":{"backgroundcolor":"#E5ECF6","gridcolor":"white","linecolor":"white","showbackground":true,"ticks":"","zerolinecolor":"white","gridwidth":2},"zaxis":{"backgroundcolor":"#E5ECF6","gridcolor":"white","linecolor":"white","showbackground":true,"ticks":"","zerolinecolor":"white","gridwidth":2}},"shapedefaults":{"line":{"color":"#2a3f5f"}},"annotationdefaults":{"arrowcolor":"#2a3f5f","arrowhead":0,"arrowwidth":1},"geo":{"bgcolor":"white","landcolor":"#E5ECF6","subunitcolor":"white","showland":true,"showlakes":true,"lakecolor":"white"},"title":{"x":0.05},"mapbox":{"style":"light"}}},"margin":{"l":65,"r":50,"b":65,"t":90},"title":{"text":"Mt Bruno Elevation"},"autosize":false,"width":800,"height":500},                        {"responsive": true}                    )                };                            </script>        </div>
+</div>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>fig.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+
+<div>                        <script type="text/javascript">window.PlotlyConfig = {MathJaxConfig: 'local'};</script>
+        <script src="https://cdn.plot.ly/plotly-2.18.0.min.js"></script>                <div id="ca1e56ae-15e8-479b-97cb-62a68a26076a" class="plotly-graph-div" style="height:500px; width:800px;"></div>            <script type="text/javascript">                                    window.PLOTLYENV=window.PLOTLYENV || {};                                    if (document.getElementById("ca1e56ae-15e8-479b-97cb-62a68a26076a")) {                    Plotly.newPlot(                        "ca1e56ae-15e8-479b-97cb-62a68a26076a",                        [{"z":[[0.0,27.80985,49.61936,83.08067,116.6632,130.414,150.7206,220.1871,156.1536,148.6416,203.7845,206.0386,107.1618,68.36975,45.3359,49.96142,21.89279,17.02552,11.74317,14.75226,13.6671,5.677561,3.31234,1.156517,-0.147662],[1.0,27.71966,48.55022,65.21374,95.27666,116.9964,133.9056,152.3412,151.934,160.1139,179.5327,147.6184,170.3943,121.8194,52.58537,33.08871,38.40972,44.24843,69.5786,4.019351,3.050024,3.039719,2.996142,2.967954,1.999594],[2.0,30.4267,33.47752,44.80953,62.47495,77.43523,104.2153,102.7393,137.0004,186.0706,219.3173,181.7615,120.9154,143.1835,82.40501,48.47132,74.71461,60.0909,7.073525,6.089851,6.53745,6.666096,7.306965,5.73684,3.625628],[3.0,16.66549,30.1086,39.96952,44.12225,59.57512,77.56929,106.8925,166.5539,175.2381,185.2815,154.5056,83.0433,62.61732,62.33167,60.55916,55.92124,15.17284,8.248324,36.68087,61.93413,20.26867,68.58819,46.49812,0.2360095],[4.0,8.815617,18.3516,8.658275,27.5859,48.62691,60.18013,91.3286,145.7109,116.0653,106.2662,68.69447,53.10596,37.92797,47.95942,47.42691,69.20731,44.95468,29.17197,17.91674,16.25515,14.65559,17.26048,31.22245,46.71704],[5.0,6.628881,10.41339,24.81939,26.08952,30.1605,52.30802,64.71007,76.30823,84.63686,99.4324,62.52132,46.81647,55.76606,82.4099,140.2647,81.26501,56.45756,30.42164,17.28782,8.302431,2.981626,2.698536,5.886086,5.268358],[6.0,21.83975,6.63927,18.97085,32.89204,43.15014,62.86014,104.6657,130.2294,114.8494,106.9873,61.89647,55.55682,86.80986,89.27802,122.4221,123.9698,109.0952,98.41956,77.61374,32.49031,14.67344,7.370775,0.03711011,0.6423392],[7.0,53.34303,26.79797,6.63927,10.88787,17.2044,56.18116,79.70141,90.8453,98.27675,80.87243,74.7931,75.54661,73.4373,74.11694,68.1749,46.24076,39.93857,31.21653,36.88335,40.02525,117.4297,12.70328,1.729771,0.0],[8.0,25.66785,63.05717,22.1414,17.074,41.74483,60.27227,81.42432,114.444,102.3234,101.7878,111.031,119.2309,114.0777,110.5296,59.19355,42.47175,14.63598,6.944074,6.944075,27.74936,0.0,0.0,0.09449376,0.07732264],[9.0,12.827,69.20554,46.76293,13.96517,33.88744,61.82613,84.74799,121.122,145.2741,153.1797,204.786,227.9242,236.3038,228.3655,79.34425,25.93483,6.944074,6.944074,6.944075,7.553681,0.0,0.0,0.0,0.0],[10.0,0.0,68.66396,59.0435,33.35762,47.45282,57.8355,78.91689,107.8275,168.0053,130.9597,212.5541,165.8122,210.2429,181.1713,189.7617,137.3378,84.65395,8.677168,6.956576,8.468093,0.0,0.0,0.0,0.0],[11.0,0.0,95.17499,80.03818,59.89862,39.58476,50.28058,63.81641,80.61302,66.37824,198.7651,244.3467,294.2474,264.3517,176.4082,60.21857,77.41475,53.16981,56.16393,6.949235,7.531059,3.780177,0.0,0.0,0.0],[12.0,0.0,134.9879,130.3696,96.86325,75.70494,58.86466,57.20374,55.18837,78.128,108.5582,154.3774,319.1686,372.8826,275.4655,130.2632,54.93822,25.49719,8.047439,8.084393,5.115252,5.678269,0.0,0.0,0.0],[13.0,0.0,48.08919,142.5558,140.3777,154.7261,87.9361,58.11092,52.83869,67.14822,83.66798,118.9242,150.0681,272.9709,341.1366,238.664,190.2,116.8943,91.48672,14.0157,42.29277,5.115252,0.0,0.0,0.0],[14.0,0.0,54.1941,146.3839,99.48143,96.19411,102.9473,76.14089,57.7844,47.0402,64.36799,84.23767,162.7181,121.3275,213.1646,328.482,285.4489,283.8319,212.815,164.549,92.29631,7.244015,1.167,0.0,0.0],[15.0,0.0,6.919659,195.1709,132.5253,135.2341,89.85069,89.45549,60.29967,50.33806,39.17583,59.06854,74.52159,84.93402,187.1219,123.9673,103.7027,128.986,165.1283,249.7054,95.39966,10.00284,2.39255,0.0,0.0],[16.0,0.0,21.73871,123.1339,176.7414,158.2698,137.235,105.3089,86.63255,53.11591,29.03865,30.40539,39.04902,49.23405,63.27853,111.4215,101.1956,40.00962,59.84565,74.51253,17.06316,2.435141,2.287471,-0.0003636982,0.0],[17.0,0.0,0.0,62.04672,136.3122,201.7952,168.1343,95.2046,58.90624,46.94091,49.27053,37.10416,17.97011,30.93697,33.39257,44.03077,55.64542,78.22423,14.42782,9.954997,7.768213,13.0254,21.73166,2.156372,0.5317867],[18.0,0.0,0.0,79.62993,139.6978,173.167,192.8718,196.3499,144.6611,106.5424,57.16653,41.16107,32.12764,13.8566,10.91772,12.07177,22.38254,24.72105,6.803666,4.200841,16.46857,15.70744,33.96221,7.575688,-0.04880907],[19.0,0.0,0.0,33.2664,57.53643,167.2241,196.4833,194.7966,182.1884,119.6961,73.02113,48.36549,33.74652,26.2379,16.3578,6.811293,6.63927,6.639271,8.468093,6.194273,3.591233,3.81486,8.600739,5.21889,0.0],[20.0,0.0,0.0,29.77937,54.97282,144.7995,207.4904,165.3432,171.4047,174.9216,100.2733,61.46441,50.19171,26.08209,17.18218,8.468093,6.63927,6.334467,6.334467,5.666687,4.272203,0.0,0.0,0.0,0.0],[21.0,0.0,0.0,31.409,132.7418,185.5796,121.8299,185.3841,160.6566,116.1478,118.1078,141.7946,65.56351,48.84066,23.13864,18.12932,10.28531,6.029663,6.044627,5.694764,3.739085,3.896037,0.0,0.0,0.0],[22.0,0.0,0.0,19.58994,42.30355,96.26777,187.1207,179.6626,221.3898,154.2617,142.1604,148.5737,67.17937,40.69044,39.74512,26.10166,14.48469,8.65873,3.896037,3.571392,3.896037,3.896037,3.896037,1.077756,0.0],[23.0,0.001229679,3.008948,5.909858,33.50574,104.3341,152.2165,198.1988,191.841,228.7349,168.1041,144.2759,110.7436,57.65214,42.63504,27.91891,15.41052,8.056102,3.90283,3.879774,3.936718,3.968634,0.1236256,3.985531,-0.1835741],[24.0,0.0,5.626141,7.676256,63.16226,45.99762,79.56688,227.311,203.9287,172.5618,177.1462,140.4554,123.9905,110.346,65.12319,34.31887,24.5278,9.561069,3.334991,5.590495,5.487353,5.909499,5.868994,5.833817,3.568177]],"type":"surface"}],                        {"template":{"data":{"histogram2dcontour":[{"type":"histogram2dcontour","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"choropleth":[{"type":"choropleth","colorbar":{"outlinewidth":0,"ticks":""}}],"histogram2d":[{"type":"histogram2d","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"heatmap":[{"type":"heatmap","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"heatmapgl":[{"type":"heatmapgl","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"contourcarpet":[{"type":"contourcarpet","colorbar":{"outlinewidth":0,"ticks":""}}],"contour":[{"type":"contour","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"surface":[{"type":"surface","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"mesh3d":[{"type":"mesh3d","colorbar":{"outlinewidth":0,"ticks":""}}],"scatter":[{"fillpattern":{"fillmode":"overlay","size":10,"solidity":0.2},"type":"scatter"}],"parcoords":[{"type":"parcoords","line":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatterpolargl":[{"type":"scatterpolargl","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"bar":[{"error_x":{"color":"#2a3f5f"},"error_y":{"color":"#2a3f5f"},"marker":{"line":{"color":"#E5ECF6","width":0.5},"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"bar"}],"scattergeo":[{"type":"scattergeo","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatterpolar":[{"type":"scatterpolar","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"histogram":[{"marker":{"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"histogram"}],"scattergl":[{"type":"scattergl","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatter3d":[{"type":"scatter3d","line":{"colorbar":{"outlinewidth":0,"ticks":""}},"marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scattermapbox":[{"type":"scattermapbox","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatterternary":[{"type":"scatterternary","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scattercarpet":[{"type":"scattercarpet","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"carpet":[{"aaxis":{"endlinecolor":"#2a3f5f","gridcolor":"white","linecolor":"white","minorgridcolor":"white","startlinecolor":"#2a3f5f"},"baxis":{"endlinecolor":"#2a3f5f","gridcolor":"white","linecolor":"white","minorgridcolor":"white","startlinecolor":"#2a3f5f"},"type":"carpet"}],"table":[{"cells":{"fill":{"color":"#EBF0F8"},"line":{"color":"white"}},"header":{"fill":{"color":"#C8D4E3"},"line":{"color":"white"}},"type":"table"}],"barpolar":[{"marker":{"line":{"color":"#E5ECF6","width":0.5},"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"barpolar"}],"pie":[{"automargin":true,"type":"pie"}]},"layout":{"autotypenumbers":"strict","colorway":["#636efa","#EF553B","#00cc96","#ab63fa","#FFA15A","#19d3f3","#FF6692","#B6E880","#FF97FF","#FECB52"],"font":{"color":"#2a3f5f"},"hovermode":"closest","hoverlabel":{"align":"left"},"paper_bgcolor":"white","plot_bgcolor":"#E5ECF6","polar":{"bgcolor":"#E5ECF6","angularaxis":{"gridcolor":"white","linecolor":"white","ticks":""},"radialaxis":{"gridcolor":"white","linecolor":"white","ticks":""}},"ternary":{"bgcolor":"#E5ECF6","aaxis":{"gridcolor":"white","linecolor":"white","ticks":""},"baxis":{"gridcolor":"white","linecolor":"white","ticks":""},"caxis":{"gridcolor":"white","linecolor":"white","ticks":""}},"coloraxis":{"colorbar":{"outlinewidth":0,"ticks":""}},"colorscale":{"sequential":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"sequentialminus":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"diverging":[[0,"#8e0152"],[0.1,"#c51b7d"],[0.2,"#de77ae"],[0.3,"#f1b6da"],[0.4,"#fde0ef"],[0.5,"#f7f7f7"],[0.6,"#e6f5d0"],[0.7,"#b8e186"],[0.8,"#7fbc41"],[0.9,"#4d9221"],[1,"#276419"]]},"xaxis":{"gridcolor":"white","linecolor":"white","ticks":"","title":{"standoff":15},"zerolinecolor":"white","automargin":true,"zerolinewidth":2},"yaxis":{"gridcolor":"white","linecolor":"white","ticks":"","title":{"standoff":15},"zerolinecolor":"white","automargin":true,"zerolinewidth":2},"scene":{"xaxis":{"backgroundcolor":"#E5ECF6","gridcolor":"white","linecolor":"white","showbackground":true,"ticks":"","zerolinecolor":"white","gridwidth":2},"yaxis":{"backgroundcolor":"#E5ECF6","gridcolor":"white","linecolor":"white","showbackground":true,"ticks":"","zerolinecolor":"white","gridwidth":2},"zaxis":{"backgroundcolor":"#E5ECF6","gridcolor":"white","linecolor":"white","showbackground":true,"ticks":"","zerolinecolor":"white","gridwidth":2}},"shapedefaults":{"line":{"color":"#2a3f5f"}},"annotationdefaults":{"arrowcolor":"#2a3f5f","arrowhead":0,"arrowwidth":1},"geo":{"bgcolor":"white","landcolor":"#E5ECF6","subunitcolor":"white","showland":true,"showlakes":true,"lakecolor":"white"},"title":{"x":0.05},"mapbox":{"style":"light"}}},"margin":{"l":65,"r":50,"b":65,"t":90},"title":{"text":"Mt Bruno Elevation"},"autosize":false,"width":800,"height":500},                        {"responsive": true}                    )                };                            </script>        </div>
+</div>
+</div>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+      <div class="nav-footer-center">Copyright 2023, Rodolfo Lourenzutti – Powered by Quarto</div>
+  </div>
+</footer>
+
+
+
+</body></html>

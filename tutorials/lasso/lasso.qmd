@@ -1,0 +1,95 @@
+---
+title: "LASSO"
+format: html
+---
+<style>
+    main {
+        text-align: justify;    
+    }
+</style>
+
+**Prerequisites:** <br>
+
+For this tutorial, we assume that you have a basic knowledge of linear regression, especifically the least squares method and inference for the regression coefficients; and that you  have been introduced to cross-validation, generalization, error and overfitting/underfitting concepts. 
+    
+
+**Learning Objectives:** <br>
+
+At end of this tutorial you should be able to:
+
+- Describe the Lasso method and its advantages over the least squares;
+- Constrast Lasso with the least squares;
+- Recognize the impact the Lasso method has on the inference of the regression coefficients;
+- Identify the problem of applying Lasso with categorical variables;
+- Apply Lasso and Group Lasso to a dataset using R;
+
+<hr>
+
+### Linear regression
+
+
+
+```{r setup, include=FALSE}
+library(tidyverse)
+library(aplore3)
+library(Brq)
+data("Prostate")
+cancer_prostate <- Prostate
+birth_weight <- 
+    lowbwt |>
+    rename(
+        age = age,
+        weight_lbs = lwt,
+        race = race,
+        had_premature_labor = ptl,
+        n_visit_first_trimester = ftv,
+        uterine_irritability = ui,
+        baby_birth_weight_g = bwt) |> 
+    select(-low)
+```
+
+
+```{r}
+?Prostate
+```
+
+:::{style='height: 300px; overflow-y: scroll; scroll-behavior: smooth; overflow-x: scroll;'}
+```{r}
+knitr::kable(cancer_prostate)
+```
+:::
+
+
+
+A baby's weight at the moment of birth is an important indication of the baby's health. For example, there have been some associations between high birth weight and increased risk of developing certain types of cancer (e.g., High Birth Weight Increases the Risk for Bone Tumor: A Systematic Review and Meta-Analysis - PubMed (nih.gov)) and low birth weight might increase the risk of childhood asthma (Effect of low birth weight on childhood asthma: a meta-analysis - PubMed (nih.gov)) among other complications. Below is a dataset about 189 mothers and their babies weight at birth. 
+
+```{r}
+knitr::kable(head(birth_weight))
+```
+
+
+
+
+In regression, we want to model the relationship between a numerical variable $Y$ and some, say $p$, explanatory variables $X_1, X_2, \ldots, X_p$. There are different ways we can model such a relationship. Linear regression is one of the simplest (although still quite powerful) models. The linear regression is given by: 
+
+$$
+Y_i = \beta_0 + \beta_1X_{1i} + \beta_2X_{2i} + \ldots + \beta_3X_{pi} + \varepsilon,\quad i=1,\ldots,n
+$$
+
+
+```{python}
+
+import plotly.graph_objects as go
+import pandas as pd
+
+# Read data from a csv
+z_data = pd.read_csv('https://raw.githubusercontent.com/plotly/datasets/master/api_docs/mt_bruno_elevation.csv')
+
+fig = go.Figure(data=[go.Surface(z=z_data.values)])
+
+fig.update_layout(title='Mt Bruno Elevation', autosize=False,
+                  width=800, height=500,
+                  margin=dict(l=65, r=50, b=65, t=90))
+
+fig.show()
+```
