@@ -19,6 +19,8 @@ filters:
     }
 </style>
 
+1. [/tutorials/webr-serviceworker.js](/modules/webr-serviceworker.js)
+2. [/tutorials/webr-worker.js](/modules/webr-worker.js) 
 
 **Prerequisites:** <br>
 
