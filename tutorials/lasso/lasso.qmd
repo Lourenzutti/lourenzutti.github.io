@@ -1,12 +1,24 @@
 ---
 title: "LASSO"
 format: html
+engine: knitr
+#webr:
+#  show-startup-message: false      # Display status of webR initialization
+#  show-header-message: false      # Check to see if COOP&COEP headers are set for speed.
+#  packages: ['ggplot2', 'dplyr'] # Pre-install dependencies
+#  home-dir: "/home/rstudio"      # Customize where the working directory is
+#  base-url: ''                   # Base URL used for downloading R WebAssembly binaries
+#  service-worker-url: ''         # URL from where to load JavaScript worker scripts when loading webR with the ServiceWorker communication channel.
+filters:
+- webr
 ---
+
 <style>
     main {
         text-align: justify;    
     }
 </style>
+
 
 **Prerequisites:** <br>
 
@@ -27,14 +39,62 @@ At end of this tutorial you should be able to:
 
 ### Linear regression
 
+Let us take a problem-driven approach to introduce LASSO. Let's start by loading some packages we will use. 
 
+```{r warning=FALSE, message=FALSE}
+# Loading some libraries
+library(tidyverse) 
+library(tidymodels)
+library(knitr)
+library(Brq) # This package contains the data
+```
 
-```{r setup, include=FALSE}
-library(tidyverse)
-library(aplore3)
-library(Brq)
+We will use a dataset of 97 patients with prostate cancer (Stamey et al. 1989). The dataset is available in the `Brq` R package. Before starting the analysis, we should understand what data we have. The following are the variables in our data frame:
+
+- **lcavol**: log(cancer volume) 
+- **lweight**: log(prostate weight)
+- **age**: age of the patient
+- **lbph**: log(amount of benign prostatic hyperplasia)
+- **svi**: Seminal vesicle invasion. (True or False)
+- **lcp**: log(capsular penetration)
+- **gleason**: Gleason score. The Gleason score measures how abnormal the tissue looks. The lower the score is, the more the cells look like regular prostate tissue. You can learn more about the [Gleason Score here](https://www.pcf.org/about-prostate-cancer/diagnosis-staging-prostate-cancer/gleason-score-isup-grade/)
+- **pgg45**: Percentage Gleason scores 4 or 5. Scores 4 and 5 are considered very high; the cells barely look like normal prostate tissue.
+- **lpsa**: log(prostate-specific antigen)
+
+Unfortunately, the units for the variables are not easily available and are unknown. However, keep in mind that the units are fundamental to interpreting the model. So always make sure you know what the units are (even though I'm not sure what the units are in this case &#x1F609;). 
+
+Let's load the data and take a look at the first few rows.
+
+```{r warning=FALSE, message=FALSE}
+# Loading the data
 data("Prostate")
-cancer_prostate <- Prostate
+cancer_prostate <- tibble(Prostate)
+
+# Printing the first 10 rows
+kable(head(cancer_prostate, 10))
+```
+
+```{webr-r}
+# Hello
+```
+
+The first thing we need to do is to split the data into a training and a test set. We will use the training set to fit the model, including variable selection, and the test set to evaluate the model's performance. 
+
+```{r}
+cancer_split <- initial_split(cancer_prostate, prop = 0.7)
+cancer_train <- training(cancer_split)
+cancer_test <- testing(cancer_split)
+```
+
+```{r}
+summary(cancer_train)
+```
+
+
+
+<!-- 
+```{r}
+library(aplore3)
 birth_weight <- 
     lowbwt |>
     rename(
@@ -47,26 +107,12 @@ birth_weight <-
         baby_birth_weight_g = bwt) |> 
     select(-low)
 ```
-
-
-```{r}
-?Prostate
-```
-
-:::{style='height: 300px; overflow-y: scroll; scroll-behavior: smooth; overflow-x: scroll;'}
-```{r}
-knitr::kable(cancer_prostate)
-```
-:::
-
-
-
 A baby's weight at the moment of birth is an important indication of the baby's health. For example, there have been some associations between high birth weight and increased risk of developing certain types of cancer (e.g., High Birth Weight Increases the Risk for Bone Tumor: A Systematic Review and Meta-Analysis - PubMed (nih.gov)) and low birth weight might increase the risk of childhood asthma (Effect of low birth weight on childhood asthma: a meta-analysis - PubMed (nih.gov)) among other complications. Below is a dataset about 189 mothers and their babies weight at birth. 
 
 ```{r}
 knitr::kable(head(birth_weight))
 ```
-
+-->
 
 
 
