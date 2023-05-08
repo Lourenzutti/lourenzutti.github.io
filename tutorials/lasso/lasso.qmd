@@ -25,7 +25,7 @@ webr:
 
 **Prerequisites:** <br>
 
-For this tutorial, we assume that you have a basic knowledge of linear regression, especifically the least squares method and inference for the regression coefficients; and that you  have been introduced to cross-validation, generalization, error and overfitting/underfitting concepts. 
+For this tutorial, we assume that you have a basic knowledge of linear regression, especifically the least squares method and inference for the regression coefficients; and that you  have been introduced to cross-validation, generalization error and overfitting/underfitting concepts. 
     
 
 **Learning Objectives:** <br>
@@ -40,7 +40,7 @@ At end of this tutorial you should be able to:
 
 <hr>
 
-### Prostate Cancer Data 
+## Prostate Cancer Data 
 
 Let us take a problem-driven approach to introduce LASSO. Let's start by loading some packages we will use. 
 
@@ -50,6 +50,7 @@ library(tidyverse)
 library(tidymodels)
 library(knitr)
 library(broom)
+library(leaps)
 library(Brq) # This package contains the data
 ```
 
@@ -95,9 +96,9 @@ summary(cancer_train |> select(-svi))
 ```
 
 
-We want to model `lpsa`, the log(prostate-specific antigen), using the remaining variables as explanatory variables (or independent variables, or predictors, or features -- so many names for the same things, I know!). There are a wide variety of mathematical models we could use, linear Regression being one of the simplest ones. However, Linear Regression has the advantage of being highly interpretable while performing very well in many prediction tasks. 
+We want to model `lpsa`, the log(prostate-specific antigen), using the remaining variables as explanatory variables (or independent variables, or predictors, or features, or covariates -- so many names for the same things, I know!). There are a wide variety of mathematical models we could use, linear Regression being one of the simplest ones. However, Linear Regression has the advantage of being highly interpretable while performing very well in many prediction tasks. 
 
-#### Linear Regression
+## Linear Regression
 
 In regression, we want to model the relationship between a numerical variable $Y$ and some, say $p$, explanatory variables $X_1, X_2, \ldots, X_p$. The lienar regression equation is given by: 
 
@@ -120,23 +121,86 @@ $$
 $$
 
 ```{r}
-# Standardizing the variables
-std_data <- 
-    cancer_train |>
-    mutate_at(vars(-lpsa), scale) 
-
-
 # Fitting the linear regression model
-cancer_lm <- lm(lpsa ~ ., data = std_data)
+cancer_lm <- lm(lpsa ~ ., data = cancer_train)
 
-# Printing the model summary
-summary(cancer_lm)
+# Printing the coefficients' information
+kable(tidy(cancer_lm))
 ```
 
-```{r}
-summary(lm(lpsa ~ ., data = cancer_train))
-```
+So the values in the estimate columns are the values that minimize `RSS` for our training data of the Prostate Cancer dataset. If you are not very familiar with statistical inference, you can ignore the other columns.
 
+### Improving the Ordinary Least Square (OLS)
+
+Basically, there are two reasons to fit a linear regression model: 
+
+- **Prediction**: We want to predict the response based on the values of the predictors the best we can. So, we want our model to generalize well to unseen data. 
+
+- **Inference**: We are interested in interpreting the association between our response and the predictors and checking their significance. 
+
+For prediction, we want to avoid overfitting to training the data. Remember, overfitting occurs when your model does very well in the training data but poorly in unseen data. A common approach to avoid overfitting is the so-called *Regularization*. Regularization means we restrict (or penalize) our optimization a little bit by adding a penalty term to our cost function. 
+
+For inference, we should use the simplest model possible. What do we mean by the simplest model here? The model with the fewest predictors. There are mainly two reasons for this: (1) it is easier to interpret a model with fewer covariates; and (2) the principle of parsimony (Occam's razor). 
+
+As you can imagine, selecting only the relevant covariates for our model is vital in statistical modelling. We shall now discuss both aspects: (1) variable selection and (2) regularization. As it turns out, the LASSO method we will discuss next is a great tool for both purposes.
+
+
+#### Variable Selection
+
+The easiest way (intuitively, at least) to improve our model is to try the model with all possible combinations of covariates, and then we select the best combination for our final model. Simple, eh? Yeah, the problem is that, even for a relatively small number of covariates, it quickly becomes impossible to check all possible models. The table below shows the number of models we need to try for different numbers of covariates. 
+
+|Number of Covariates   |Number of Models to Fit  |
+|-----------------------|-------------------------|
+|5                      |31                       |
+|10                     |1023                     |
+|20                     |1,048,575                |
+|30                     |1,073,741,823            |
+|40                     |1,099,511,627,775        |
+|50                     |1,125,899,906,842,623    |
+
+Can you imagine fitting over 1 trillion models to find the best subset of covariates to use? Because of this, people have developed some strategies, such as *Backward Selection*, *Forward Selection*. 
+
+In **Backward Selection**, we first consider all the covariates. Then, we look for the least important covariate and remove it from the model. We do this iteratively until we have the best model. The **Forward Selection** works in a similar fashion, but we start with the null model (no covariates) and add one covariate at a time. There are mainly two problems with using Backward or Forward selection. 
+
+The first problem is that these methods are not guaranteed to find the best possible subset of covariates. Instead of trying 1,099,511,627,775 for 40 covariates, we will try 820 models with Backward or Forward selection. Much better, but plenty of possible combinations of covariates are not being considered. 
+
+The second problem is that this is not a smooth process. We either include a covariable or not. There is no "partially" including a variable. This lack of smoothness makes the results of these methods quite sensitive to small numerical changes in the data. Then it comes regularization. 
+
+#### Regularization
+
+As we know, to fit a linear regression we look for the coefficients $\bm{\beta}$ that minimizes the Residual Sum of Square (RSS). So any $\bm{\beta}$ is fair game. We are only interested in driving our RSS down. 
+
+The idea of regularization is to restrict our search a bit by imposing a cap on our $\bm{\beta}$. So basically, we are saying:
+
+> ok, I'm looking to minimize the RSS, but I don't want my $\bm{\beta}$ to get too crazy (in other words, very high or very low values). 
+
+But how do we do this? We will add a penalty term to our RSS to tell our model that there is a price to be paid to use a high value (positive or negative) for $\bm{\beta}$:
+
+$$
+\underbrace{\sum_{i=1}^n \left(y_i - \beta_0 - \beta_1X_{i1} - \ldots - \beta_p X_{ip}\right)^2}_\text{RSS} + {\color{red} \text{penalty term}}
+$$
+
+There are many penalties we can add to our RSS. Two widely used ones are:
+
+- $\lambda\sum_{i=1}^p \beta_i ^2$ this leads to the so-called **Ridge Regression**. 
+
+- $\lambda\sum_{i=1}^p \left|\beta_i\right|$ this leads to the so-called **LASSO**.
+
+Note that the penalty term has two components a positive constant $\lambda$ and a norm of $\bm{\beta}$. 
+
+It is like when you go to the grocery store to buy potatoes. The constant $\lambda$ is the price of the potatoes, and the norm (either $\sum_{i=1}^p \beta_i ^2$ or $\sum_{i=1}^p \left|\beta_i\right|$) measures the amount of potatoes you are buying. The different norms refer to different ways to measure the amount of potatoes being bought. For example, the grocery store could charge you per pound of potatoes, or it could charge you per unit of potatoes. 
+
+Naturally, the higher the price of the potato, the fewer potatoes you will buy. The same happens with the constant $\lambda$. The higher $\lambda$ is, the smaller the values for $\bm{\beta}$ we will use. Note that increasing the magnitude of any $\beta_j$ will increase the penalty term, and it will only be acceptable if there is a significant decrease in the RSS to compensate for the increase in the penalty term. Because of the forced reduction these penalties cause in the magnitude of the coefficients $\bm{\beta}$, they are usually called  **Shrinkage** methods. 
+
+Regularization methods help us to mitigate overfitting, to find solutions in the presence of multicollinearity, and, in the case of LASSO, it helps us with variable selection. In the following, we will restrict our focus to LASSO. 
+
+
+## The LASSO method
+
+
+- What happens when you increase $\lambda$ to very large values?
+- What happens when you decrease $\lambda$ to zero? 
+- Once we start increasing $\lambda$, all of our $\beta$ coefficients will never increase. 
 
 
 <!-- 
