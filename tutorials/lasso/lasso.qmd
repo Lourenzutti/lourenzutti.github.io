@@ -1,16 +1,20 @@
 ---
 title: "LASSO"
-format: html
+format: 
+  html:
+    html-math-method: katex
+
 engine: knitr
-#webr:
-#  show-startup-message: false      # Display status of webR initialization
-#  show-header-message: false      # Check to see if COOP&COEP headers are set for speed.
+filters:
+- webr
+
+webr:
+  show-startup-message: false      # Display status of webR initialization
+  show-header-message: false      # Check to see if COOP&COEP headers are set for speed.
 #  packages: ['ggplot2', 'dplyr'] # Pre-install dependencies
 #  home-dir: "/home/rstudio"      # Customize where the working directory is
 #  base-url: ''                   # Base URL used for downloading R WebAssembly binaries
 #  service-worker-url: ''         # URL from where to load JavaScript worker scripts when loading webR with the ServiceWorker communication channel.
-filters:
-- webr
 ---
 
 <style>
@@ -18,9 +22,6 @@ filters:
         text-align: justify;    
     }
 </style>
-
-1. [/tutorials/webr-serviceworker.js](/tutorials/webr-serviceworker.js)
-2. [/tutorials/webr-worker.js](/tutorials/webr-worker.js) 
 
 **Prerequisites:** <br>
 
@@ -39,7 +40,7 @@ At end of this tutorial you should be able to:
 
 <hr>
 
-### Linear regression
+### Prostate Cancer Data 
 
 Let us take a problem-driven approach to introduce LASSO. Let's start by loading some packages we will use. 
 
@@ -48,6 +49,7 @@ Let us take a problem-driven approach to introduce LASSO. Let's start by loading
 library(tidyverse) 
 library(tidymodels)
 library(knitr)
+library(broom)
 library(Brq) # This package contains the data
 ```
 
@@ -73,28 +75,74 @@ data("Prostate")
 cancer_prostate <- tibble(Prostate)
 
 # Printing the first 10 rows
-kable(head(cancer_prostate, 10))
+kable(head(cancer_prostate, 10), digits = 4)
 ```
-
-```{webr-r}
-# Hello
-```
-
-The first thing we need to do is to split the data into a training and a test set. We will use the training set to fit the model, including variable selection, and the test set to evaluate the model's performance. 
+<br>
+The first thing we need to do is to split the data into a training and a test set. We will use the training set to fit the model, including variable selection and the test set to evaluate the model's performance. So let's randomly split our data into 70% training and 30% test sets.
 
 ```{r}
+set.seed(1) # Let's set the seed for reproducibility
+
 cancer_split <- initial_split(cancer_prostate, prop = 0.7)
 cancer_train <- training(cancer_split)
 cancer_test <- testing(cancer_split)
 ```
 
+Now that we have our training set, we can use it how we want, as much as we want. Let's start simple and look at some summary statistics of our variables. We will remove `svi` because it is a dichotomic variable (true or false) with a proportion of true of `r round(mean(cancer_train$svi),3)`.
+
 ```{r}
-summary(cancer_train)
+summary(cancer_train |> select(-svi))
+```
+
+
+We want to model `lpsa`, the log(prostate-specific antigen), using the remaining variables as explanatory variables (or independent variables, or predictors, or features -- so many names for the same things, I know!). There are a wide variety of mathematical models we could use, linear Regression being one of the simplest ones. However, Linear Regression has the advantage of being highly interpretable while performing very well in many prediction tasks. 
+
+#### Linear Regression
+
+In regression, we want to model the relationship between a numerical variable $Y$ and some, say $p$, explanatory variables $X_1, X_2, \ldots, X_p$. The lienar regression equation is given by: 
+
+$$
+Y_i = \beta_0 + \beta_1X_{1i} + \beta_2X_{2i} + \ldots + \beta_3X_{pi} + \varepsilon_i,\quad i=1,\ldots,n
+$$
+where $\varepsilon$ is random error. 
+
+In the Cancer Prostate case, our linear regression model is given by:
+
+\begin{align*}
+lpsa_i = &\ \beta_0 + \beta_1\times lcavol_i + \beta_2\times lweight_i + \beta_3\times age_i + \beta_4\times lbph_i\ + \\
+& + \beta_5\times svi_i + \beta_6\times lcp_i + \beta_7\times  gleason_i + \beta_8\times pgg45_i + \varepsilon_i
+\end{align*}
+
+To fit this model to the data at hand, we find the values for the coefficients $\bm{\beta} = \left(\beta_0, \beta_1, \ldots, \beta_p\right)$ that minimizes the *residual sum of squares* (RSS), i.e., 
+
+$$
+    RSS(\bm{\beta}) = \sum_{i=1}^n \left(y_i - \beta_0 - \beta_1X_{i1} - \ldots - \beta_p X_{ip}\right)^2
+$$
+
+```{r}
+# Standardizing the variables
+std_data <- 
+    cancer_train |>
+    mutate_at(vars(-lpsa), scale) 
+
+
+# Fitting the linear regression model
+cancer_lm <- lm(lpsa ~ ., data = std_data)
+
+# Printing the model summary
+summary(cancer_lm)
+```
+
+```{r}
+summary(lm(lpsa ~ ., data = cancer_train))
 ```
 
 
 
 <!-- 
+that minimizes the square of the residuals, and denote these values as $\hat{\bm{\beta}} = \left(\hat{\beta}_0, \hat{\beta}_1, \ldots, \hat{\beta}_8\right)$. 
+
+
 ```{r}
 library(aplore3)
 birth_weight <- 
@@ -109,14 +157,11 @@ birth_weight <-
         baby_birth_weight_g = bwt) |> 
     select(-low)
 ```
-A baby's weight at the moment of birth is an important indication of the baby's health. For example, there have been some associations between high birth weight and increased risk of developing certain types of cancer (e.g., High Birth Weight Increases the Risk for Bone Tumor: A Systematic Review and Meta-Analysis - PubMed (nih.gov)) and low birth weight might increase the risk of childhood asthma (Effect of low birth weight on childhood asthma: a meta-analysis - PubMed (nih.gov)) among other complications. Below is a dataset about 189 mothers and their babies weight at birth. 
+A baby's weight at the moment of birth is an important indication of the baby's health. For example, there have been some associations between high birth weight and increased risk of developing certain types of cancer (e.g., [1](https://pubmed.ncbi.nlm.nih.gov/26371026/)) and low birth weight might increase the risk of childhood asthma ([2](https://pubmed.ncbi.nlm.nih.gov/25339063/)) among other complications. Below is a dataset about 189 mothers and their babies weight at birth. 
 
 ```{r}
 knitr::kable(head(birth_weight))
 ```
--->
-
-
 
 In regression, we want to model the relationship between a numerical variable $Y$ and some, say $p$, explanatory variables $X_1, X_2, \ldots, X_p$. There are different ways we can model such a relationship. Linear regression is one of the simplest (although still quite powerful) models. The linear regression is given by: 
 
@@ -141,3 +186,4 @@ fig.update_layout(title='Mt Bruno Elevation', autosize=False,
 
 fig.show()
 ```
+-->
