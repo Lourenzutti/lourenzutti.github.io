@@ -186,11 +186,13 @@ There are many penalties we can add to our RSS. Two widely used ones are:
 
 - $\lambda\sum_{i=1}^p \left|\beta_i\right|$ this leads to the so-called **LASSO**.
 
-Note that the penalty term has two components a positive constant $\lambda$ and a norm of $\bm{\beta}$. 
+**Important:** Note that the we do not include the intercept $\beta_0$. 
 
-It is like when you go to the grocery store to buy potatoes. The constant $\lambda$ is the price of the potatoes, and the norm (either $\sum_{i=1}^p \beta_i ^2$ or $\sum_{i=1}^p \left|\beta_i\right|$) measures the amount of potatoes you are buying. The different norms refer to different ways to measure the amount of potatoes being bought. For example, the grocery store could charge you per pound of potatoes, or it could charge you per unit of potatoes. 
+The penalty term has two components a positive constant $\lambda$ and a norm of $\bm{\beta}$. It is like when you go to the grocery store to buy potatoes. The constant $\lambda$ is the price of the potatoes, and the norm (either $\sum_{i=1}^p \beta_i ^2$ or $\sum_{i=1}^p \left|\beta_i\right|$) measures the amount of potatoes you are buying. The different norms refer to different ways to measure the amount of potatoes being bought. For example, the grocery store could charge you per pound of potatoes, or it could charge you per unit of potatoes. 
 
-Naturally, the higher the price of the potato, the fewer potatoes you will buy. The same happens with the constant $\lambda$. The higher $\lambda$ is, the smaller the values for $\bm{\beta}$ we will use. Note that increasing the magnitude of any $\beta_j$ will increase the penalty term, and it will only be acceptable if there is a significant decrease in the RSS to compensate for the increase in the penalty term. Because of the forced reduction these penalties cause in the magnitude of the coefficients $\bm{\beta}$, they are usually called  **Shrinkage** methods. 
+Naturally, the higher the price of the potato, the fewer potatoes you will buy. The same happens with the constant $\lambda$. The higher $\lambda$ is, the smaller the values for $\bm{\beta}$ we will use. Note that increasing the magnitude of any $\beta_j$ will increase the penalty term, and it will only be acceptable if there is a significant decrease in the RSS to compensate for the increase in the penalty term. Because of the forced reduction these penalties cause in the magnitude of the coefficients $\bm{\beta}$, they are frequently called  **Shrinkage** methods. 
+
+Now, the penalty term ends up "measuring the size" of the coefficients. Look at the summary quantities of our variables above. Compare the magnitude of the predictors with the response. The predictors are in different scales. So, if we add some penalties according to the size of the coefficients, we need to put all predictors on the same scale. Otherwise, some variables will be more penalized than others. We do this by **standardizing the predictors**, a step that **must** be done in regularization. 
 
 Regularization methods help us to mitigate overfitting, to find solutions in the presence of multicollinearity, and, in the case of LASSO, it helps us with variable selection. In the following, we will restrict our focus to LASSO. 
 
@@ -198,11 +200,132 @@ Regularization methods help us to mitigate overfitting, to find solutions in the
 ## The LASSO method
 
 
+The LASSO method, which stands for Least Absolute Shrinkage and Selection Operator, was proposed by Tibshirani (1989). It adds an L1-norm regularization penalty to the RSS function that we minimize when fitting the Ordinary Least Square Regression. After the inclusion of the penalty term, the function we try to minimize is given by:
+
+$$
+LASSO(\bm{\beta}) = \sum_{i=1}^n \left(y_i - \beta_0 - \beta_1X_{i1} - \ldots - \beta_p X_{ip}\right)^2 + {\color{red} \lambda\sum_{i=1}^p \left|\beta_i\right|}
+$$
+
+Another way we could frame the LASSO method is the following. We want to minimize the RSS (just like the OLS) but subject to the condition that the sum of the absolute values of coefficients is less than a positive number. Mathematically, 
+
+$$
+\text{minimize } \sum_{i=1}^n \left(y_i - \beta_0 - \beta_1X_{i1} - \ldots - \beta_p X_{ip}\right)^2 
+$$
+subject to
+$$
+\sum_{i=1}^p \left|\beta_i\right| \leq C, \text{ for some } C>0.
+$$
+
+This second formulation of LASSO is saying that we want to minimize the RSS (just like in the OLS). But differently than the OLS, not all the $\bm{\beta}$ are fair game. We need a $\bm{\beta}$ that satisfies the condition $\sum_{i=1}^p \left|\beta_i\right| \leq C$ for a positive constant $C$. Doing this constrains the search space of the solution: we don't look for the best $\bm{\beta}$ everywhere; we look for the best $\bm{\beta}$ in a given smaller region. 
+
+#### Example
+
+To be able to visualize what the LASSO method is doing, let's restrict our attention to a small case of two covariates. Although this is of little practical interest, it will be useful for us to be able to make some plots. 
+
+Let us consider only two covariates of the Prostate Cancer dataset: `lcavol` and `lweight`. Let's first standardize the variables. In this case we will also center the response, just to get rid of the intercept (as it will be 0). 
+
+```{r}
+# Standardizing the predictors and centering the response
+cancer_train_std <- 
+    cancer_train |>
+    select(lcavol, lweight, lpsa) |>
+    mutate(lcavol = (lcavol - mean(lcavol)) / sd(lcavol),
+           lweight = (lweight - mean(lweight)) / sd(lweight),
+           lpsa = (lpsa - mean(lpsa)))
+```
+
+Let's double check that everything is in order (for our mental sanity).
+
+```{r}
+cancer_train_std |>
+    summarise(across(everything(), list(mean = mean, sd = sd))) |>
+    pivot_longer(cols = everything(), names_to = c("variable", '.value'), names_sep = "_") |>
+    kable(digits = 4)
+```
+
+Ok, everything looks good. All variables are centered (i.e., have 0 mean) and only the predictors are scaled (i.e., have std. deviation of 1). Our regression model is: 
+
+$$
+lpsa_i = \beta_1\times lcavol_i + \beta_2\times lweight_i + \varepsilon_i
+$$
+Note that there's no intercept. We already removed it by centring all the variables. So then, all that is left for us to do is find $\beta_1$ and $\beta_2$ that minimize the RSS, shown in the figure below. The green point is the OLS solution. 
+
+```{r, include=FALSE}
+model_two_vars <- lm(lpsa ~ 0 + lcavol + lweight, data = cancer_train_std)
+
+coef_lpsa_two_vars <- 
+    model_two_vars  |>
+    coef() |>
+    as.numeric()
+
+rss_two_vars <- sum(model_two_vars$residuals**2)
+rss_two_vars
+```
+
+```{python, echo=FALSE}
+#| label: RSS
+import plotly.graph_objects as go
+import pandas as pd
+import numpy as np
+
+# Read data from R
+cancer_train_std_py = r.cancer_train_std[['lcavol', 'lweight', 'lpsa']]
+
+
+# Create a Meshgrid for plotting
+x = np.linspace(-5, 5, 100)
+y = np.linspace(-5, 5, 100)
+xx, yy = np.meshgrid(x, y)
+
+# Calculate the RSS for the meshgrid
+z_data = pd.DataFrame({
+    'b1': np.ravel(xx),
+    'b2': np.ravel(yy),
+    'data': np.array(
+        [np.sum((cancer_train_std_py['lpsa'].to_numpy() - b1*cancer_train_std_py['lcavol'].to_numpy() - b2*cancer_train_std_py['lweight'].to_numpy())**2) 
+         for b1, b2 in zip(np.ravel(xx), np.ravel(yy))])}
+)
+
+#z_data
+
+fig = go.Figure(data=[go.Surface(x = x, y = y, z=z_data['data'].to_numpy().reshape(len(x), len(y)))])
+
+fig.update_layout(
+    title={
+        'text': 'Residual Sum of Square as a function of the coefficients',
+        'y': 0.9,	
+        'x': 0.45,
+        'xanchor': 'center',
+        'yanchor': 'top'},
+    autosize=False,
+    width=800,
+    height=500,
+    margin=dict(l=15, r=10, b=60, t=40),
+    scene=dict(
+        xaxis_title=r'β1',
+        yaxis_title=r'β2',
+        zaxis_title=r'RSS',
+    )).add_trace(go.Scatter3d(
+        x = [r.coef_lpsa_two_vars[0]], 
+        y = [r.coef_lpsa_two_vars[1]], 
+        z = [r.rss_two_vars], 
+        mode = "markers", type = "scatter3d", 
+        marker = {'size': 15, 'color': "lightgreen", 'symbol': 'circle'}))
+    #yaxis_title='b2',
+    #zaxis_title='RSS')
+```
+<br>
+
+
+The OLS solutions is given by $\beta_1 = `r round(coef_lpsa_two_vars[1], 4)`$ and $\beta_2 = `r round(coef_lpsa_two_vars[2], 4)`$. The RSS at this point is `r round(rss_two_vars, 4)`. 
+
+
+
 - What happens when you increase $\lambda$ to very large values?
 - What happens when you decrease $\lambda$ to zero? 
 - Once we start increasing $\lambda$, all of our $\beta$ coefficients will never increase. 
 
-
+### Group Lasso
 <!-- 
 that minimizes the square of the residuals, and denote these values as $\hat{\bm{\beta}} = \left(\hat{\beta}_0, \hat{\beta}_1, \ldots, \hat{\beta}_8\right)$. 
 
@@ -234,20 +357,5 @@ Y_i = \beta_0 + \beta_1X_{1i} + \beta_2X_{2i} + \ldots + \beta_3X_{pi} + \vareps
 $$
 
 
-```{python}
 
-import plotly.graph_objects as go
-import pandas as pd
-
-# Read data from a csv
-z_data = pd.read_csv('https://raw.githubusercontent.com/plotly/datasets/master/api_docs/mt_bruno_elevation.csv')
-
-fig = go.Figure(data=[go.Surface(z=z_data.values)])
-
-fig.update_layout(title='Mt Bruno Elevation', autosize=False,
-                  width=800, height=500,
-                  margin=dict(l=65, r=50, b=65, t=90))
-
-fig.show()
-```
 -->
