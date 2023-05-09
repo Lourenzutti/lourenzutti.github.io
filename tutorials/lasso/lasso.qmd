@@ -51,6 +51,7 @@ library(tidymodels)
 library(knitr)
 library(broom)
 library(leaps)
+library(glmnet)
 library(Brq) # This package contains the data
 ```
 
@@ -310,14 +311,60 @@ fig.update_layout(
         y = [r.coef_lpsa_two_vars[1]], 
         z = [r.rss_two_vars], 
         mode = "markers", type = "scatter3d", 
-        marker = {'size': 15, 'color': "lightgreen", 'symbol': 'circle'}))
+        marker = {'size': 15, 'color': "green", 'symbol': 'circle'}))
     #yaxis_title='b2',
     #zaxis_title='RSS')
 ```
 <br>
 
+```{r}
+ols_lm <- lm(lpsa ~ 0 + ., data = cancer_train_std)
+tidy(ols_lm)
+```
 
 The OLS solutions is given by $\beta_1 = `r round(coef_lpsa_two_vars[1], 4)`$ and $\beta_2 = `r round(coef_lpsa_two_vars[2], 4)`$. The RSS at this point is `r round(rss_two_vars, 4)`. 
+
+Now, if we decide to apply Lasso, with a constraint of $\left|\beta_1\right| + \left|\beta_2\right| \leq 0.5$ (this is equivalent to using $\lambda = 0.311$), the OLS solution would not be a valid solution because $`r round(coef_lpsa_two_vars[1], 4)` + `r round(coef_lpsa_two_vars[2], 4)` = `r round(coef_lpsa_two_vars[1], 4) + round(coef_lpsa_two_vars[2], 4)`\geq 0.5$. The only solutions that would be acceptable would be the ones that lie within the square shown in the figure below. 
+
+```{r echo = FALSE}
+ggplot(tibble(x1 = -0.5,  x2 = 0, x3 = 0.5, x4 = 0,
+              y1 = 0, y2 = 0.5, y3 = 0, y4 = -0.5)) + 
+  geom_segment(aes(x = x1, y = y1, xend = x2, yend = y2)) +
+  geom_segment(aes(x = x2, y = y2, xend = x3, yend = y3)) +
+  geom_segment(aes(x = x3, y = y3, xend = x4, yend = y4)) +
+  geom_segment(aes(x = x1, y = y1, xend = x4, yend = y4)) +
+  labs(x = 'β1', y = 'β2') +
+  xlim(-1, 1) +
+  ylim(-1, 1) +
+  geom_point(aes(x,y), color = "darkgreen", data = tibble(x=coef_lpsa_two_vars[1], y=coef_lpsa_two_vars[2])) + 
+  annotate("text", x = coef_lpsa_two_vars[1]-0.02, y = coef_lpsa_two_vars[2] + 0.06, label = "OLS solution")
+```
+
+The LASSO method then needs to shrink the coefficients until they are in the square. So, the LASSO solution is the best solution in the feasible region (the square).
+
+```{r, include=FALSE}
+fit <- glmnet(cancer_train_std |> select(lcavol, lweight), cancer_train_std$lpsa, lambda = 0.311)
+kable(tidy(fit))
+```
+
+```{r echo = FALSE}
+lasso_coef = coef(fit, s=0.311, exact = TRUE)
+ggplot(tibble(x1 = -0.5,  x2 = 0, x3 = 0.5, x4 = 0,
+              y1 = 0, y2 = 0.5, y3 = 0, y4 = -0.5)) + 
+  geom_segment(aes(x = x1, y = y1, xend = x2, yend = y2)) +
+  geom_segment(aes(x = x2, y = y2, xend = x3, yend = y3)) +
+  geom_segment(aes(x = x3, y = y3, xend = x4, yend = y4)) +
+  geom_segment(aes(x = x1, y = y1, xend = x4, yend = y4)) +
+  labs(x = 'β1', y = 'β2') +
+  xlim(-1, 1) +
+  ylim(-1, 1) +
+  geom_point(aes(x,y), color = "darkgreen", data = tibble(x=coef_lpsa_two_vars[1], y=coef_lpsa_two_vars[2])) + 
+  annotate("text", x = coef_lpsa_two_vars[1]-0.02, y = coef_lpsa_two_vars[2] + 0.06, label = "OLS solution") + 
+  geom_point(aes(x,y), color = "red", data = tibble(x=lasso_coef[2], y=lasso_coef[3])) + 
+  annotate("text", x = lasso_coef[2], y = lasso_coef[3] - 0.06, label = "LASSO solution")
+```
+
+As we can see from the figure above, the LASSO solution was in a vertice of the square, where one of the coefficients is zero. This is not unusual. The LASSO solution will generally be in a vertice, where one or more of the coefficients are zero. For this reason, LASSO is also considered a variable selection method. The LASSO coefficients, in this case, were $\beta_1 = 0.5$ and $\beta_2=0$. 
 
 
 
