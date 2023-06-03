@@ -96,12 +96,11 @@ Now that we have our training set, we can use it how we want, as much as we want
 summary(cancer_train |> select(-svi))
 ```
 
-
 We want to model `lpsa`, the log(prostate-specific antigen), using the remaining variables as explanatory variables (or independent variables, or predictors, or features, or covariates -- so many names for the same things, I know!). There are a wide variety of mathematical models we could use, linear Regression being one of the simplest ones. However, Linear Regression has the advantage of being highly interpretable while performing very well in many prediction tasks. 
 
 ## Linear Regression
 
-In regression, we want to model the relationship between a numerical variable $Y$ and some, say $p$, explanatory variables $X_1, X_2, \ldots, X_p$. The lienar regression equation is given by: 
+In regression, we want to model the relationship between a numerical variable $Y$ and some, say $p$, explanatory variables $X_1, X_2, \ldots, X_p$. The linear regression equation is given by: 
 
 $$
 Y_i = \beta_0 + \beta_1X_{1i} + \beta_2X_{2i} + \ldots + \beta_3X_{pi} + \varepsilon_i,\quad i=1,\ldots,n
@@ -111,8 +110,8 @@ where $\varepsilon$ is random error.
 In the Cancer Prostate case, our linear regression model is given by:
 
 \begin{align*}
-lpsa_i = &\ \beta_0 + \beta_1\times lcavol_i + \beta_2\times lweight_i + \beta_3\times age_i + \beta_4\times lbph_i\ + \\
-& + \beta_5\times svi_i + \beta_6\times lcp_i + \beta_7\times  gleason_i + \beta_8\times pgg45_i + \varepsilon_i
+\underbrace{lpsa_i}_\text{$Y_i$} = &\ \beta_0 + \beta_1\times \underbrace{lcavol_i}_\text{$X_{i1}$} + \beta_2\times \underbrace{lweight_i}_\text{$X_{i2}$} + \beta_3\times \underbrace{age_i}_\text{$X_{i3}$} + \beta_4\times \underbrace{lbph_i}_\text{$X_{i4}$}\ + \\
+& + \beta_5\times \underbrace{svi_i}_\text{$X_{i5}$} + \beta_6\times \underbrace{lcp_i}_\text{$X_{i6}$} + \beta_7\times  \underbrace{gleason_i}_\text{$X_{i7}$} + \beta_8\times \underbrace{pgg45_i}_\text{$X_{i8}$} + \varepsilon_i
 \end{align*}
 
 To fit this model to the data at hand, we find the values for the coefficients $\bm{\beta} = \left(\beta_0, \beta_1, \ldots, \beta_p\right)$ that minimizes the *residual sum of squares* (RSS), i.e., 
@@ -195,7 +194,13 @@ Naturally, the higher the price of the potato, the fewer potatoes you will buy. 
 
 Now, the penalty term ends up "measuring the size" of the coefficients. Look at the summary quantities of our variables above. Compare the magnitude of the predictors with the response. The predictors are in different scales. So, if we add some penalties according to the size of the coefficients, we need to put all predictors on the same scale. Otherwise, some variables will be more penalized than others. We do this by **standardizing the predictors**, a step that **must** be done in regularization. 
 
-Regularization methods help us to mitigate overfitting, to find solutions in the presence of multicollinearity, and, in the case of LASSO, it helps us with variable selection. In the following, we will restrict our focus to LASSO. 
+Regularization methods help us to mitigate overfitting and, in the case of LASSO, it helps us with variable selection. 
+
+##### Why shrinking $\beta$ regularizes the model?
+
+
+
+In the following, we will restrict our focus to LASSO. 
 
 
 ## The LASSO method
@@ -219,11 +224,11 @@ $$
 
 This second formulation of LASSO is saying that we want to minimize the RSS (just like in the OLS). But differently than the OLS, not all the $\bm{\beta}$ are fair game. We need a $\bm{\beta}$ that satisfies the condition $\sum_{i=1}^p \left|\beta_i\right| \leq C$ for a positive constant $C$. Doing this constrains the search space of the solution: we don't look for the best $\bm{\beta}$ everywhere; we look for the best $\bm{\beta}$ in a given smaller region. 
 
-#### Example
+### Example 1: LASSO with two covariates
 
 To be able to visualize what the LASSO method is doing, let's restrict our attention to a small case of two covariates. Although this is of little practical interest, it will be useful for us to be able to make some plots. 
 
-Let us consider only two covariates of the Prostate Cancer dataset: `lcavol` and `lweight`. Let's first standardize the variables. In this case we will also center the response, just to get rid of the intercept (as it will be 0). 
+Let us consider only two covariates of the Prostate Cancer dataset: `lcavol` and `lweight`. Let's first standardize the predictors. In this case we will also center the response, just to get rid of the intercept (as it will be 0). 
 
 ```{r}
 # Standardizing the predictors and centering the response
@@ -249,7 +254,12 @@ Ok, everything looks good. All variables are centered (i.e., have 0 mean) and on
 $$
 lpsa_i = \beta_1\times lcavol_i + \beta_2\times lweight_i + \varepsilon_i
 $$
-Note that there's no intercept. We already removed it by centring all the variables. So then, all that is left for us to do is find $\beta_1$ and $\beta_2$ that minimize the RSS, shown in the figure below. The green point is the OLS solution. 
+Note that there's no intercept. We already removed it by centring all the variables. So then, all that is left for us to do is estimate $\beta_1$ and $\beta_2$.
+
+
+#### The Ordinary Least Square (OLS) Solution
+
+The OLS estimates for $\beta_1$ and $\beta_2$ are the ones that minimize the RSS, shown in the figure below. The green point is the OLS solution. 
 
 ```{r, include=FALSE}
 model_two_vars <- lm(lpsa ~ 0 + lcavol + lweight, data = cancer_train_std)
@@ -274,8 +284,8 @@ cancer_train_std_py = r.cancer_train_std[['lcavol', 'lweight', 'lpsa']]
 
 
 # Create a Meshgrid for plotting
-x = np.linspace(-5, 5, 100)
-y = np.linspace(-5, 5, 100)
+x = np.linspace(-4, 4, 100)
+y = np.linspace(-4, 4, 100)
 xx, yy = np.meshgrid(x, y)
 
 # Calculate the RSS for the meshgrid
@@ -318,13 +328,16 @@ fig.update_layout(
 <br>
 
 ```{r}
+# Fitting the OLS model with no intercept.
 ols_lm <- lm(lpsa ~ 0 + ., data = cancer_train_std)
-tidy(ols_lm)
+kable(tidy(ols_lm), digits = 4)
 ```
 
 The OLS solutions is given by $\beta_1 = `r round(coef_lpsa_two_vars[1], 4)`$ and $\beta_2 = `r round(coef_lpsa_two_vars[2], 4)`$. The RSS at this point is `r round(rss_two_vars, 4)`. 
 
-Now, if we decide to apply Lasso, with a constraint of $\left|\beta_1\right| + \left|\beta_2\right| \leq 0.5$ (this is equivalent to using $\lambda = 0.311$), the OLS solution would not be a valid solution because $`r round(coef_lpsa_two_vars[1], 4)` + `r round(coef_lpsa_two_vars[2], 4)` = `r round(coef_lpsa_two_vars[1], 4) + round(coef_lpsa_two_vars[2], 4)`\geq 0.5$. The only solutions that would be acceptable would be the ones that lie within the square shown in the figure below. 
+#### The LASSO Solution
+
+If we decide to apply Lasso, with a constraint of $\left|\beta_1\right| + \left|\beta_2\right| \leq 0.5$ (this is equivalent to using $\lambda = 0.311$), the OLS solution would not be a valid solution because $`r round(coef_lpsa_two_vars[1], 4)` + `r round(coef_lpsa_two_vars[2], 4)` = `r round(coef_lpsa_two_vars[1], 4) + round(coef_lpsa_two_vars[2], 4)`\geq 0.5$. The only solutions that would be acceptable would be the ones that lie within the square shown in the figure below. 
 
 ```{r echo = FALSE}
 ggplot(tibble(x1 = -0.5,  x2 = 0, x3 = 0.5, x4 = 0,
@@ -406,3 +419,61 @@ $$
 
 
 -->
+
+
+
+
+---
+
+```{python, echo=FALSE}
+#| label: LASSO
+import plotly.graph_objects as go
+import pandas as pd
+import numpy as np
+
+# Read data from R
+cancer_train_std_py = r.cancer_train_std[['lcavol', 'lweight', 'lpsa']]
+
+
+# Create a Meshgrid for plotting
+x = np.linspace(-5, 5, 100)
+y = np.linspace(-5, 5, 100)
+xx, yy = np.meshgrid(x, y)
+
+# Calculate the RSS for the meshgrid
+z_data = pd.DataFrame({
+    'b1': np.ravel(xx),
+    'b2': np.ravel(yy),
+    'data': np.array(
+        [np.sum((cancer_train_std_py['lpsa'].to_numpy() - b1*cancer_train_std_py['lcavol'].to_numpy() - b2*cancer_train_std_py['lweight'].to_numpy())**2) + 1000*0.311*(abs(b1) + abs(b2)) 
+         for b1, b2 in zip(np.ravel(xx), np.ravel(yy))])}
+)
+
+#z_data
+
+fig = go.Figure(data=[go.Surface(x = x, y = y, z=z_data['data'].to_numpy().reshape(len(x), len(y)))])
+
+fig.update_layout(
+    title={
+        'text': 'Residual Sum of Square as a function of the coefficients',
+        'y': 0.9,	
+        'x': 0.45,
+        'xanchor': 'center',
+        'yanchor': 'top'},
+    autosize=False,
+    width=800,
+    height=500,
+    margin=dict(l=15, r=10, b=60, t=40),
+    scene=dict(
+        xaxis_title=r'β1',
+        yaxis_title=r'β2',
+        zaxis_title=r'RSS',
+    )).add_trace(go.Scatter3d(
+        x = [0.5], 
+        y = [0], 
+        z = [r.rss_two_vars], 
+        mode = "markers", type = "scatter3d", 
+        marker = {'size': 15, 'color': "green", 'symbol': 'circle'}))
+    #yaxis_title='b2',
+    #zaxis_title='RSS')
+```
