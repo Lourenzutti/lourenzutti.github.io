@@ -398,35 +398,57 @@ fit_many_lambdas <- glmnet(cancer_train_std |> select(lcavol, lweight), cancer_t
 
 coef_matrix <- coef(fit_many_lambdas) |> as.matrix()
 ojs_define(coef_matrix = coef_matrix)
-ojs_define(cancer_data = cancer_train_std |> select(lcavol, lweight) |> as.matrix())
+ojs_define(cancer_data = cancer_train_std |> select(lpsa, lcavol, lweight) |> as.matrix())
 ```
 
-```{ojs}
+```{js}
 // Create a Meshgrid for plotting
-x = Array(100).fill().map((element, index) => -4 + index*0.08)
-y = Array(100).fill().map((element, index) => -4 + index*0.08)
-xx = []
-yy = []
+x = Array(100).fill().map((element, index) => -4 + index*0.08);
+y = Array(100).fill().map((element, index) => -4 + index*0.08);
+xx = [];
+yy = [];
 {
     for (var i=0; i < y.length; i++) {
-        xx[i] = []
-        yy[i] = []
+        xx[i] = [];
+        yy[i] = [];
         for (var j=0; j < x.length; j++) {
-            xx[i][j] = x[j]
-            yy[i][j] = y[i]
+            xx[i][j] = x[j];
+            yy[i][j] = y[i];
         }
     }
 }
+
+b1 = xx.flat();
+b2 = yy.flat();
+
+rss = Array(b1.length);
+for (let i = 0; i < b1.length; i++) { 
+    rss[i] = cancer_data.map(elem => (elem[0] - b1[i] * elem[1] - b2[i] * elem[2]) ** 2 ).reduce((a, t) => a + t, 0);
+};
+    
+//[np.sum((cancer_train_std_py['lpsa'].to_numpy() - b1*cancer_train_std_py['lcavol'].to_numpy() - b2*cancer_train_std_py['lweight'].to_numpy())**2) 
+//         for b1, b2 in zip(np.ravel(xx), np.ravel(yy))]
 ```
 
 ```{ojs} 
 //| echo: false
+//| include: false
 viewof lambda = Inputs.range([0, 4000], {value: 0.30, step: 0.05, label: "Lambda"})
 
+/*console.log("Coef matrix:");
+console.log(coef_matrix);
+console.log("xx:");
+console.log(xx);
+console.log("yy:");
+console.log(yy);
+console.log("Data matrix:");*/
+console.log(cancer_data);
+console.log(rss);
+console.log(xx);
 
 
-# Calculate the RSS for the meshgrid
-z_data = pd.DataFrame({
+// Calculate the RSS for the meshgrid
+/*z_data = pd.DataFrame({
     'b1': np.ravel(xx),
     'b2': np.ravel(yy),
     'data': np.array(
@@ -459,7 +481,7 @@ fig.update_layout(
         mode = "markers", type = "scatter3d", 
         marker = {'size': 15, 'color': "green", 'symbol': 'circle'}))
     #yaxis_title='b2',
-    #zaxis_title='RSS')
+    #zaxis_title='RSS')*/
 ```
 
 - What happens when you increase $\lambda$ to very large values?
