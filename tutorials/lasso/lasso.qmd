@@ -22,7 +22,7 @@ webr:
         text-align: justify;    
     }
 </style>
-<script src="https://cdn.plot.ly/plotly-2.24.1.min.js" charset="utf-8"></script>
+<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
 
 **Prerequisites:** <br>
 
@@ -391,6 +391,10 @@ As we can see from the figure above, the LASSO solution was in a vertice of the 
 
 We could also look at this on the perspective of the loss function $LASSO(\bm\beta, \lambda)$. Naturally, this function is a function of $\lambda$. The figure below shows the loss function for different values of $\lambda$. 
 
+<div id='rss-plot-lambdas'>
+
+</div>
+
 ```{r}
 #| output: false
 #| echo: false
@@ -401,87 +405,56 @@ ojs_define(coef_matrix = coef_matrix)
 ojs_define(cancer_data = cancer_train_std |> select(lpsa, lcavol, lweight) |> as.matrix())
 ```
 
-```{js}
+```{ojs}
+//| echo: false
 // Create a Meshgrid for plotting
-x = Array(100).fill().map((element, index) => -4 + index*0.08);
-y = Array(100).fill().map((element, index) => -4 + index*0.08);
-xx = [];
-yy = [];
-{
-    for (var i=0; i < y.length; i++) {
-        xx[i] = [];
-        yy[i] = [];
-        for (var j=0; j < x.length; j++) {
-            xx[i][j] = x[j];
-            yy[i][j] = y[i];
-        }
-    }
-}
-
-b1 = xx.flat();
-b2 = yy.flat();
-
-rss = Array(b1.length);
-for (let i = 0; i < b1.length; i++) { 
-    rss[i] = cancer_data.map(elem => (elem[0] - b1[i] * elem[1] - b2[i] * elem[2]) ** 2 ).reduce((a, t) => a + t, 0);
-};
+values_plot = {
+    let b1 = Array(100).fill().map((element, index) => -4 + index*0.08);
+    let b2 = Array(100).fill().map((element, index) => -4 + index*0.08);
     
-//[np.sum((cancer_train_std_py['lpsa'].to_numpy() - b1*cancer_train_std_py['lcavol'].to_numpy() - b2*cancer_train_std_py['lweight'].to_numpy())**2) 
-//         for b1, b2 in zip(np.ravel(xx), np.ravel(yy))]
+
+    let rss = [];
+    for (let i = 0; i < b1.length; i++) { 
+        rss[i] = [];
+        for (let j = 0; j < b2.length; j++) { 
+            rss[i].push(cancer_data.map(elem => (elem[0] - b1[i] * elem[1] - b2[j] * elem[2]) ** 2 + lambda * (Math.abs(b1[i]) + Math.abs(b2[j])) ).reduce((a, t) => a + t, 0));
+        }
+    };
+
+    return {
+        b1: b1,
+        b2: b2,
+        rss: rss
+    };
+};
+
 ```
 
 ```{ojs} 
 //| echo: false
-//| include: false
-viewof lambda = Inputs.range([0, 4000], {value: 0.30, step: 0.05, label: "Lambda"})
+//| include: true
 
-/*console.log("Coef matrix:");
-console.log(coef_matrix);
-console.log("xx:");
-console.log(xx);
-console.log("yy:");
-console.log(yy);
-console.log("Data matrix:");*/
-console.log(cancer_data);
-console.log(rss);
-console.log(xx);
+viewof lambda = Inputs.range([0, 3], {value: 0, step: 0.01, label: "Lambda"});
 
+garbage = {
+let surfaceData = {
+    type: 'surface',
+    x: values_plot.b1,
+    y: values_plot.b2,
+    z: values_plot.rss
+};
 
-// Calculate the RSS for the meshgrid
-/*z_data = pd.DataFrame({
-    'b1': np.ravel(xx),
-    'b2': np.ravel(yy),
-    'data': np.array(
-        [np.sum((cancer_train_std_py['lpsa'].to_numpy() - b1*cancer_train_std_py['lcavol'].to_numpy() - b2*cancer_train_std_py['lweight'].to_numpy())**2) 
-         for b1, b2 in zip(np.ravel(xx), np.ravel(yy))])}
-)
+let layout = {
+    title: 'RSS Surface Plot',
+    scene: {
+        xaxis: { title: 'Beta 1' },
+        yaxis: { title: 'Beta 2' },
+        zaxis: { title: 'RSS' }
+    }
+};
 
-
-fig = go.Figure(data=[go.Surface(x = x, y = y, z=z_data['data'].to_numpy().reshape(len(x), len(y)))])
-
-fig.update_layout(
-    title={
-        'text': 'Residual Sum of Square as a function of the coefficients',
-        'y': 0.9,	
-        'x': 0.45,
-        'xanchor': 'center',
-        'yanchor': 'top'},
-    autosize=False,
-    width=800,
-    height=500,
-    margin=dict(l=15, r=10, b=60, t=40),
-    scene=dict(
-        xaxis_title=r'β1',
-        yaxis_title=r'β2',
-        zaxis_title=r'RSS',
-    )).add_trace(go.Scatter3d(
-        x = [r.coef_lpsa_two_vars[0]], 
-        y = [r.coef_lpsa_two_vars[1]], 
-        z = [r.rss_two_vars], 
-        mode = "markers", type = "scatter3d", 
-        marker = {'size': 15, 'color': "green", 'symbol': 'circle'}))
-    #yaxis_title='b2',
-    #zaxis_title='RSS')*/
+Plotly.newPlot('rss-plot-lambdas', [surfaceData], layout);
+};
 ```
 
 - What happens when you increase $\lambda$ to very large values?
@@ -489,40 +462,6 @@ fig.update_layout(
 - Once we start increasing $\lambda$, all of our $\beta$ coefficients will never increase. 
 
 ### Group Lasso
-<!-- 
-that minimizes the square of the residuals, and denote these values as $\hat{\bm{\beta}} = \left(\hat{\beta}_0, \hat{\beta}_1, \ldots, \hat{\beta}_8\right)$. 
-
-
-```{r}
-library(aplore3)
-birth_weight <- 
-    lowbwt |>
-    rename(
-        age = age,
-        weight_lbs = lwt,
-        race = race,
-        had_premature_labor = ptl,
-        n_visit_first_trimester = ftv,
-        uterine_irritability = ui,
-        baby_birth_weight_g = bwt) |> 
-    select(-low)
-```
-A baby's weight at the moment of birth is an important indication of the baby's health. For example, there have been some associations between high birth weight and increased risk of developing certain types of cancer (e.g., [1](https://pubmed.ncbi.nlm.nih.gov/26371026/)) and low birth weight might increase the risk of childhood asthma ([2](https://pubmed.ncbi.nlm.nih.gov/25339063/)) among other complications. Below is a dataset about 189 mothers and their babies weight at birth. 
-
-```{r}
-knitr::kable(head(birth_weight))
-```
-
-In regression, we want to model the relationship between a numerical variable $Y$ and some, say $p$, explanatory variables $X_1, X_2, \ldots, X_p$. There are different ways we can model such a relationship. Linear regression is one of the simplest (although still quite powerful) models. The linear regression is given by: 
-
-$$
-Y_i = \beta_0 + \beta_1X_{1i} + \beta_2X_{2i} + \ldots + \beta_3X_{pi} + \varepsilon,\quad i=1,\ldots,n
-$$
-
-
-
--->
-
 
 
 
@@ -530,6 +469,7 @@ $$
 
 ```{python, echo=FALSE}
 #| label: LASSO
+#| include: false
 import plotly.graph_objects as go
 import pandas as pd
 import numpy as np
