@@ -13,11 +13,18 @@ engine: knitr
 </style>
 <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
 
-**Prerequisites:** <br>
-
-    
-
 **Learning Objectives:** <br>
 
+At the end of this tutorial, the reader should be able to:
+
+- Calculate the forward pass of a neural network;
+- Calculate the backpropagation of a neural network;
+- Implement a neural network from scratch in Python;
+- Implement a neural network using PyTorch;
+
+**Prerequisites:** <br>
+
+It is assumed that the reader possesses a level of proficiency in computing derivatives, particularly in the application of the Chain Rule.
 
 <hr>
+
