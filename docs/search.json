@@ -4,7 +4,7 @@
     "href": "teaching.html",
     "title": "Teaching",
     "section": "",
-    "text": "STAT 200 - Elementary Statistics for Applications\n\n\nWinter Term 1: Section 103\n\n\n\n\nDSCI 100 - Introduction to Data Science\n\n\nWinter Term 2: Section 005\n\n\n\n\nSTAT 450 - Case Studies in Statistics\n\n\nWinter Term 2: Section 201 (Co-taught with Prof. Melissa Lee and Prof. Keegan Korthauer)"
+    "text": "STAT 200 - Elementary Statistics for Applications\n\n\nWinter Term 1: Section 103\n\n\n\n\nSTAT 201 - Statistical Inference for Data Science\n\n\nWinter Term 2: Sections 201 and 203\n\n\n\n\nSTAT 450 - Case Studies in Statistics\n\n\nWinter Term 2: Section 201 (Co-taught with Prof. Melissa Lee and Prof. Keegan Korthauer)\n\n\n\n\nSTAT 301 - Statistical Modelling for Data Science\n\n\nSummer Term 2: Section (TBD)"
   },
   {
     "objectID": "teaching.html#academic-year-20212022",
@@ -185,14 +185,21 @@
     "objectID": "teaching.html#academic-year-20222023",
     "href": "teaching.html#academic-year-20222023",
     "title": "Teaching",
-    "section": "",
-    "text": "STAT 200 - Elementary Statistics for Applications\n\n\nWinter Term 1: Section 103\n\n\n\n\nDSCI 100 - Introduction to Data Science\n\n\nWinter Term 2: Section 005\n\n\n\n\nSTAT 450 - Case Studies in Statistics\n\n\nWinter Term 2: Section 201 (Co-taught with Prof. Melissa Lee and Prof. Keegan Korthauer)"
+    "section": "Academic Year: 2022/2023",
+    "text": "Academic Year: 2022/2023\n\n\n  \n\n\nInstructor:\n\n\nSTAT 200 - Elementary Statistics for Applications\n\n\nWinter Term 1: Section 103\n\n\n\n\nDSCI 100 - Introduction to Data Science\n\n\nWinter Term 2: Section 005\n\n\n\n\nSTAT 450 - Case Studies in Statistics\n\n\nWinter Term 2: Section 201 (Co-taught with Prof. Melissa Lee and Prof. Keegan Korthauer)\n\n\n\n\nSTAT 305 - Introduction to Statistical Inference\n\n\nSummer Term 2: Section 001"
   },
   {
     "objectID": "tutorials/ffnn/ffnn.html",
     "href": "tutorials/ffnn/ffnn.html",
     "title": "Feed Forward Neural Network",
     "section": "",
-    "text": "Learning Objectives: \nAt the end of this tutorial, the reader should be able to:\n\nCalculate the forward pass of a neural network;\nCalculate the backpropagation of a neural network;\nImplement a neural network from scratch in Python;\nImplement a neural network using PyTorch;\n\nPrerequisites: \nIt is assumed that the reader possesses a level of proficiency in computing derivatives, particularly in the application of the Chain Rule."
+    "text": "Learning Objectives: \nAt the end of this tutorial, the reader should be able to:\n\nCalculate the forward pass of a neural network;\nCalculate the backpropagation of a neural network;\nImplement a neural network from scratch in Python;\nImplement a neural network using PyTorch;\n\nPrerequisites: \nIt is assumed that the reader possesses a level of proficiency in computing derivatives, particularly in the application of the Chain Rule. Some Python knowledge is also useful.\n\nIn this tutorial, we will explore how feedforward neural networks work. We’ll discuss neurons, layers, activation functions, and cost functions. Then, we’ll see in detail how we train a neural network using backpropagation. We will derive the backpropagation formulae step-by-step and implement a neural network from scratch using Python’s Numpy package only.\nWe will need a neuron network diagram to help illustrate the steps of creating and training a neural network. If this is not the first post you’ve read about neural networks, you may have seen the diagram below.\n\n?(caption)\n\nWhen I started learning about neural networks, I found the standard diagram to be a bit confusing because it doesn’t explicitly show a crucial component needed for the backpropagation algorithm. Therefore, for the purpose of this tutorial, we will be using a more comprehensive diagram, as shown in Figure 2. Hopefully, this diagram will provide a clearer representation of the neural network and its components to illustrate the backpropagation algorithm."
+  },
+  {
+    "objectID": "teaching.html#academic-year-20232024",
+    "href": "teaching.html#academic-year-20232024",
+    "title": "Teaching",
+    "section": "",
+    "text": "STAT 200 - Elementary Statistics for Applications\n\n\nWinter Term 1: Section 103\n\n\n\n\nSTAT 201 - Statistical Inference for Data Science\n\n\nWinter Term 2: Sections 201 and 203\n\n\n\n\nSTAT 450 - Case Studies in Statistics\n\n\nWinter Term 2: Section 201 (Co-taught with Prof. Melissa Lee and Prof. Keegan Korthauer)\n\n\n\n\nSTAT 301 - Statistical Modelling for Data Science\n\n\nSummer Term 2: Section (TBD)"
   }
 ]

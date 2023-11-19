@@ -4,6 +4,7 @@ format:
   html:
     html-math-method: katex
 engine: knitr
+css: [/styles/tutorials.css, /styles/tutorials-chapters.css, styles/ffnn.css]
 ---
 
 <style>
@@ -12,6 +13,12 @@ engine: knitr
     }
 </style>
 <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+<script src="https://d3js.org/d3.v6.min.js"></script>
+<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<script defer src="scripts/plot_nn.js"></script>
+
+
 
 **Learning Objectives:** <br>
 
@@ -25,6 +32,22 @@ At the end of this tutorial, the reader should be able to:
 **Prerequisites:** <br>
 
 It is assumed that the reader possesses a level of proficiency in computing derivatives, particularly in the application of the Chain Rule.
+Some Python knowledge is also useful.
 
 <hr>
 
+In this tutorial, we will explore how feedforward neural networks work. We'll discuss neurons, layers, activation functions, and cost functions. Then, we'll see in detail how we train a neural network using backpropagation. We will derive the backpropagation formulae step-by-step and implement a neural network from scratch using Python's Numpy package only. 
+
+We will need a neuron network diagram to help illustrate the steps of creating and training a neural network. If this is not the first post you've read about neural networks, you may have seen the diagram below.
+
+:::{#fig-usual_diagram style="position: relative; height:300px;"}
+
+
+:::
+
+When I started learning about neural networks, I found the standard diagram to be a bit confusing because it doesn't explicitly show a crucial component needed for the backpropagation algorithm. Therefore, for the purpose of this tutorial, we will be using a more comprehensive diagram, as shown in Figure 2. Hopefully, this diagram will provide a clearer representation of the neural network and its components to illustrate the backpropagation algorithm. 
+
+:::{#diagram_z style="position: relative; height:300px;"}
+
+
+:::
