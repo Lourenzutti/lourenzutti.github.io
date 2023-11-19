@@ -1,0 +1,23 @@
+---
+title: "Feed Forward Neural Network"
+format: 
+  html:
+    html-math-method: katex
+engine: knitr
+---
+
+<style>
+    main {
+        text-align: justify;    
+    }
+</style>
+<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+
+**Prerequisites:** <br>
+
+    
+
+**Learning Objectives:** <br>
+
+
+<hr>
