@@ -2,15 +2,15 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://lourenzutti.github.io/about.html</loc>
-    <lastmod>2023-06-06T00:37:43.549Z</lastmod>
+    <lastmod>2023-11-19T20:14:32.965Z</lastmod>
   </url>
   <url>
     <loc>https://lourenzutti.github.io/blog.html</loc>
-    <lastmod>2023-11-19T20:12:26.453Z</lastmod>
+    <lastmod>2023-11-19T20:15:29.910Z</lastmod>
   </url>
   <url>
     <loc>https://lourenzutti.github.io/teaching.html</loc>
-    <lastmod>2023-11-19T20:12:26.019Z</lastmod>
+    <lastmod>2023-11-19T20:15:22.365Z</lastmod>
   </url>
   <url>
     <loc>https://lourenzutti.github.io/tutorials/AB-testing/ab-test.html</loc>
@@ -30,7 +30,7 @@
   </url>
   <url>
     <loc>https://lourenzutti.github.io/tutorials.html</loc>
-    <lastmod>2023-11-19T20:12:24.971Z</lastmod>
+    <lastmod>2023-11-19T20:15:25.368Z</lastmod>
   </url>
   <url>
     <loc>https://lourenzutti.github.io/tutorials/lasso/lasso.html</loc>
@@ -38,6 +38,6 @@
   </url>
   <url>
     <loc>https://lourenzutti.github.io/tutorials/ffnn/ffnn.html</loc>
-    <lastmod>2023-11-19T20:12:26.926Z</lastmod>
+    <lastmod>2023-11-20T00:01:30.149Z</lastmod>
   </url>
 </urlset>
