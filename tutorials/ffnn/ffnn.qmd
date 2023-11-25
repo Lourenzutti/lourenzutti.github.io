@@ -4,7 +4,7 @@ format:
   html:
     html-math-method: katex
 engine: knitr
-css: [/styles/tutorials.css, /styles/tutorials-chapters.css, styles/ffnn.css]
+css: [/styles/tutorials.css, styles/ffnn.css]
 ---
 
 <style>
@@ -210,8 +210,12 @@ At the end of this tutorial, the reader should be able to:
 
 **Prerequisites:** <br>
 
-It is assumed that the reader possesses a level of proficiency in computing derivatives, particularly in the application of the Chain Rule.
-Some Python knowledge is also useful.
+It is assumed that the reader :
+
+- possesses a level of proficiency in computing derivatives, particularly in the application of the Chain Rule.
+- has some Python knowledge;
+- is able to perform matrix multiplication;
+ 
 
 <hr>
 
@@ -219,33 +223,23 @@ In this tutorial, we will explore how feedforward neural networks work. We'll di
 
 We will need a neuron network diagram to help illustrate the steps of creating and training a neural network. If this is not the first post you've read about neural networks, you may have seen the diagram below.
 
-:::{style='margin-bottom:1em;'}
+:::{#fig-nn-regular}
 
-:::{#usual_diagram style="position: relative; height:300px;"}
-```{js}
-//| echo: false
-createNeuralNetwork([2, 3, 2, 1], 'usual_diagram', false, 20, 25, 800, 300);
-```
+<img src="images/nn1.svg" alt="A drawing of an elephant." width="100%">
+
+The usual Neural Network diagram (bias neurons omitted).
 :::
 
-<center>**Figure 1:** The usual diagram of a Neural Network (bias neurons omitted).</center>
+When I started learning about neural networks, I found the standard diagram confusing because it doesn't explicitly show a crucial component needed for the backpropagation algorithm. Therefore, for this tutorial, we will explicitly include this component to the diagram, as shown in @fig-nn-diagram. 
+
+:::{#fig-nn-diagram}
+
+<img src="images/nn2.svg" alt="A drawing of an elephant." width="100%">
+
+A Neural Network diagram including the linear aggregator $z^{(l)}_{i}$  (again, bias neurons omitted).
 :::
 
-When I started learning about neural networks, I found the standard diagram confusing because it doesn't explicitly show a crucial component needed for the backpropagation algorithm. Therefore, for this tutorial, we will use a more comprehensive diagram, as shown in Figure 2. This diagram will provide a more explicit representation of the neural network and its components to illustrate the backpropagation algorithm. 
-
-:::{style='margin-bottom:1em;'}
-
-:::{#diagram_z style="position: relative; height:300px;"}
-```{js}
-//| echo: false
-createNeuralNetwork([2, 3, 2, 1], 'diagram_z', true, 20, 25, 800, 300);
-```
-:::
-
-<center>**Figure 2:** A neuron Network diagram including the linear aggregator $z^{(l)}_{i}$  (again, bias neurons omitted).</center>
-:::
-
-At this point, it is important to explain the diagram and connect it to the mathematical notation needed for deriving the backpropagation algorithm. Here are some points about this diagram:
+Let's introduce some terminology:
 
 - **Layers**: This neuron network has four layers. 
     - **Input layer:** the first layer is known as the input layer; it brings the data into the network.
@@ -255,11 +249,11 @@ At this point, it is important to explain the diagram and connect it to the math
 - **Neurons:** the blue circles are the so-called neurons; neurons send a numerical value as a signal for the neurons in the following layer. 
   - Different layers can have different numbers of neurons.
   - The signals neurons in the input layer send are the data. 
-  - The number of neurons in the input layer is the number of attributes in our data.
+  - The number of neurons in the input layer is the number of attributes in the dataset.
 
-- **Weights:** the weights are numerical values (positive or negative) that amplify or reduce the strength of a neuron's signal to another neuron;
+- **Weights:** the weights are numerical values (positive or negative) that amplify or reduce the strength of a neuron's signal to another neuron; they are represented in the graph by the lines;
 
 - **Receptors:** we will call the boxes attached to each neuron the neuron's receptor, which will collect and aggregate all the signals a neuron receives from other neurons;
 
-I admittedly am not a visual person. So, I've always found the terminology very confusing without looking at the math. For example, when I say that weights amplify or reduce the signal, how exactly does that happen? How exactly do receptors collect and aggregate all the signals? How do neurons process the signals passed by the receptors? 
+I've always found the terminology very confusing without looking at the equations. For example, when I say that weights amplify or reduce the signal, how exactly does that happen? How exactly do receptors collect and aggregate all the signals? How do neurons process the signals passed by the receptors? 
 So, at this point, I want us to zoom in on some parts of the neural network to see what is happening. 

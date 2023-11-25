@@ -35,3 +35,10 @@
 .area-tutorial  a {
     text-decoration: none;
 }
+
+li p {
+    margin-bottom: 5px;
+}
+li {
+    margin-bottom: 7px;
+}
