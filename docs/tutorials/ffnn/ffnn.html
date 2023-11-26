@@ -427,14 +427,14 @@ function createNeuralNetwork(layers, div_name, drawZSquares=true, neuronRadius =
 <p>We will need a neuron network diagram to help illustrate the steps of creating and training a neural network. If this is not the first post you’ve read about neural networks, you may have seen the diagram below.</p>
 <div id="fig-nn-regular" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
-<p><img src="images/nn1.svg" alt="A drawing of an elephant." width="100%" class="figure-img"></p>
+<p><img src="images/nn1.svg" width="100%" class="figure-img"></p>
 <figcaption class="figure-caption">Figure&nbsp;1: The usual Neural Network diagram (bias neurons omitted).</figcaption>
 </figure>
 </div>
 <p>When I started learning about neural networks, I found the standard diagram confusing because it doesn’t explicitly show a crucial component needed for the backpropagation algorithm. Therefore, for this tutorial, we will explicitly include this component to the diagram, as shown in <a href="#fig-nn-diagram">Figure&nbsp;2</a>.</p>
 <div id="fig-nn-diagram" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
-<p><img src="images/nn2.svg" alt="A drawing of an elephant." width="100%" class="figure-img"></p>
+<p><img src="images/nn2.svg" width="100%" class="figure-img"></p>
 <figcaption class="figure-caption">Figure&nbsp;2: A Neural Network diagram including the linear aggregator <span class="math inline">z^{(l)}_{i}</span> (again, bias neurons omitted).</figcaption>
 </figure>
 </div>
@@ -451,11 +451,53 @@ function createNeuralNetwork(layers, div_name, drawZSquares=true, neuronRadius =
 <li>Different layers can have different numbers of neurons.</li>
 <li>The signals neurons in the input layer send are the data.</li>
 <li>The number of neurons in the input layer is the number of attributes in the dataset.</li>
+<li><strong>Activation function:</strong> a non-linear function that specifies how neurons process the signals they receive. This function is not explicitly showed in the graph, but it is “inside” the neuron.</li>
 </ul></li>
 <li><p><strong>Weights:</strong> the weights are numerical values (positive or negative) that amplify or reduce the strength of a neuron’s signal to another neuron; they are represented in the graph by the lines;</p></li>
-<li><p><strong>Receptors:</strong> we will call the boxes attached to each neuron the neuron’s receptor, which will collect and aggregate all the signals a neuron receives from other neurons;</p></li>
+<li><p><strong>Receptors:</strong> we will call the boxes attached to each neuron the neuron’s receptor, which will collect and aggregate all the signals a neuron receives from other neurons (this is not standard language);</p></li>
 </ul>
-<p>I’ve always found the terminology very confusing without looking at the equations. For example, when I say that weights amplify or reduce the signal, how exactly does that happen? How exactly do receptors collect and aggregate all the signals? How do neurons process the signals passed by the receptors? So, at this point, I want us to zoom in on some parts of the neural network to see what is happening.</p>
+<p>I’ve always found the terminology very confusing without looking at the equations. For example, when I say that weights amplify or reduce the signal, how exactly does that happen? How exactly do receptors collect and aggregate all the signals? How do neurons process the signals passed by the receptors? Before we go over these in detail, let’s review the notation we are using.</p>
+<div id="fig-nn-notation" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="images/nn3.svg" width="100%" class="figure-img"></p>
+<figcaption class="figure-caption">Figure&nbsp;3: The weight <span class="math inline">w_{1,2}^{(1)}</span> connects the neurons <span class="math inline">X^{(0)}_1</span> and <span class="math inline">X^{(1)}_2</span>.</figcaption>
+</figure>
+</div>
+<ul>
+<li><span class="math inline">(l)</span> refers to the layer, and goes from 0 to <span class="math inline">L</span>, where the <span class="math inline">L</span>th layer is the output layer.</li>
+<li><span class="math inline">n^{(l)}</span> is the number of neurons in layer <span class="math inline">l</span>.</li>
+<li><span class="math inline">X^{(l)}_i</span> is the <span class="math inline">i</span>th neuron in layer <span class="math inline">l</span>.</li>
+<li><span class="math inline">Z^{(l)}_i</span> is the receptor of neuron <span class="math inline">X^{(l)}_i</span>.</li>
+<li><span class="math inline">w_{i,j}^{(l)}</span> is the weight connecting the <span class="math inline">i</span>th neuron in layer <span class="math inline">l-1</span> to the <span class="math inline">j</span>th neuron in layer <span class="math inline">l</span>.</li>
+</ul>
+<p>Since we have a ton of weights, it is helpful for us to organize them into matrices. We will have one weight matrix per layer (except for layer 0). We will denote the matrices as <span class="math inline">{\bf{W}}^{(l)}</span>. <a href="#fig-nn-matrix-weights">Figure&nbsp;4</a> illustrates how the weights are organized into matrices for our example neural network.</p>
+<div id="fig-nn-matrix-weights" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="images/nn4.svg" width="100%" class="figure-img"></p>
+<figcaption class="figure-caption">Figure&nbsp;4: The weight <span class="math inline">w_{1,2}^{(1)}</span> connects the neurons <span class="math inline">X^{(0)}_1</span> and <span class="math inline">X^{(1)}_2</span>.</figcaption>
+</figure>
+</div>
+<p>The matrix <span class="math inline">{\bf{W}}^{(l)}</span> contains the weights connecting neurons in layer <span class="math inline">l-1</span> to neurons in layer <span class="math inline">l</span>. It has <span class="math inline">n^{(l-1)}</span> rows and <span class="math inline">n^{(l)}</span> columns. The <span class="math inline">i</span>th row of <span class="math inline">{\bf{W}}^{(l)}</span> are all weights “leaving” neuron <span class="math inline">i</span> from layer <span class="math inline">l-1</span>. The <span class="math inline">j</span>th column of <span class="math inline">{\bf{W}}^{(l)}</span> are all the weights arriving to neuron <span class="math inline">j</span> in layer <span class="math inline">l-1</span>. <a href="#fig-weight-matrix-shape">Figure&nbsp;5</a> illustrates these points.</p>
+<div id="fig-weight-matrix-shape" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="images/nn5.svg" width="100%" class="figure-img"></p>
+<figcaption class="figure-caption">Figure&nbsp;5: Shape of matrix <span class="math inline">{\bf{W}}^{(1)}</span>.</figcaption>
+</figure>
+</div>
+<p>For example, the second row of <span class="math inline">{\bf{W}}^{(2)}</span> has all the weights leaving neuron 2 from layer 1, as shown in <a href="#fig-weight-matrix-row">Figure&nbsp;6</a>; while the second column has all the weights arriving at neuron 2 in layer 2, as illustrated in <a href="#fig-weight-matrix-column">Figure&nbsp;7</a>.</p>
+<div id="fig-weight-matrix-row" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="images/nn6.svg" width="100%" class="figure-img"></p>
+<figcaption class="figure-caption">Figure&nbsp;6: The second row of <span class="math inline">{\bf{W}}^{(2)}</span> has all weights “leaving” neuron 2 in layer 1.</figcaption>
+</figure>
+</div>
+<div id="fig-weight-matrix-column" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="images/nn7.svg" width="100%" class="figure-img"></p>
+<figcaption class="figure-caption">Figure&nbsp;7: The second column of <span class="math inline">{\bf{W}}^{(2)}</span> has all weights “arriving” at neuron 2 in layer 2.</figcaption>
+</figure>
+</div>
+<p>So, at this point, I want us to zoom in on some parts of the neural network to see what is happening.</p>
 
 
 

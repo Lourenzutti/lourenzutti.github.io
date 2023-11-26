@@ -225,7 +225,7 @@ We will need a neuron network diagram to help illustrate the steps of creating a
 
 :::{#fig-nn-regular}
 
-<img src="images/nn1.svg" alt="A drawing of an elephant." width="100%">
+<img src="images/nn1.svg" width="100%">
 
 The usual Neural Network diagram (bias neurons omitted).
 :::
@@ -234,7 +234,7 @@ When I started learning about neural networks, I found the standard diagram conf
 
 :::{#fig-nn-diagram}
 
-<img src="images/nn2.svg" alt="A drawing of an elephant." width="100%">
+<img src="images/nn2.svg" width="100%">
 
 A Neural Network diagram including the linear aggregator $z^{(l)}_{i}$  (again, bias neurons omitted).
 :::
@@ -250,10 +250,61 @@ Let's introduce some terminology:
   - Different layers can have different numbers of neurons.
   - The signals neurons in the input layer send are the data. 
   - The number of neurons in the input layer is the number of attributes in the dataset.
+  - **Activation function:** a non-linear function that specifies how neurons process the signals they receive. This function is not explicitly showed in the graph, but it is "inside" the neuron. 
 
 - **Weights:** the weights are numerical values (positive or negative) that amplify or reduce the strength of a neuron's signal to another neuron; they are represented in the graph by the lines;
 
-- **Receptors:** we will call the boxes attached to each neuron the neuron's receptor, which will collect and aggregate all the signals a neuron receives from other neurons;
+- **Receptors:** we will call the boxes attached to each neuron the neuron's receptor, which will collect and aggregate all the signals a neuron receives from other neurons (this is not standard language); 
 
-I've always found the terminology very confusing without looking at the equations. For example, when I say that weights amplify or reduce the signal, how exactly does that happen? How exactly do receptors collect and aggregate all the signals? How do neurons process the signals passed by the receptors? 
+I've always found the terminology very confusing without looking at the equations. For example, when I say that weights amplify or reduce the signal, how exactly does that happen? How exactly do receptors collect and aggregate all the signals? How do neurons process the signals passed by the receptors? Before we go over these in detail, let's review the notation we are using.
+
+:::{#fig-nn-notation}
+
+<img src="images/nn3.svg" width="100%">
+
+The weight $w_{1,2}^{(1)}$ connects the neurons $X^{(0)}_1$ and $X^{(1)}_2$.
+:::
+
+- $(l)$ refers to the layer, and goes from 0 to $L$, where the $L$th layer is the output layer. 
+- $n^{(l)}$ is the number of neurons in layer $l$.
+- $X^{(l)}_i$ is the $i$th neuron in layer $l$.
+- $Z^{(l)}_i$ is the receptor of neuron $X^{(l)}_i$.
+- $w_{i,j}^{(l)}$ is the weight connecting the $i$th neuron in layer $l-1$ to the $j$th neuron in layer $l$.
+
+Since we have a ton of weights, it is helpful for us to organize them into matrices. We will have one weight matrix per layer (except for layer 0). We will denote the matrices as ${\bf{W}}^{(l)}$. @fig-nn-matrix-weights illustrates how the weights are organized into matrices for our example neural network.
+
+:::{#fig-nn-matrix-weights}
+
+<img src="images/nn4.svg" width="100%">
+
+The weight $w_{1,2}^{(1)}$ connects the neurons $X^{(0)}_1$ and $X^{(1)}_2$.
+:::
+
+The matrix ${\bf{W}}^{(l)}$ contains the weights connecting neurons in layer $l-1$ to neurons in layer $l$. It has $n^{(l-1)}$ rows and $n^{(l)}$ columns. The $i$th row of ${\bf{W}}^{(l)}$ are all weights "leaving" neuron $i$ from layer $l-1$. The $j$th column of ${\bf{W}}^{(l)}$ are all the weights arriving to neuron $j$ in layer $l-1$. @fig-weight-matrix-shape illustrates these points. 
+
+:::{#fig-weight-matrix-shape}
+
+<img src="images/nn5.svg" width="100%">
+
+Shape of matrix ${\bf{W}}^{(1)}$.
+:::
+
+For example, the second row of ${\bf{W}}^{(2)}$ has all the weights leaving neuron 2 from layer 1, as shown in @fig-weight-matrix-row; while the second column has all the weights arriving at neuron 2 in layer 2, as illustrated in @fig-weight-matrix-column.
+
+:::{#fig-weight-matrix-row}
+
+<img src="images/nn6.svg" width="100%">
+
+The second row of ${\bf{W}}^{(2)}$ has all weights "leaving" neuron 2 in layer 1.
+:::
+
+
+:::{#fig-weight-matrix-column}
+
+<img src="images/nn7.svg" width="100%">
+
+The second column of ${\bf{W}}^{(2)}$ has all weights "arriving" at neuron 2 in layer 2.
+:::
+
 So, at this point, I want us to zoom in on some parts of the neural network to see what is happening. 
+
