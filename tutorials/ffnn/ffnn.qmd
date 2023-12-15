@@ -308,3 +308,7 @@ The second column of ${\bf{W}}^{(2)}$ has all weights "arriving" at neuron 2 in 
 
 So, at this point, I want us to zoom in on some parts of the neural network to see what is happening. 
 
+
+
+
+
