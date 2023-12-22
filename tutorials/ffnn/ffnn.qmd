@@ -306,7 +306,19 @@ The second row of ${\bf{W}}^{(2)}$ has all weights "leaving" neuron 2 in layer 1
 The second column of ${\bf{W}}^{(2)}$ has all weights "arriving" at neuron 2 in layer 2.
 :::
 
-So, at this point, I want us to zoom in on some parts of the neural network to see what is happening. 
+In order for us to go through an example of the feed-forward part of the neural network, let us get some synthetic data with two features as well as define some values for the weights.     
+
+```{python}
+import numpy as np
+
+rng = np.random.default_rng(seed=1)
+data = np.round(rng.uniform(3, 9, size=(10,2)), 1)
+Y = np.round(np.sum(data**2, axis=1) + rng.normal(loc=0, scale = 3, size=10), 1)
+Y_binary = (np.sum(data**2, axis=1) > 80 ) + 0 
+
+print(data)
+print(Y)
+```
 
 
 
