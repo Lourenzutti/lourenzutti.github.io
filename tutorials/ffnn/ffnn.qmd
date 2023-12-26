@@ -306,7 +306,26 @@ The second row of ${\bf{W}}^{(2)}$ has all weights "leaving" neuron 2 in layer 1
 The second column of ${\bf{W}}^{(2)}$ has all weights "arriving" at neuron 2 in layer 2.
 :::
 
+
+Now that we understand the notation, we are ready to introduce the necessary equations.
+
+
+- Receptors: $$z^{(l)}_j =\sum_{i=1}^{n^{(l-1)}} w^{(l-1)}_{i, j}x^{(l-1)}_i,\quad l=1,...,L, \quad \text{and} \quad j=1,...,n^{(l)}$$
+- Neurons: $$x^{(l)}_j=a\left(z^{(l)}_j\right),\quad l=1,...,L, \quad \text{and} \quad j=1,...,n^{(l)}$$
+where $a$ is a non-linear function called **activation function**. We will discuss activation functions in more detail later. For now, we will use $a(x)=\max\left\{0, x\right\}$.
+  - Note: for the input layer, $l=0$, $x^{(0)}_j$ is just the feature $j$ of the input vector. 
+
+Okay, I agree; the notation is heavy. We have a lot of things to keep track of, such as layers, receptors, neurons, and weights, so we need a lot of symbols and indices. For this reason, I encourage the reader to go back to @fig-nn-diagram, pick a neuron in a hidden layer, and write down the equations for that neuron while identifying the elements being used in the diagram.
+
 In order for us to go through an example of the feed-forward part of the neural network, let us get some synthetic data with two features as well as define some values for the weights.     
+
+:::{#fig-weight-matrix-column}
+
+<img src="images/nn8.svg" width="60%">
+
+Some synthetic data and weights for our neural network.
+:::
+
 
 ```{python}
 import numpy as np
@@ -316,8 +335,15 @@ data = np.round(rng.uniform(3, 9, size=(10,2)), 1)
 Y = np.round(np.sum(data**2, axis=1) + rng.normal(loc=0, scale = 3, size=10), 1)
 Y_binary = (np.sum(data**2, axis=1) > 80 ) + 0 
 
+W1 = np.round(rng.uniform(-0.1, 0.1, size=(2,3)), 2)
+W2 = np.round(rng.uniform(-0.1, 0.1, size=(3,2)), 2)
+W3 = np.round(rng.uniform(-0.1, 0.1, size=(2,1)), 2)
+
 print(data)
 print(Y)
+print(W1)
+print(W2)
+print(W3)
 ```
 
 

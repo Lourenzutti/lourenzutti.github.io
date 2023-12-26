@@ -543,7 +543,7 @@ Figure&nbsp;5: Shape of matrix <span class="math inline">{\bf{W}}^{(1)}</span>.
 </figcaption>
 </figure>
 </div>
-<p>For example, the second row of <span class="math inline">{\bf{W}}^{(2)}</span> has all the weights leaving neuron 2 from layer 1, as shown in <a href="#fig-weight-matrix-row" class="quarto-xref">Figure&nbsp;6</a>; while the second column has all the weights arriving at neuron 2 in layer 2, as illustrated in <a href="#fig-weight-matrix-column" class="quarto-xref">Figure&nbsp;7</a>.</p>
+<p>For example, the second row of <span class="math inline">{\bf{W}}^{(2)}</span> has all the weights leaving neuron 2 from layer 1, as shown in <a href="#fig-weight-matrix-row" class="quarto-xref">Figure&nbsp;6</a>; while the second column has all the weights arriving at neuron 2 in layer 2, as illustrated in <a href="#fig-weight-matrix-column" class="quarto-xref">Figure&nbsp;8</a>.</p>
 <div id="fig-weight-matrix-row" class="quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-weight-matrix-row-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
@@ -564,7 +564,26 @@ Figure&nbsp;7: The second column of <span class="math inline">{\bf{W}}^{(2)}</sp
 </figcaption>
 </figure>
 </div>
+<p>Now that we understand the notation, we are ready to introduce the necessary equations.</p>
+<ul>
+<li>Receptors: <span class="math display">z^{(l)}_j =\sum_{i=1}^{n^{(l-1)}} w^{(l-1)}_{i, j}x^{(l-1)}_i,\quad l=1,...,L, \quad \text{and} \quad j=1,...,n^{(l)}</span></li>
+<li>Neurons: <span class="math display">x^{(l)}_j=a\left(z^{(l)}_j\right),\quad l=1,...,L, \quad \text{and} \quad j=1,...,n^{(l)}</span> where <span class="math inline">a</span> is a non-linear function called <strong>activation function</strong>. We will discuss activation functions in more detail later. For now, we will use <span class="math inline">a(x)=\max\left\{0, x\right\}</span>.
+<ul>
+<li>Note: for the input layer, <span class="math inline">l=0</span>, <span class="math inline">x^{(0)}_j</span> is just the feature <span class="math inline">j</span> of the input vector.</li>
+</ul></li>
+</ul>
+<p>Okay, I agree; the notation is heavy. We have a lot of things to keep track of, such as layers, receptors, neurons, and weights, so we need a lot of symbols and indices. For this reason, I encourage the reader to go back to <a href="#fig-nn-diagram" class="quarto-xref">Figure&nbsp;2</a>, pick a neuron in a hidden layer, and write down the equations for that neuron while identifying the elements being used in the diagram.</p>
 <p>In order for us to go through an example of the feed-forward part of the neural network, let us get some synthetic data with two features as well as define some values for the weights.</p>
+<div id="fig-weight-matrix-column" class="quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-weight-matrix-column-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<p><img src="images/nn8.svg" width="60%" class="figure-img"></p>
+</div>
+<figcaption class="figure quarto-float-caption quarto-float-fig" id="fig-weight-matrix-column-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;8: Some synthetic data and weights for our neural network.
+</figcaption>
+</figure>
+</div>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
@@ -573,7 +592,11 @@ Figure&nbsp;7: The second column of <span class="math inline">{\bf{W}}^{(2)}</sp
 <span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>Y <span class="op">=</span> np.<span class="bu">round</span>(np.<span class="bu">sum</span>(data<span class="op">**</span><span class="dv">2</span>, axis<span class="op">=</span><span class="dv">1</span>) <span class="op">+</span> rng.normal(loc<span class="op">=</span><span class="dv">0</span>, scale <span class="op">=</span> <span class="dv">3</span>, size<span class="op">=</span><span class="dv">10</span>), <span class="dv">1</span>)</span>
 <span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>Y_binary <span class="op">=</span> (np.<span class="bu">sum</span>(data<span class="op">**</span><span class="dv">2</span>, axis<span class="op">=</span><span class="dv">1</span>) <span class="op">&gt;</span> <span class="dv">80</span> ) <span class="op">+</span> <span class="dv">0</span> </span>
 <span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(data)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>W1 <span class="op">=</span> np.<span class="bu">round</span>(rng.uniform(<span class="op">-</span><span class="fl">0.1</span>, <span class="fl">0.1</span>, size<span class="op">=</span>(<span class="dv">2</span>,<span class="dv">3</span>)), <span class="dv">2</span>)</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>W2 <span class="op">=</span> np.<span class="bu">round</span>(rng.uniform(<span class="op">-</span><span class="fl">0.1</span>, <span class="fl">0.1</span>, size<span class="op">=</span>(<span class="dv">3</span>,<span class="dv">2</span>)), <span class="dv">2</span>)</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>W3 <span class="op">=</span> np.<span class="bu">round</span>(rng.uniform(<span class="op">-</span><span class="fl">0.1</span>, <span class="fl">0.1</span>, size<span class="op">=</span>(<span class="dv">2</span>,<span class="dv">1</span>)), <span class="dv">2</span>)</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(data)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[[6.1 8.7]
  [3.9 8.7]
@@ -589,6 +612,22 @@ Figure&nbsp;7: The second column of <span class="math inline">{\bf{W}}^{(2)}</sp
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(Y)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[112.9  90.1  58.1  97.3  41.8  89.   83.8  54.3  44.2  39.5]</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(W1)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[[-0.08  0.02  0.06]
+ [ 0.02  0.08 -0.09]]</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(W2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[[ 0.01 -0.01]
+ [-0.09  0.03]
+ [ 0.07  0.02]]</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(W3)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[[-0.05]
+ [ 0.07]]</code></pre>
 </div>
 </div>
 
