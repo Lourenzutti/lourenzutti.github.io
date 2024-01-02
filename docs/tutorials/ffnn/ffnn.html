@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.4.373">
+<meta name="generator" content="quarto-1.3.450">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -22,7 +22,7 @@ ul.task-list li input[type="checkbox"] {
 }
 /* CSS for syntax highlighting */
 pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
 pre > code.sourceCode > span:empty { height: 1.2em; }
 .sourceCode { overflow: visible; }
 code.sourceCode > span { color: inherit; text-decoration: inherit; }
@@ -81,12 +81,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   "panel-placement": "start",
   "type": "textbox",
   "limit": 20,
-  "keyboard-shortcut": [
-    "f",
-    "/",
-    "s"
-  ],
-  "show-item-context": false,
   "language": {
     "search-no-results-text": "No results",
     "search-matching-documents-text": "matching documents",
@@ -132,10 +126,12 @@ gtag('config', 'G-PLRMKTQGZJ', { 'anonymize_ip': true});
 <link rel="stylesheet" href="styles/ffnn.css">
 <meta property="og:title" content="Rodolfo Lourenzutti - Feed Forward Neural Network">
 <meta property="og:description" content="">
-<meta property="og:site_name" content="Rodolfo Lourenzutti">
+<meta property="og:image" content="https://lourenzutti.github.io/tutorials/ffnn/images/nn1.svg">
+<meta property="og:site-name" content="Rodolfo Lourenzutti">
 <meta name="twitter:title" content="Rodolfo Lourenzutti - Feed Forward Neural Network">
 <meta name="twitter:description" content="">
-<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://lourenzutti.github.io/tutorials/ffnn/images/nn1.svg">
+<meta name="twitter:card" content="summary_large_image">
 </head>
 
 <body class="nav-sidebar floating">
@@ -147,11 +143,11 @@ gtag('config', 'G-PLRMKTQGZJ', { 'anonymize_ip': true});
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item">
+      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item">
       Rodolfo Lourenzutti &lt;br&gt;
       </li></ol></nav>
-        <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
-        </a>
+      <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+      </a>
       <button type="button" class="btn quarto-search-button" aria-label="" onclick="window.quartoOpenSearch();">
         <i class="bi bi-search"></i>
       </button>
@@ -169,7 +165,7 @@ gtag('config', 'G-PLRMKTQGZJ', { 'anonymize_ip': true});
     <div class="sidebar-title mb-0 py-0">
       <a href="../../">Rodolfo Lourenzutti <br></a> 
         <div class="sidebar-tools-main tools-wide">
-    <a href="https://twitter.com/LourenzuttiR" title="" class="quarto-navigation-tool px-1" aria-label=""><i class="bi bi-twitter"></i></a>
+    <a href="https://twitter.com/LourenzuttiR" rel="" title="" class="quarto-navigation-tool px-1" aria-label=""><i class="bi bi-twitter"></i></a>
     <div class="dropdown">
       <a href="" title="" id="quarto-navigation-tool-dropdown-0" class="quarto-navigation-tool dropdown-toggle px-1" data-bs-toggle="dropdown" aria-expanded="false" aria-label=""><i class="bi bi-github"></i></a>
       <ul class="dropdown-menu" aria-labelledby="quarto-navigation-tool-dropdown-0">
@@ -185,8 +181,8 @@ gtag('config', 'G-PLRMKTQGZJ', { 'anonymize_ip': true});
           </li>
       </ul>
     </div>
-    <a href="https://www.linkedin.com/in/rodolfo-lourenzutti/" title="" class="quarto-navigation-tool px-1" aria-label=""><i class="bi bi-linkedin"></i></a>
-    <a href="mailto:rodolfo.lourenzutti@gmail.com" title="" class="quarto-navigation-tool px-1" aria-label=""><i class="bi bi-envelope-fill"></i></a>
+    <a href="https://www.linkedin.com/in/rodolfo-lourenzutti/" rel="" title="" class="quarto-navigation-tool px-1" aria-label=""><i class="bi bi-linkedin"></i></a>
+    <a href="mailto:rodolfo.lourenzutti@gmail.com" rel="" title="" class="quarto-navigation-tool px-1" aria-label=""><i class="bi bi-envelope-fill"></i></a>
 </div>
     </div>
       </div>
@@ -233,7 +229,13 @@ gtag('config', 'G-PLRMKTQGZJ', { 'anonymize_ip': true});
 <div id="quarto-sidebar-glass" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass"></div>
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-        
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#matrix-notation" id="toc-matrix-notation" class="nav-link active" data-scroll-target="#matrix-notation">Matrix Notation</a></li>
+  </ul>
+</nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
@@ -252,7 +254,6 @@ gtag('config', 'G-PLRMKTQGZJ', { 'anonymize_ip': true});
     
   </div>
   
-
 
 </header>
 
@@ -465,24 +466,16 @@ function createNeuralNetwork(layers, div_name, drawZSquares=true, neuronRadius =
 <p>In this tutorial, we will explore how feedforward neural networks work. We’ll discuss neurons, layers, activation functions, and cost functions. Then, we’ll see in detail how we train a neural network using backpropagation. We will derive the backpropagation formulae step-by-step and implement a neural network from scratch using Python’s Numpy package only.</p>
 <p>We will need a neuron network diagram to help illustrate the steps of creating and training a neural network. If this is not the first post you’ve read about neural networks, you may have seen the diagram below.</p>
 <div id="fig-nn-regular" class="quarto-figure quarto-figure-center anchored">
-<figure class="quarto-float quarto-float-fig figure">
-<div aria-describedby="fig-nn-regular-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<figure class="figure">
 <p><img src="images/nn1.svg" width="100%" class="figure-img"></p>
-</div>
-<figcaption class="figure quarto-float-caption quarto-float-fig" id="fig-nn-regular-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;1: The usual Neural Network diagram (bias neurons omitted).
-</figcaption>
+<figcaption class="figure-caption">Figure&nbsp;1: The usual Neural Network diagram (bias neurons omitted).</figcaption>
 </figure>
 </div>
-<p>When I started learning about neural networks, I found the standard diagram confusing because it doesn’t explicitly show a crucial component needed for the backpropagation algorithm. Therefore, for this tutorial, we will explicitly include this component to the diagram, as shown in <a href="#fig-nn-diagram" class="quarto-xref">Figure&nbsp;2</a>.</p>
+<p>When I started learning about neural networks, I found the standard diagram confusing because it doesn’t explicitly show a crucial component needed for the backpropagation algorithm. Therefore, for this tutorial, we will explicitly include this component to the diagram, as shown in <a href="#fig-nn-diagram">Figure&nbsp;2</a>.</p>
 <div id="fig-nn-diagram" class="quarto-figure quarto-figure-center anchored">
-<figure class="quarto-float quarto-float-fig figure">
-<div aria-describedby="fig-nn-diagram-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<figure class="figure">
 <p><img src="images/nn2.svg" width="100%" class="figure-img"></p>
-</div>
-<figcaption class="figure quarto-float-caption quarto-float-fig" id="fig-nn-diagram-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;2: A Neural Network diagram including the linear aggregator <span class="math inline">z^{(l)}_{i}</span> (again, bias neurons omitted).
-</figcaption>
+<figcaption class="figure-caption">Figure&nbsp;2: A Neural Network diagram including the linear aggregator <span class="math inline">z^{(l)}_{i}</span> (again, bias neurons omitted).</figcaption>
 </figure>
 </div>
 <p>Let’s introduce some terminology:</p>
@@ -505,83 +498,117 @@ Figure&nbsp;2: A Neural Network diagram including the linear aggregator <span cl
 </ul>
 <p>I’ve always found the terminology very confusing without looking at the equations. For example, when I say that weights amplify or reduce the signal, how exactly does that happen? How exactly do receptors collect and aggregate all the signals? How do neurons process the signals passed by the receptors? Before we go over these in detail, let’s review the notation we are using.</p>
 <div id="fig-nn-notation" class="quarto-figure quarto-figure-center anchored">
-<figure class="quarto-float quarto-float-fig figure">
-<div aria-describedby="fig-nn-notation-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<figure class="figure">
 <p><img src="images/nn3.svg" width="100%" class="figure-img"></p>
-</div>
-<figcaption class="figure quarto-float-caption quarto-float-fig" id="fig-nn-notation-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;3: The weight <span class="math inline">w_{1,2}^{(1)}</span> connects the neurons <span class="math inline">X^{(0)}_1</span> and <span class="math inline">X^{(1)}_2</span>.
-</figcaption>
+<figcaption class="figure-caption">Figure&nbsp;3: The weight <span class="math inline">w_{1,2}^{(1)}</span> connects the neurons <span class="math inline">X^{(0)}_1</span> and <span class="math inline">X^{(1)}_2</span>.</figcaption>
 </figure>
 </div>
 <ul>
 <li><span class="math inline">(l)</span> refers to the layer, and goes from 0 to <span class="math inline">L</span>, where the <span class="math inline">L</span>th layer is the output layer.</li>
 <li><span class="math inline">n^{(l)}</span> is the number of neurons in layer <span class="math inline">l</span>.</li>
-<li><span class="math inline">X^{(l)}_i</span> is the <span class="math inline">i</span>th neuron in layer <span class="math inline">l</span>.</li>
-<li><span class="math inline">Z^{(l)}_i</span> is the receptor of neuron <span class="math inline">X^{(l)}_i</span>.</li>
+<li><span class="math inline">x^{(l)}_{k}</span> is the <span class="math inline">k</span>th neuron in layer <span class="math inline">l</span>.
+<ul>
+<li><span class="math inline">x^{(l)}_{i,k}</span> is the value of the <span class="math inline">k</span>th neuron in layer <span class="math inline">l</span> for the <span class="math inline">i</span>th training sample.</li>
+</ul></li>
+<li><span class="math inline">z^{(l)}_{k}</span> is the receptor of neuron <span class="math inline">x^{(l)}_k</span>.
+<ul>
+<li><span class="math inline">z^{(l)}_{i,k}</span> is the value of the receptor of neuron <span class="math inline">x^{(l)}_k</span> for the <span class="math inline">i</span>th training sample.</li>
+</ul></li>
 <li><span class="math inline">w_{i,j}^{(l)}</span> is the weight connecting the <span class="math inline">i</span>th neuron in layer <span class="math inline">l-1</span> to the <span class="math inline">j</span>th neuron in layer <span class="math inline">l</span>.</li>
+<li><span class="math inline">b^{(l)}_k</span> the bias term added by the receptor of neuron <span class="math inline">k</span> in layer <span class="math inline">l</span>.</li>
 </ul>
-<p>Since we have a ton of weights, it is helpful for us to organize them into matrices. We will have one weight matrix per layer (except for layer 0). We will denote the matrices as <span class="math inline">{\bf{W}}^{(l)}</span>. <a href="#fig-nn-matrix-weights" class="quarto-xref">Figure&nbsp;4</a> illustrates how the weights are organized into matrices for our example neural network.</p>
+<p>Since we have a ton of weights, it is helpful for us to organize them into matrices. We will have one weight matrix per layer (except for layer 0). We will denote the matrices as <span class="math inline">{\bf{W}}^{(l)}</span>. <a href="#fig-nn-matrix-weights">Figure&nbsp;4</a> illustrates how the weights are organized into matrices for our example neural network.</p>
 <div id="fig-nn-matrix-weights" class="quarto-figure quarto-figure-center anchored">
-<figure class="quarto-float quarto-float-fig figure">
-<div aria-describedby="fig-nn-matrix-weights-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<figure class="figure">
 <p><img src="images/nn4.svg" width="100%" class="figure-img"></p>
-</div>
-<figcaption class="figure quarto-float-caption quarto-float-fig" id="fig-nn-matrix-weights-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;4: The weight <span class="math inline">w_{1,2}^{(1)}</span> connects the neurons <span class="math inline">X^{(0)}_1</span> and <span class="math inline">X^{(1)}_2</span>.
-</figcaption>
+<figcaption class="figure-caption">Figure&nbsp;4: The weight <span class="math inline">w_{1,2}^{(1)}</span> connects the neurons <span class="math inline">X^{(0)}_1</span> and <span class="math inline">X^{(1)}_2</span>.</figcaption>
 </figure>
 </div>
-<p>The matrix <span class="math inline">{\bf{W}}^{(l)}</span> contains the weights connecting neurons in layer <span class="math inline">l-1</span> to neurons in layer <span class="math inline">l</span>. It has <span class="math inline">n^{(l-1)}</span> rows and <span class="math inline">n^{(l)}</span> columns. The <span class="math inline">i</span>th row of <span class="math inline">{\bf{W}}^{(l)}</span> are all weights “leaving” neuron <span class="math inline">i</span> from layer <span class="math inline">l-1</span>. The <span class="math inline">j</span>th column of <span class="math inline">{\bf{W}}^{(l)}</span> are all the weights arriving to neuron <span class="math inline">j</span> in layer <span class="math inline">l-1</span>. <a href="#fig-weight-matrix-shape" class="quarto-xref">Figure&nbsp;5</a> illustrates these points.</p>
+<p>The matrix <span class="math inline">{\bf{W}}^{(l)}</span> contains the weights connecting neurons in layer <span class="math inline">l-1</span> to neurons in layer <span class="math inline">l</span>. It has <span class="math inline">n^{(l-1)}</span> rows and <span class="math inline">n^{(l)}</span> columns. The <span class="math inline">i</span>th row of <span class="math inline">{\bf{W}}^{(l)}</span> are all weights “leaving” neuron <span class="math inline">i</span> from layer <span class="math inline">l-1</span>. The <span class="math inline">j</span>th column of <span class="math inline">{\bf{W}}^{(l)}</span> are all the weights arriving to neuron <span class="math inline">j</span> in layer <span class="math inline">l-1</span>. <a href="#fig-weight-matrix-shape">Figure&nbsp;5</a> illustrates these points.</p>
 <div id="fig-weight-matrix-shape" class="quarto-figure quarto-figure-center anchored">
-<figure class="quarto-float quarto-float-fig figure">
-<div aria-describedby="fig-weight-matrix-shape-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<figure class="figure">
 <p><img src="images/nn5.svg" width="100%" class="figure-img"></p>
-</div>
-<figcaption class="figure quarto-float-caption quarto-float-fig" id="fig-weight-matrix-shape-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;5: Shape of matrix <span class="math inline">{\bf{W}}^{(1)}</span>.
-</figcaption>
+<figcaption class="figure-caption">Figure&nbsp;5: Shape of matrix <span class="math inline">{\bf{W}}^{(1)}</span>.</figcaption>
 </figure>
 </div>
-<p>For example, the second row of <span class="math inline">{\bf{W}}^{(2)}</span> has all the weights leaving neuron 2 from layer 1, as shown in <a href="#fig-weight-matrix-row" class="quarto-xref">Figure&nbsp;6</a>; while the second column has all the weights arriving at neuron 2 in layer 2, as illustrated in <a href="#fig-weight-matrix-column" class="quarto-xref">Figure&nbsp;8</a>.</p>
+<p>For example, the second row of <span class="math inline">{\bf{W}}^{(2)}</span> has all the weights leaving neuron 2 from layer 1, as shown in <a href="#fig-weight-matrix-row">Figure&nbsp;6</a>; while the second column has all the weights arriving at neuron 2 in layer 2, as illustrated in <a href="#fig-weight-matrix-column">Figure&nbsp;9</a>.</p>
 <div id="fig-weight-matrix-row" class="quarto-figure quarto-figure-center anchored">
-<figure class="quarto-float quarto-float-fig figure">
-<div aria-describedby="fig-weight-matrix-row-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<figure class="figure">
 <p><img src="images/nn6.svg" width="100%" class="figure-img"></p>
-</div>
-<figcaption class="figure quarto-float-caption quarto-float-fig" id="fig-weight-matrix-row-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;6: The second row of <span class="math inline">{\bf{W}}^{(2)}</span> has all weights “leaving” neuron 2 in layer 1.
-</figcaption>
+<figcaption class="figure-caption">Figure&nbsp;6: The second row of <span class="math inline">{\bf{W}}^{(2)}</span> has all weights “leaving” neuron 2 in layer 1.</figcaption>
 </figure>
 </div>
 <div id="fig-weight-matrix-column" class="quarto-figure quarto-figure-center anchored">
-<figure class="quarto-float quarto-float-fig figure">
-<div aria-describedby="fig-weight-matrix-column-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<figure class="figure">
 <p><img src="images/nn7.svg" width="100%" class="figure-img"></p>
-</div>
-<figcaption class="figure quarto-float-caption quarto-float-fig" id="fig-weight-matrix-column-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;7: The second column of <span class="math inline">{\bf{W}}^{(2)}</span> has all weights “arriving” at neuron 2 in layer 2.
-</figcaption>
+<figcaption class="figure-caption">Figure&nbsp;7: The second column of <span class="math inline">{\bf{W}}^{(2)}</span> has all weights “arriving” at neuron 2 in layer 2.</figcaption>
 </figure>
 </div>
 <p>Now that we understand the notation, we are ready to introduce the necessary equations.</p>
 <ul>
-<li>Receptors: <span class="math display">z^{(l)}_j =\sum_{i=1}^{n^{(l-1)}} w^{(l-1)}_{i, j}x^{(l-1)}_i,\quad l=1,...,L, \quad \text{and} \quad j=1,...,n^{(l)}</span></li>
-<li>Neurons: <span class="math display">x^{(l)}_j=a\left(z^{(l)}_j\right),\quad l=1,...,L, \quad \text{and} \quad j=1,...,n^{(l)}</span> where <span class="math inline">a</span> is a non-linear function called <strong>activation function</strong>. We will discuss activation functions in more detail later. For now, we will use <span class="math inline">a(x)=\max\left\{0, x\right\}</span>.
+<li><strong>Receptors</strong> (for the <span class="math inline">i</span>th training sample): <span class="math display">z^{(l)}_{i, k} =\sum_{j=1}^{n^{(l-1)}} w^{(l)}_{j, k}x^{(l-1)}_{i,j} + b^{(l)}_k,\quad l=1,...,L, \quad \text{and} \quad j=1,...,n^{(l)}</span></li>
+<li><strong>Neurons</strong> (for the <span class="math inline">i</span>th training sample): <span class="math display">x^{(l)}_{i, k}=a\left(z^{(l)}_{i, k}\right),\quad l=1,...,L, \quad \text{and} \quad j=1,...,n^{(l)}</span> where <span class="math inline">a</span> is a non-linear function called <strong>activation function</strong>. We will discuss activation functions in more detail later. For now, we will use <span class="math inline">a(x)=\max\left\{0, x\right\}</span>.
 <ul>
 <li>Note: for the input layer, <span class="math inline">l=0</span>, <span class="math inline">x^{(0)}_j</span> is just the feature <span class="math inline">j</span> of the input vector.</li>
 </ul></li>
 </ul>
-<p>Okay, I agree; the notation is heavy. We have a lot of things to keep track of, such as layers, receptors, neurons, and weights, so we need a lot of symbols and indices. For this reason, I encourage the reader to go back to <a href="#fig-nn-diagram" class="quarto-xref">Figure&nbsp;2</a>, pick a neuron in a hidden layer, and write down the equations for that neuron while identifying the elements being used in the diagram.</p>
-<p>In order for us to go through an example of the feed-forward part of the neural network, let us get some synthetic data with two features as well as define some values for the weights.</p>
+<p>Okay, I agree; the notation is heavy. We have a lot of things to keep track of, such as layers, receptors, neurons, and weights, so we need a lot of symbols and indices. For this reason, I encourage the reader to go back to <a href="#fig-nn-diagram">Figure&nbsp;2</a>, pick a neuron in a hidden layer, and write down the equations for that neuron while identifying the elements being used in the diagram.</p>
+<p>For us to go through an example of the feedforward part of the neural network, let us get some synthetic data with two features as well as define some values for the weights.</p>
 <div id="fig-weight-matrix-column" class="quarto-figure quarto-figure-center anchored">
-<figure class="quarto-float quarto-float-fig figure">
-<div aria-describedby="fig-weight-matrix-column-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<figure class="figure">
 <p><img src="images/nn8.svg" width="60%" class="figure-img"></p>
+<figcaption class="figure-caption">Figure&nbsp;8: Some synthetic data and weights for our neural network.</figcaption>
+</figure>
 </div>
-<figcaption class="figure quarto-float-caption quarto-float-fig" id="fig-weight-matrix-column-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;8: Some synthetic data and weights for our neural network.
-</figcaption>
+<p>Now, we can calculate the forward pass of the neural network. Let’s do it for the first row in our data, i.e., for the input vector <span class="math inline">x=(6.1, 8.7)</span>.</p>
+<div class="columns">
+<div class="column" style="width:45%;">
+<ul>
+<li><p>Receptors in Layer 1: <span class="math display">z^{(1)}_1 =\sum_{i=1}^{2} w^{(1)}_{i, 1}x^{(0)}_i = -0.314</span> <span class="math display">z^{(1)}_2 =\sum_{i=1}^{2} w^{(1)}_{i, 2}x^{(0)}_i =  0.818</span> <span class="math display">z^{(1)}_3 =\sum_{i=1}^{2} w^{(1)}_{i, 3}x^{(0)}_i = -0.417</span></p></li>
+<li><p>Receptors in Layer 2: <span class="math display">z^{(2)}_1 =\sum_{i=1}^{3} w^{(2)}_{i, 1}x^{(1)}_i = -0.0304</span> <span class="math display">z^{(2)}_2 =\sum_{i=1}^{3} w^{(2)}_{i, 2}x^{(1)}_i =  0.0245</span></p></li>
+<li><p>Receptor in Layer 3: <span class="math display">z^{(3)}_1 =\sum_{i=1}^{2} w^{(3)}_{i, 1}x^{(1)}_i = 0.0108</span></p></li>
+</ul>
+</div><div class="column" style="width:5%;">
+<!-- empty column to create gap -->
+</div><div class="column" style="width:45%;">
+<ul>
+<li>Neurons in Layer 1: <span class="math display">x^{(1)}_1 = \frac{1}{1+e^{z^{(1)}_1}} = 0.4221</span> <span class="math display">x^{(1)}_2 = \frac{1}{1+e^{z^{(1)}_2}} = 0.6938</span> <span class="math display">x^{(1)}_3 = \frac{1}{1+e^{z^{(1)}_3}} = 0.3972</span></li>
+</ul>
+<p><br></p>
+<ul>
+<li>Neurons in Layer 2: <span class="math display">x^{(2)}_1 = \frac{1}{1+e^{z^{(2)}_1}} = 0.4923</span> <span class="math display">x^{(2)}_2 = \frac{1}{1+e^{z^{(2)}_2}} = 0.5061</span></li>
+</ul>
+<p><br></p>
+<ul>
+<li>Neuron in Layer 3: <span class="math display">x^{(3)}_1 = \frac{1}{1+e^{z^{(3)}_1}} = 0.5027</span></li>
+</ul>
+</div>
+</div>
+<p>Let’s now visualize this result in the diagram. We will use two decimal places due to space constraints.</p>
+<div id="fig-weight-matrix-column" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="images/nn9.svg" width="100%" class="figure-img"></p>
+<figcaption class="figure-caption">Figure&nbsp;9: Forward pass of the neural network for the input vector <span class="math inline">x=(6.1, 8.7)</span>.</figcaption>
+</figure>
+</div>
+<p>Congratulations! You have completed the forward pass of the neural network.</p>
+<section id="matrix-notation" class="level3">
+<h3 class="anchored" data-anchor-id="matrix-notation">Matrix Notation</h3>
+<p>To implement a Neural Network in Python from scratch, we will need to use the highly optimized Numpy’s vectorization; so, let’s introduce the matrix notation here. The matrix notation also has the advantage of simplifying the steps. Note that everything is almost exactly the same; the only difference is that, with the matrix notation, we will be considering the entire dataset.</p>
+<p>We will denote matrices with capital bold letters (e.g., <span class="math inline">\bf{X}</span>, <span class="math inline">{\bf{W}}^{(1)}</span>), vectors as lowercase bold letters (e.g., <span class="math inline">{\bf{x}}_1</span>). Also, vectors are always column vectors (multiple rows, one column). Here are the equations in matrix format:</p>
+<ul>
+<li><p>Receptors: <span id="eq-matrix-receptor"><span class="math display">
+{\bf{Z}}^{(l)} = {\mathbf{X}^{(l-1)}} \mathbf{W}^{(l)} + \mathbf{b}^{(l)}
+\tag{1}</span></span></p></li>
+<li><p>Neurons: <span id="eq-matrix-neuron"><span class="math display">
+{\bf{X}}^{(l)} = a\left({\bf{Z}}^{(l)}\right)
+\tag{2}</span></span> where <span class="math inline">a\left({\bf{Z}}^{(l)}\right)</span> means we apply the activation function <span class="math inline">a</span> to every single element of <span class="math inline">{\bf{Z}}^{(l)}</span>.</p></li>
+</ul>
+<p>The notation becomes much simpler, doesn’t it? Let’s take a closer look at <span class="math inline">{\bf{Z}}^{(l)}</span> in <a href="#fig-matrix-receptor">Figure&nbsp;10</a> .</p>
+<div id="fig-matrix-receptor" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="images/nn10.svg" width="100%" class="figure-img"></p>
+<figcaption class="figure-caption">Figure&nbsp;10: The representation of <span class="math inline">{\bf{Z}}^{(l)}</span>.</figcaption>
 </figure>
 </div>
 <div class="cell">
@@ -632,6 +659,7 @@ Figure&nbsp;8: Some synthetic data and weights for our neural network.
 </div>
 
 
+</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
@@ -713,9 +741,10 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     // clear code selection
     e.clearSelection();
   });
-  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+  function tippyHover(el, contentFn) {
     const config = {
       allowHTML: true,
+      content: contentFn,
       maxWidth: 500,
       delay: 100,
       arrow: false,
@@ -725,17 +754,8 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       interactive: true,
       interactiveBorder: 10,
       theme: 'quarto',
-      placement: 'bottom-start',
+      placement: 'bottom-start'
     };
-    if (contentFn) {
-      config.content = contentFn;
-    }
-    if (onTriggerFn) {
-      config.onTrigger = onTriggerFn;
-    }
-    if (onUntriggerFn) {
-      config.onUntrigger = onUntriggerFn;
-    }
     window.tippy(el, config); 
   }
   const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
@@ -748,81 +768,6 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       const id = href.replace(/^#\/?/, "");
       const note = window.document.getElementById(id);
       return note.innerHTML;
-    });
-  }
-  const xrefs = window.document.querySelectorAll('a.quarto-xref');
-  const processXRef = (id, note) => {
-    // Strip column container classes
-    const stripColumnClz = (el) => {
-      el.classList.remove("page-full", "page-columns");
-      if (el.children) {
-        for (const child of el.children) {
-          stripColumnClz(child);
-        }
-      }
-    }
-    stripColumnClz(note)
-    if (id.startsWith('sec-')) {
-      // Special case sections, only their first couple elements
-      const container = document.createElement("div");
-      if (note.children && note.children.length > 2) {
-        for (let i = 0; i < 2; i++) {
-          container.appendChild(note.children[i].cloneNode(true));
-        }
-        return container.innerHTML
-      } else {
-        return note.innerHTML;
-      }
-    } else {
-      // Remove any anchor links if they are present
-      const anchorLink = note.querySelector('a.anchorjs-link');
-      if (anchorLink) {
-        anchorLink.remove();
-      }
-      return note.innerHTML;
-    }
-  }
-  for (var i=0; i<xrefs.length; i++) {
-    const xref = xrefs[i];
-    tippyHover(xref, undefined, function(instance) {
-      instance.disable();
-      let url = xref.getAttribute('href');
-      let hash = undefined; 
-      if (url.startsWith('#')) {
-        hash = url;
-      } else {
-        try { hash = new URL(url).hash; } catch {}
-      }
-      if (hash) {
-        const id = hash.replace(/^#\/?/, "");
-        const note = window.document.getElementById(id);
-        if (note !== null) {
-          try {
-            const html = processXRef(id, note.cloneNode(true));
-            instance.setContent(html);
-          } finally {
-            instance.enable();
-            instance.show();
-          }
-        } else {
-          // See if we can fetch this
-          fetch(url.split('#')[0])
-          .then(res => res.text())
-          .then(html => {
-            const parser = new DOMParser();
-            const htmlDoc = parser.parseFromString(html, "text/html");
-            const note = htmlDoc.getElementById(id);
-            if (note !== null) {
-              const html = processXRef(id, note);
-              instance.setContent(html);
-            } 
-          }).finally(() => {
-            instance.enable();
-            instance.show();
-          });
-        }
-      }
-    }, function(instance) {
     });
   }
       let selectedAnnoteEl;
@@ -866,7 +811,6 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
             }
             div.style.top = top - 2 + "px";
             div.style.height = height + 4 + "px";
-            div.style.left = 0;
             let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
             if (gutterDiv === null) {
               gutterDiv = window.document.createElement("div");
@@ -892,33 +836,6 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
         });
         selectedAnnoteEl = undefined;
       };
-        // Handle positioning of the toggle
-    window.addEventListener(
-      "resize",
-      throttle(() => {
-        console.log("RESIZE");
-        elRect = undefined;
-        if (selectedAnnoteEl) {
-          selectCodeLines(selectedAnnoteEl);
-        }
-      }, 10)
-    );
-    function throttle(fn, ms) {
-    let throttle = false;
-    let timer;
-      return (...args) => {
-        if(!throttle) { // first call gets through
-            fn.apply(this, args);
-            throttle = true;
-        } else { // all the others get throttled
-            if(timer) clearTimeout(timer); // cancel #2
-            timer = setTimeout(() => {
-              fn.apply(this, args);
-              timer = throttle = false;
-            }, ms);
-        }
-      };
-    }
       // Attach click handler to the DT
       const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
       for (const annoteDlNode of annoteDls) {
@@ -984,15 +901,12 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     <div class="nav-footer-left">
       &nbsp;
     </div>   
-    <div class="nav-footer-center">
-<p>Copyright 2023, Rodolfo Lourenzutti – Powered by Quarto</p>
-</div>
+    <div class="nav-footer-center">Copyright 2023, Rodolfo Lourenzutti – Powered by Quarto</div>
     <div class="nav-footer-right">
       &nbsp;
     </div>
   </div>
 </footer>
-
 
 
 

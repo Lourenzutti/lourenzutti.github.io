@@ -267,9 +267,12 @@ The weight $w_{1,2}^{(1)}$ connects the neurons $X^{(0)}_1$ and $X^{(1)}_2$.
 
 - $(l)$ refers to the layer, and goes from 0 to $L$, where the $L$th layer is the output layer. 
 - $n^{(l)}$ is the number of neurons in layer $l$.
-- $X^{(l)}_i$ is the $i$th neuron in layer $l$.
-- $Z^{(l)}_i$ is the receptor of neuron $X^{(l)}_i$.
+- $x^{(l)}_{k}$ is the $k$th neuron in layer $l$.
+  - $x^{(l)}_{i,k}$ is the value of the $k$th neuron in layer $l$ for the $i$th training sample.
+- $z^{(l)}_{k}$ is the receptor of neuron $x^{(l)}_k$.
+  - $z^{(l)}_{i,k}$ is the value of the receptor of neuron $x^{(l)}_k$ for the $i$th training sample.
 - $w_{i,j}^{(l)}$ is the weight connecting the $i$th neuron in layer $l-1$ to the $j$th neuron in layer $l$.
+- $b^{(l)}_k$ the bias term added by the receptor of neuron $k$ in layer $l$.
 
 Since we have a ton of weights, it is helpful for us to organize them into matrices. We will have one weight matrix per layer (except for layer 0). We will denote the matrices as ${\bf{W}}^{(l)}$. @fig-nn-matrix-weights illustrates how the weights are organized into matrices for our example neural network.
 
@@ -310,14 +313,14 @@ The second column of ${\bf{W}}^{(2)}$ has all weights "arriving" at neuron 2 in 
 Now that we understand the notation, we are ready to introduce the necessary equations.
 
 
-- Receptors: $$z^{(l)}_j =\sum_{i=1}^{n^{(l-1)}} w^{(l-1)}_{i, j}x^{(l-1)}_i,\quad l=1,...,L, \quad \text{and} \quad j=1,...,n^{(l)}$$
-- Neurons: $$x^{(l)}_j=a\left(z^{(l)}_j\right),\quad l=1,...,L, \quad \text{and} \quad j=1,...,n^{(l)}$$
+- **Receptors** (for the $i$th training sample): $$z^{(l)}_{i, k} =\sum_{j=1}^{n^{(l-1)}} w^{(l)}_{j, k}x^{(l-1)}_{i,j} + b^{(l)}_k,\quad l=1,...,L, \quad \text{and} \quad j=1,...,n^{(l)}$$
+- **Neurons** (for the $i$th training sample): $$x^{(l)}_{i, k}=a\left(z^{(l)}_{i, k}\right),\quad l=1,...,L, \quad \text{and} \quad j=1,...,n^{(l)}$$
 where $a$ is a non-linear function called **activation function**. We will discuss activation functions in more detail later. For now, we will use $a(x)=\max\left\{0, x\right\}$.
   - Note: for the input layer, $l=0$, $x^{(0)}_j$ is just the feature $j$ of the input vector. 
 
 Okay, I agree; the notation is heavy. We have a lot of things to keep track of, such as layers, receptors, neurons, and weights, so we need a lot of symbols and indices. For this reason, I encourage the reader to go back to @fig-nn-diagram, pick a neuron in a hidden layer, and write down the equations for that neuron while identifying the elements being used in the diagram.
 
-In order for us to go through an example of the feed-forward part of the neural network, let us get some synthetic data with two features as well as define some values for the weights.     
+For us to go through an example of the feedforward part of the neural network, let us get some synthetic data with two features as well as define some values for the weights.     
 
 :::{#fig-weight-matrix-column}
 
@@ -325,6 +328,95 @@ In order for us to go through an example of the feed-forward part of the neural 
 
 Some synthetic data and weights for our neural network.
 :::
+
+Now, we can calculate the forward pass of the neural network. Let's do it for the first row in our data, i.e., for the input vector $x=(6.1, 8.7)$.
+
+:::: {.columns}
+
+::: {.column width="45%"}
+
+- Receptors in Layer 1:
+$$z^{(1)}_1 =\sum_{i=1}^{2} w^{(1)}_{i, 1}x^{(0)}_i = -0.314$$
+$$z^{(1)}_2 =\sum_{i=1}^{2} w^{(1)}_{i, 2}x^{(0)}_i =  0.818$$
+$$z^{(1)}_3 =\sum_{i=1}^{2} w^{(1)}_{i, 3}x^{(0)}_i = -0.417$$
+
+- Receptors in Layer 2:
+$$z^{(2)}_1 =\sum_{i=1}^{3} w^{(2)}_{i, 1}x^{(1)}_i = -0.0304$$
+$$z^{(2)}_2 =\sum_{i=1}^{3} w^{(2)}_{i, 2}x^{(1)}_i =  0.0245$$
+
+- Receptor in Layer 3:
+$$z^{(3)}_1 =\sum_{i=1}^{2} w^{(3)}_{i, 1}x^{(1)}_i = 0.0108$$
+
+:::
+
+::: {.column width="5%"}
+<!-- empty column to create gap -->
+:::
+
+::: {.column width="45%"}
+
+- Neurons in Layer 1:
+$$x^{(1)}_1 = \frac{1}{1+e^{z^{(1)}_1}} = 0.4221$$
+$$x^{(1)}_2 = \frac{1}{1+e^{z^{(1)}_2}} = 0.6938$$
+$$x^{(1)}_3 = \frac{1}{1+e^{z^{(1)}_3}} = 0.3972$$
+
+<br>
+
+- Neurons in Layer 2:
+$$x^{(2)}_1 = \frac{1}{1+e^{z^{(2)}_1}} = 0.4923$$
+$$x^{(2)}_2 = \frac{1}{1+e^{z^{(2)}_2}} = 0.5061$$
+
+<br>
+
+- Neuron in Layer 3:
+$$x^{(3)}_1 = \frac{1}{1+e^{z^{(3)}_1}} = 0.5027$$
+
+:::
+
+::::
+
+Let's now visualize this result in the diagram. We will use two decimal places due to space constraints.
+
+:::{#fig-weight-matrix-column}
+
+<img src="images/nn9.svg" width="100%">
+
+Forward pass of the neural network for the input vector $x=(6.1, 8.7)$.
+:::
+
+
+Congratulations! You have completed the forward pass of the neural network. 
+
+### Matrix Notation
+
+To implement a Neural Network in Python from scratch, we will need to use the highly optimized Numpy's vectorization; so, let's introduce the matrix notation here. The matrix notation also has the advantage of simplifying the steps. Note that everything is almost exactly the same; the only difference is that, with the matrix notation, we will be considering the entire dataset. 
+
+We will denote matrices with capital bold letters (e.g., $\bf{X}$, ${\bf{W}}^{(1)}$), vectors as lowercase bold letters (e.g., ${\bf{x}}_1$). Also, vectors are always column vectors (multiple rows, one column). Here are the equations in matrix format:
+
+- Receptors:
+$$
+{\bf{Z}}^{(l)} = {\mathbf{X}^{(l-1)}} \mathbf{W}^{(l)} + \mathbf{b}^{(l)}
+$$ {#eq-matrix-receptor}
+
+- Neurons:
+$$
+{\bf{X}}^{(l)} = a\left({\bf{Z}}^{(l)}\right) 
+$$ {#eq-matrix-neuron}
+where $a\left({\bf{Z}}^{(l)}\right)$ means we apply the activation function $a$ to every single element of ${\bf{Z}}^{(l)}$.
+
+The notation becomes much simpler, doesn't it? Let's take a closer look at ${\bf{Z}}^{(l)}$ in @fig-matrix-receptor .
+
+:::{#fig-matrix-receptor}
+
+<img src="images/nn10.svg" width="100%">
+
+The representation of ${\bf{Z}}^{(l)}$.
+:::
+
+
+
+
+
 
 
 ```{python}
