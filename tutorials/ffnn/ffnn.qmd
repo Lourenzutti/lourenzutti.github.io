@@ -386,6 +386,8 @@ Forward pass of the neural network for the input vector $x=(6.1, 8.7)$.
 
 Congratulations! You have completed the forward pass of the neural network. 
 
+I'll just note here that the activation function used in the output layer usually changes according to the problem. For example, for regression problems, a common choice is the identity function $f(z) = z$. If we used $f(z) = \max\left\{0, z\right\}$, we would never be able to predict a negative value, an undesirable property. We won't worry about this for now. 
+
 ### Matrix Notation
 
 To implement a Neural Network in Python from scratch, we will need to use the highly optimized Numpy's vectorization; so, let's introduce the matrix notation here. The matrix notation also has the advantage of simplifying the steps. Note that everything is almost exactly the same; the only difference is that, with the matrix notation, we will be considering the entire dataset. 
