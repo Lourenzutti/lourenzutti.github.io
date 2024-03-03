@@ -4,7 +4,7 @@
     "href": "tutorials.html",
     "title": "Tutorials",
     "section": "",
-    "text": "Statistical Inference\n\n&lt;div class=\"area-tutorial\"&gt;\n    &lt;a href=\"/tutorials/sampling-distribution/sampling-distribution.html\"&gt;\n        &lt;div class=\"card\"&gt;\n            &lt;img src=\"/imgs/Blank_Sticky_Note_clip_art.svg\" width=100%&gt;\n            &lt;span class=\"tutorial-title\"&gt;Sampling Distribution&lt;/span&gt;\n        &lt;/div&gt;\n    &lt;/a&gt;\n    &lt;a href=\"/tutorials/bootstrapping/bootstrapping.html\" style=\"display: none;\"&gt;\n        &lt;div class=\"card\"&gt;\n            &lt;img src=\"/imgs/Blank_Sticky_Note_clip_art.svg\"&gt;\n            &lt;span class=\"tutorial-title\"&gt;Bootstrapping&lt;/span&gt;\n        &lt;/div&gt;\n    &lt;/a&gt;\n    &lt;a href=\"/tutorials/AB-testing/ab-test.html\"&gt;\n        &lt;div class=\"card\"&gt;\n            &lt;img src=\"/imgs/Blank_Sticky_Note_clip_art.svg\"&gt;\n            &lt;span class=\"tutorial-title\"&gt;A/B Testing&lt;/span&gt;\n        &lt;/div&gt;\n    &lt;/a&gt;",
+    "text": "Statistical Inference\n\n\n\n\n Sampling Distribution\n\n \n\n Bootstrapping\n\n \n\n A/B Testing",
     "crumbs": [
       "<i class=\"bi bi-book\"></i> Tutorials"
     ]
