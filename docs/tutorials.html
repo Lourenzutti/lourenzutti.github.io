@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.4.542">
+<meta name="generator" content="quarto-1.4.550">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -215,7 +215,11 @@ Statistical Inference
 <div class="card">
 <p><img src="./imgs/Blank_Sticky_Note_clip_art.svg"> <span class="tutorial-title">Bootstrapping</span></p>
 </div>
-</a><p><a href="./tutorials/bootstrapping/bootstrapping.html" style="display: none;"></a></p>
+</a> <a href="./tutorials/AB-testing/ab-test.html" style="display: none;">
+<div class="card">
+<p><img src="./imgs/Blank_Sticky_Note_clip_art.svg"> <span class="tutorial-title">A/B Testing</span></p>
+</div>
+</a><p><a href="./tutorials/AB-testing/ab-test.html" style="display: none;"></a></p>
 </div>
 
 
@@ -382,7 +386,12 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       if (window.Quarto?.typesetMath) {
         window.Quarto.typesetMath(note);
       }
-      return note.innerHTML;
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
     }
   }
   for (var i=0; i<xrefs.length; i++) {

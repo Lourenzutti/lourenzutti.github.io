@@ -18,4 +18,10 @@ css: styles/tutorials.css
 <span class="tutorial-title">Bootstrapping</span>
 </div>
 </a>
+<a href="/tutorials/AB-testing/ab-test.html" style="display: none;">
+<div class="card">
+<img src="/imgs/Blank_Sticky_Note_clip_art.svg">
+<span class="tutorial-title">A/B Testing</span>
+</div>
+</a>
 </div>
