@@ -14,13 +14,13 @@ css: styles/tutorials.css
 </a>
 <a href="/tutorials/bootstrapping/bootstrapping.html" style="display: none;">
 <div class="card">
-<img src="/imgs/Blank_Sticky_Note_clip_art.svg">
+<img src="/imgs/Blank_Sticky_Note_clip_art.svg" width=100%>
 <span class="tutorial-title">Bootstrapping</span>
 </div>
 </a>
 <a href="/tutorials/AB-testing/ab-test.html">
 <div class="card">
-<img src="/imgs/Blank_Sticky_Note_clip_art.svg">
+<img src="/imgs/Blank_Sticky_Note_clip_art.svg" width=100%>
 <span class="tutorial-title">A/B Testing</span>
 </div>
 </a>
