@@ -20,40 +20,6 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
-/* CSS for syntax highlighting */
-pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { line-height: 1.25; }
-pre > code.sourceCode > span:empty { height: 1.2em; }
-.sourceCode { overflow: visible; }
-code.sourceCode > span { color: inherit; text-decoration: inherit; }
-div.sourceCode { margin: 1em 0; }
-pre.sourceCode { margin: 0; }
-@media screen {
-div.sourceCode { overflow: auto; }
-}
-@media print {
-pre > code.sourceCode { white-space: pre-wrap; }
-pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
-}
-pre.numberSource code
-  { counter-reset: source-line 0; }
-pre.numberSource code > span
-  { position: relative; left: -4em; counter-increment: source-line; }
-pre.numberSource code > span > a:first-child::before
-  { content: counter(source-line);
-    position: relative; left: -1em; text-align: right; vertical-align: baseline;
-    border: none; display: inline-block;
-    -webkit-touch-callout: none; -webkit-user-select: none;
-    -khtml-user-select: none; -moz-user-select: none;
-    -ms-user-select: none; user-select: none;
-    padding: 0 4px; width: 4em;
-  }
-pre.numberSource { margin-left: 3em;  padding-left: 4px; }
-div.sourceCode
-  {   }
-@media screen {
-pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
-}
 </style>
 
 
@@ -110,6 +76,889 @@ function gtag(){dataLayer.push(arguments);}
 gtag('js', new Date());
 gtag('config', 'G-PLRMKTQGZJ', { 'anonymize_ip': true});
 </script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/monaco-editor@0.47.0/min/vs/editor/editor.main.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  
+<style type="text/css">
+.monaco-editor pre {
+  background-color: unset !important;
+}
+
+.qwebr-editor-toolbar {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  box-sizing: border-box;
+}
+
+.qwebr-editor-toolbar-left-buttons, .qwebr-editor-toolbar-right-buttons {
+  display: flex;
+}
+
+.qwebr-non-interactive-loading-container.qwebr-cell-needs-evaluation, .qwebr-non-interactive-loading-container.qwebr-cell-evaluated {
+  justify-content: center;
+  display: flex;
+  background-color: rgba(250, 250, 250, 0.65);
+  border: 1px solid rgba(233, 236, 239, 0.65);
+  border-radius: 0.5rem;
+  margin-top: 15px;
+  margin-bottom: 15px;
+}
+
+.qwebr-r-project-logo {
+  color: #2767B0; /* R Project's blue color */
+}
+
+.qwebr-icon-status-spinner {
+  color: #7894c4;
+}
+
+.qwebr-icon-run-code {
+  color: #0d9c29
+}
+
+.qwebr-output-code-stdout {
+  color: #111;
+}
+
+.qwebr-output-code-stderr {
+  color: #db4133;
+}
+
+.qwebr-editor {
+  border: 1px solid #EEEEEE;
+}
+
+.qwebr-editor-toolbar {
+  background-color: #EEEEEE;
+  padding: 0.2rem 0.5rem;
+}
+
+.qwebr-button {
+  background-color: #EEEEEE;
+  display: inline-block;
+  font-weight: 400;
+  line-height: 1;
+  text-decoration: none;
+  text-align: center;
+  color: #000;
+  border-color: #dee2e6;
+  border: 1px solid rgba(0,0,0,0);
+  padding: 0.375rem 0.75rem;
+  font-size: .9rem;
+  border-radius: 0.25rem;
+  transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+}
+
+.qwebr-button:hover {
+  color: #000;
+  background-color: #d9dce0;
+  border-color: #c8ccd0;
+}
+
+.qwebr-button:disabled,.qwebr-button.disabled,fieldset:disabled .qwebr-button {
+  pointer-events: none;
+  opacity: .65
+}
+
+.qwebr-button-reset {
+  color: #696969; /*#4682b4;*/
+}
+
+.qwebr-button-copy {
+  color: #696969;
+}
+
+
+/* Custom styling for RevealJS Presentations*/
+
+/* Reset the style of the interactive area */
+.reveal div.qwebr-interactive-area {
+  display: block;
+  box-shadow: none;
+  max-width: 100%;
+  max-height: 100%;
+  margin: 0;
+  padding: 0;
+} 
+
+/* Provide space to entries */
+.reveal div.qwebr-output-code-area pre div {
+  margin: 1px 2px 1px 10px;
+}
+
+/* Collapse the inside code tags to avoid extra space between line outputs */
+.reveal pre div code.qwebr-output-code-stdout, .reveal pre div code.qwebr-output-code-stderr {
+  padding: 0;
+  display: contents;
+}
+
+.reveal pre div code.qwebr-output-code-stdout {
+  color: #111;
+}
+
+.reveal pre div code.qwebr-output-code-stderr {
+  color: #db4133;
+}
+
+
+/* Create a border around console and output (does not effect graphs) */
+.reveal div.qwebr-console-area {
+  border: 1px solid #EEEEEE;
+  box-shadow: 2px 2px 10px #EEEEEE;
+}
+
+/* Cap output height and allow text to scroll */
+/* TODO: Is there a better way to fit contents/max it parallel to the monaco editor size? */
+.reveal div.qwebr-output-code-area pre {
+  max-height: 400px;
+  overflow: scroll;
+}
+
+</style>
+<script type="module">
+// Document level settings ----
+
+// Determine if we need to install R packages
+globalThis.qwebrInstallRPackagesList = ['ggplot2', 'tidyverse', 'infer'];
+
+// Specify possible locations to search for the repository
+globalThis.qwebrPackageRepoURLS = ['https://repo.r-wasm.org/'];
+
+// Check to see if we have an empty array, if we do set to skip the installation.
+globalThis.qwebrSetupRPackages = !(qwebrInstallRPackagesList.indexOf("") !== -1);
+globalThis.qwebrAutoloadRPackages = true;
+
+// Display a startup message?
+globalThis.qwebrShowStartupMessage = false;
+globalThis.qwebrShowHeaderMessage = false;
+
+// Describe the webR settings that should be used
+globalThis.qwebrCustomizedWebROptions = {
+  "baseURL": "https://webr.r-wasm.org/v0.3.1/",
+  "serviceWorkerUrl": "",
+  "homedir": "/home/web_user", 
+  "channelType": "ChannelType.Automatic"
+};
+
+// Store cell data
+globalThis.qwebrCellDetails = [{"options":{"label":"unnamed-chunk-1","dpi":72,"fig-height":5,"warning":"true","autorun":"true","output":"true","context":"setup","out-height":"","results":"markup","message":"true","classes":"","out-width":"700px","comment":"","read-only":"false","fig-width":7,"fig-cap":""},"id":1,"code":"suppressMessages(library(tidyverse))\nsuppressMessages(library(infer))\nset.seed(1)\n\n# Simulating a sample of 30 individuals for group A and Group B\nsample_money_donated <- \ntibble(group = c(\"Website A\", \"Website B\"), \n    amount = list(\n        if_else(runif(30) < 0.5, 0, rnorm(30, 80, 10) ), \n        if_else(runif(30) < 0.6, 0, rnorm(30, 100, 20) ))\n    ) %>% \nunnest(cols = amount) %>%\nsample_n(60)"},{"options":{"label":"unnamed-chunk-2","dpi":72,"fig-height":5,"warning":"true","autorun":"false","output":"true","context":"interactive","out-height":"","results":"markup","message":"true","classes":"","out-width":"700px","comment":"","read-only":"false","fig-width":7,"fig-cap":""},"id":2,"code":"sample_money_donated"},{"options":{"label":"unnamed-chunk-3","dpi":72,"fig-height":5,"warning":"true","autorun":"false","output":"true","context":"interactive","out-height":"","results":"markup","message":"true","classes":"","out-width":"700px","comment":"","read-only":"false","fig-width":7,"fig-cap":""},"id":3,"code":"# Complete the code below to call the t.test function to test \n# the equality in means between the two versions of the website. \n\nt.test(formula = ... ,     # The formula: response ~ covariate.\n       mu = ... ,          # the value of d0\n       alternative = ... , # \"less\", \"greater\" or \"two.sided\";\n       data = sample_money_donated)"},{"options":{"label":"unnamed-chunk-4","dpi":72,"fig-height":5,"warning":"true","autorun":"true","output":"true","context":"setup","out-height":"","results":"markup","message":"true","classes":"","out-width":"700px","comment":"","read-only":"false","fig-width":7,"fig-cap":""},"id":4,"code":"set.seed(1)\n\n# Simulating a sample of 200 individuals for group A and Group B\nsample_subscriber <- \n    tibble(website = factor(c(\"A\", \"B\")), \n        subscribed = list(\n            sample(factor(c(\"yes\", \"no\"), levels = c('yes', 'no')), 100, replace = TRUE, p=c(0.42, 0.58)), \n            sample(factor(c(\"yes\", \"no\"), levels = c('yes', 'no')), 100, replace = TRUE, p=c(0.60, 0.40)))\n        ) %>% \n    unnest(cols = subscribed)"},{"options":{"label":"unnamed-chunk-5","dpi":72,"fig-height":5,"warning":"true","autorun":"false","output":"true","context":"interactive","out-height":"","results":"markup","message":"true","classes":"","out-width":"700px","comment":"","read-only":"false","fig-width":7,"fig-cap":""},"id":5,"code":"sample_subscriber"},{"options":{"label":"unnamed-chunk-6","dpi":72,"fig-height":5,"warning":"true","autorun":"false","output":"true","context":"interactive","out-height":"","results":"markup","message":"true","classes":"","out-width":"700px","comment":"","read-only":"false","fig-width":7,"fig-cap":""},"id":6,"code":"# Complete the code below to call the prop_test function to test \n# the equality in proportions between the two versions of the website. \nsample_subscriber %>% \n    prop_test(... ~ ... ,           # The formula: response ~ covariate.\n              order = c(\"B\", \"A\"))"},{"options":{"label":"unnamed-chunk-7","dpi":72,"fig-height":5,"warning":"true","autorun":"true","output":"true","context":"setup","out-height":"","results":"markup","message":"true","classes":"","out-width":"700px","comment":"","read-only":"false","fig-width":7,"fig-cap":""},"id":7,"code":"set.seed(12)\n\n#' Generates a random sample of website subscriptions.\n#'\n#' @param n Numeric: The desired sample size.\n#' @return tibble: A data frame containing website and subscription information.\n#' @examples\n#' take_sample(100)\n#' @note\n#' - The function creates a tibble with two columns: 'website' and 'subscribed'.\n#' - 'website' contains either \"Website A\" or \"Website B\".\n#' - 'subscribed' is randomly sampled from \"yes\" or \"no\" with 50% probability.\ntake_sample <- function(n) {\n  return(\n    tibble(website = as_factor(c(rep(\"Website A\", n/2), rep(\"Website B\", n/2))), \n           subscribed = sample(factor(c(\"yes\", \"no\"), levels = c('yes', 'no')), n, replace = TRUE, p=c(0.5, 0.5))\n    ) %>% \n      slice_sample(n = n)\n  )\n}\n\n#' Generates a dataset by combining multiple batches of samples.\n#'\n#' @param batch_size Numeric: The size of each batch.\n#' @param n_batches Numeric: The total number of batches to generate.\n#' @param reps Numeric: The number of repetitions.\n#' @return tibble: A data frame containing combined batches with batch and replicate information.\n#' @examples\n#' data_set_generator(batch_size = 100, n_batches = 5, reps = 3)\n#' @note\n#' - The function creates a tibble to store the combined data.\n#' - It generates 'n_batches' batches of samples using the 'take_sample' function.\n#' - Each batch contains 'batch_size' observations.\n#' - The resulting tibble includes columns for 'data', 'batch', and 'replicate'.\n#' - 'data' contains the combined samples from all batches.\n#' - 'batch' indicates the batch number.\n#' - 'replicate' represents the repetition number.\ndata_set_generator <- function(batch_size, n_batches, reps) {\n  data_tbl <- tibble() \n  for (rep in 1:reps){\n    data <- list()\n    data[[1]] <- take_sample(batch_size)\n    for(i in 2:n_batches){\n      data[[i]] = bind_rows(take_sample(batch_size), data[[i-1]])\n    }\n    data_tbl <- bind_rows(data_tbl, tibble(data = data) %>% mutate(batch = row_number(), replicate = rep))\n  }\n  return(data_tbl)\n}\n\n\ncollect_new_batch_of_sample_viewer <- function() {\n    return(\n            sample_viewers_source %>% \n            filter(batch == 2 & replicate == 1) %>% \n            select(data) %>% \n            unnest(cols = c(data))\n    )\n}\n\n\nsample_viewers_source <- \n    data_set_generator(50, 10, 200) %>% \n    mutate(pvalue = map_dbl(.x = data, \n                      ~.x %>%\n                              prop_test(subscribed ~ website, \n                              order = c('Website B', 'Website A') ) %>% pull(p_value)))\n\nsample_viewers <- \n    sample_viewers_source %>% \n    filter(batch == 1 & replicate == 1) %>% \n    select(data) %>% \n    unnest(cols = c(data))"},{"options":{"label":"unnamed-chunk-8","dpi":72,"fig-height":5,"warning":"true","autorun":"false","output":"true","context":"interactive","out-height":"","results":"markup","message":"true","classes":"","out-width":"700px","comment":"","read-only":"false","fig-width":7,"fig-cap":""},"id":8,"code":"# Take a look at the first batch of visitors\nsample_viewers"},{"options":{"label":"unnamed-chunk-9","dpi":72,"fig-height":5,"warning":"true","autorun":"false","output":"true","context":"interactive","out-height":"","results":"markup","message":"true","classes":"","out-width":"700px","comment":"","read-only":"false","fig-width":7,"fig-cap":""},"id":9,"code":"# Complete the code below to call the prop_test function to test \n# the equality in proportions between the two groups with the same\n# version of the website. \nsample_viewers %>%\n    prop_test(... ~ ..., \n              order = c('Website B', 'Website A')) "},{"options":{"label":"unnamed-chunk-10","dpi":72,"fig-height":5,"warning":"true","autorun":"false","output":"true","context":"interactive","out-height":"","results":"markup","message":"true","classes":"","out-width":"700px","comment":"","read-only":"false","fig-width":7,"fig-cap":""},"id":10,"code":"# The function collect_new_batch attach a \n# new batch of visitors to our sample dataframe.\n\n# Note that we now have the more rows but the first 40 rows are the same \n# as in the first batch.\n\n(sample_viewers <- collect_new_batch_of_sample_viewer())"},{"options":{"label":"unnamed-chunk-11","dpi":72,"fig-height":5,"warning":"true","autorun":"false","output":"true","context":"interactive","out-height":"","results":"markup","message":"true","classes":"","out-width":"700px","comment":"","read-only":"false","fig-width":7,"fig-cap":""},"id":11,"code":"# Complete the code below to call the prop_test function to test \n# the equality in proportions between the two groups with the same\n# version of the website. \n\n# But this time we have a 100 visitors (50 in each group)\nsample_viewers %>%\n    prop_test(... ~ ..., \n              order = c('Website B', 'Website A') )"},{"options":{"label":"unnamed-chunk-12","dpi":72,"fig-height":5,"warning":"true","autorun":"true","output":"true","context":"setup","out-height":"","results":"markup","message":"true","classes":"","out-width":"700px","comment":"","read-only":"false","fig-width":7,"fig-cap":""},"id":12,"code":"\n# The code will conduct the proportion test using the first batch, \n# then combine it with the second batch for the test, and \n# continue this process with each subsequent batch.\n\npvalues <- \n    sample_viewers_source %>%\n    filter(replicate == 1) %>%\n    select(batch, pvalue)"},{"options":{"label":"unnamed-chunk-13","dpi":72,"fig-height":5,"warning":"true","autorun":"false","output":"true","context":"interactive","out-height":"","results":"markup","message":"true","classes":"","out-width":"700px","comment":"","read-only":"false","fig-width":7,"fig-cap":""},"id":13,"code":"# These are the pvalues of the first batch alone\n# then the first and second, \n# then the first, second, and third, \n# and so on.\n\npvalues"},{"options":{"label":"unnamed-chunk-14","dpi":72,"fig-height":5,"warning":"true","autorun":"false","output":"true","context":"interactive","out-height":"","results":"markup","message":"true","classes":"","out-width":"700px","comment":"","read-only":"false","fig-width":7,"fig-cap":""},"id":14,"code":"# Fill in the code below. \n\n# Plot the pvalue vs batch \n# make the points red if they are smaller than 0.05\n# add a horizontal line to show the significance level\npvalues %>% \n    ggplot(aes(..., ...)) + \n    geom_point(size = 4) + \n    geom_line() + \n    geom_hline(aes(yintercept = ...), lty = 2, color = 'red')+\n    geom_point(aes(..., ...), \n               color = \"red\", \n               size = 4, \n               data = pvalues %>% filter(pvalue <= 0.05)) + \n    ggtitle(\"P-values for online monitoring of an A/A test\")"},{"options":{"label":"unnamed-chunk-15","dpi":72,"fig-height":5,"warning":"true","autorun":"false","output":"true","context":"interactive","out-height":"","results":"markup","message":"true","classes":"","out-width":"700px","comment":"","read-only":"false","fig-width":7,"fig-cap":""},"id":15,"code":"# Fill in the code below to obtain the false positive rate \n# of this A/A experiment. \nsample_viewers_source %>% \n  group_by(...) %>%\n  summarise(reject = sum(... < 0.05) > 0) %>%\n  summarise(false_positive_rate = ...(reject))"},{"options":{"label":"unnamed-chunk-16","dpi":72,"fig-height":5,"warning":"true","autorun":"false","output":"true","context":"interactive","out-height":"","results":"markup","message":"true","classes":"","out-width":"700px","comment":"","read-only":"false","fig-width":7,"fig-cap":""},"id":16,"code":"# Fill in the code below to adjust the p-values\n# using BH and Bonferroni's correction\nsample_viewers_source %>% \n  group_by(replicate) %>%\n  mutate(p_bonf = ...(pvalue, method = ...),\n         p_bh = p.adjust(..., method = ...)) "},{"options":{"label":"unnamed-chunk-17","dpi":72,"fig-height":5,"warning":"true","autorun":"false","output":"true","context":"interactive","out-height":"","results":"markup","message":"true","classes":"","out-width":"700px","comment":"","read-only":"false","fig-width":7,"fig-cap":""},"id":17,"code":"# Fill in the code below to adjust the p-values\n# using Bonferroni's correction\ngsDesign(k = 20, #number of interim analysis planned\n         test.type = 2, # for two-sided symmetric\n         alpha = 0.05, #type I error rate\n         beta = 0.2, # type II error rate\n         sfu = 'Pocock')"}];
+
+</script>
+<script type="module">
+// Declare startupMessageQWebR globally
+globalThis.qwebrStartupMessage = document.createElement("p");
+
+
+// Function to set the button text
+globalThis.qwebrSetInteractiveButtonState = function(buttonText, enableCodeButton = true) {
+  document.querySelectorAll(".qwebr-button-run").forEach((btn) => {
+    btn.innerHTML = buttonText;
+    btn.disabled = !enableCodeButton;
+  });
+}
+
+// Function to update the status message in non-interactive cells
+globalThis.qwebrUpdateStatusMessage = function(message) {
+  document.querySelectorAll(".qwebr-status-text.qwebr-cell-needs-evaluation").forEach((elem) => {
+    elem.innerText = message;
+  });
+}
+
+// Function to update the status message
+globalThis.qwebrUpdateStatusHeader = function(message) {
+  qwebrStartupMessage.innerHTML = `
+    <i class="fa-solid fa-spinner fa-spin qwebr-icon-status-spinner"></i>
+    <span>${message}</span>`;
+}
+
+// Function that attaches the document status message and diagnostics
+function displayStartupMessage(showStartupMessage, showHeaderMessage) {
+  if (!showStartupMessage) {
+    return;
+  }
+
+  // Get references to header elements
+  const headerHTML = document.getElementById("title-block-header");
+  const headerRevealJS = document.getElementById("title-slide");
+
+  // Create the outermost div element for metadata
+  const quartoTitleMeta = document.createElement("div");
+  quartoTitleMeta.classList.add("quarto-title-meta");
+
+  // Create the first inner div element
+  const firstInnerDiv = document.createElement("div");
+  firstInnerDiv.setAttribute("id", "qwebr-status-message-area");
+
+  // Create the second inner div element for "WebR Status" heading and contents
+  const secondInnerDiv = document.createElement("div");
+  secondInnerDiv.setAttribute("id", "qwebr-status-message-title");
+  secondInnerDiv.classList.add("quarto-title-meta-heading");
+  secondInnerDiv.innerText = "WebR Status";
+
+  // Create another inner div for contents
+  const secondInnerDivContents = document.createElement("div");
+  secondInnerDivContents.setAttribute("id", "qwebr-status-message-body");
+  secondInnerDivContents.classList.add("quarto-title-meta-contents");
+
+  // Describe the WebR state
+  qwebrStartupMessage.innerText = "🟡 Loading...";
+  qwebrStartupMessage.setAttribute("id", "qwebr-status-message-text");
+  // Add `aria-live` to auto-announce the startup status to screen readers
+  qwebrStartupMessage.setAttribute("aria-live", "assertive");
+
+  // Append the startup message to the contents
+  secondInnerDivContents.appendChild(qwebrStartupMessage);
+
+  // Add a status indicator for COOP and COEP Headers if needed
+  if (showHeaderMessage) {
+    const crossOriginMessage = document.createElement("p");
+    crossOriginMessage.innerText = `${crossOriginIsolated ? '🟢' : '🟡'} COOP & COEP Headers`;
+    crossOriginMessage.setAttribute("id", "qwebr-coop-coep-header");
+    secondInnerDivContents.appendChild(crossOriginMessage);
+  }
+
+  // Combine the inner divs and contents
+  firstInnerDiv.appendChild(secondInnerDiv);
+  firstInnerDiv.appendChild(secondInnerDivContents);
+  quartoTitleMeta.appendChild(firstInnerDiv);
+
+  // Determine where to insert the quartoTitleMeta element
+  if (headerHTML || headerRevealJS) {
+    // Append to the existing "title-block-header" element or "title-slide" div
+    (headerHTML || headerRevealJS).appendChild(quartoTitleMeta);
+  } else {
+    // If neither headerHTML nor headerRevealJS is found, insert after "webr-monaco-editor-init" script
+    const monacoScript = document.getElementById("qwebr-monaco-editor-init");
+    const header = document.createElement("header");
+    header.setAttribute("id", "title-block-header");
+    header.appendChild(quartoTitleMeta);
+    monacoScript.after(header);
+  }
+}
+
+displayStartupMessage(qwebrShowStartupMessage, qwebrShowHeaderMessage);
+</script>
+<script type="module">
+// Supported Evaluation Types for Context
+globalThis.EvalTypes = Object.freeze({
+  Interactive: 'interactive',
+  Setup: 'setup',
+  Output: 'output',
+});
+
+// Function that dispatches the creation request
+globalThis.qwebrCreateHTMLElement = function (
+  cellData
+) {
+
+  // Extract key components
+  const evalType = cellData.options.context;
+  const qwebrCounter = cellData.id;
+
+  // We make an assumption that insertion points are defined by the Lua filter as:
+  // qwebr-insertion-location-{qwebrCounter} 
+  const elementLocator = document.getElementById(`qwebr-insertion-location-${qwebrCounter}`);
+
+  // Figure out the routine to use to insert the element.
+  let qwebrElement;
+  switch ( evalType ) {
+    case EvalTypes.Interactive:
+      qwebrElement = qwebrCreateInteractiveElement(qwebrCounter, cellData.options);
+      break;
+    case EvalTypes.Output: 
+      qwebrElement = qwebrCreateNonInteractiveOutputElement(qwebrCounter, cellData.options);
+      break;
+    case EvalTypes.Setup: 
+      qwebrElement = qwebrCreateNonInteractiveSetupElement(qwebrCounter, cellData.options);
+      break;
+    default: 
+      qwebrElement = document.createElement('div');
+      qwebrElement.textContent = 'Error creating `quarto-webr` element';
+  }
+
+  // Insert the dynamically generated object at the document location.
+  elementLocator.appendChild(qwebrElement);
+};
+
+// Function that setups the interactive element creation
+globalThis.qwebrCreateInteractiveElement = function (qwebrCounter, qwebrOptions) {
+
+  // Create main div element
+  var mainDiv = document.createElement('div');
+  mainDiv.id = 'qwebr-interactive-area-' + qwebrCounter;
+  mainDiv.className = `qwebr-interactive-area`;
+  if (qwebrOptions.classes) {
+    mainDiv.className += " " + qwebrOptions.classes
+  }
+
+  // Add a unique cell identifier that users can customize
+  if (qwebrOptions.label) {
+    mainDiv.setAttribute('data-id', qwebrOptions.label);
+  }
+
+  // Create toolbar div
+  var toolbarDiv = document.createElement('div');
+  toolbarDiv.className = 'qwebr-editor-toolbar';
+  toolbarDiv.id = 'qwebr-editor-toolbar-' + qwebrCounter;
+
+  // Create a div to hold the left buttons
+  var leftButtonsDiv = document.createElement('div');
+  leftButtonsDiv.className = 'qwebr-editor-toolbar-left-buttons';
+
+  // Create a div to hold the right buttons
+  var rightButtonsDiv = document.createElement('div');
+  rightButtonsDiv.className = 'qwebr-editor-toolbar-right-buttons';
+
+  // Create Run Code button
+  var runCodeButton = document.createElement('button');
+  runCodeButton.className = 'btn btn-default qwebr-button qwebr-button-run';
+  runCodeButton.disabled = true;
+  runCodeButton.type = 'button';
+  runCodeButton.id = 'qwebr-button-run-' + qwebrCounter;
+  runCodeButton.textContent = '🟡 Loading webR...';
+  runCodeButton.title = `Run code (Shift + Enter)`;
+
+  // Append buttons to the leftButtonsDiv
+  leftButtonsDiv.appendChild(runCodeButton);
+
+  // Create Reset button
+  var resetButton = document.createElement('button');
+  resetButton.className = 'btn btn-light btn-xs qwebr-button qwebr-button-reset';
+  resetButton.type = 'button';
+  resetButton.id = 'qwebr-button-reset-' + qwebrCounter;
+  resetButton.title = 'Start over';
+  resetButton.innerHTML = '<i class="fa-solid fa-arrows-rotate"></i>';
+
+  // Create Copy button
+  var copyButton = document.createElement('button');
+  copyButton.className = 'btn btn-light btn-xs qwebr-button qwebr-button-copy';
+  copyButton.type = 'button';
+  copyButton.id = 'qwebr-button-copy-' + qwebrCounter;
+  copyButton.title = 'Copy code';
+  copyButton.innerHTML = '<i class="fa-regular fa-copy"></i>';
+
+  // Append buttons to the rightButtonsDiv
+  rightButtonsDiv.appendChild(resetButton);
+  rightButtonsDiv.appendChild(copyButton);
+
+  // Create console area div
+  var consoleAreaDiv = document.createElement('div');
+  consoleAreaDiv.id = 'qwebr-console-area-' + qwebrCounter;
+  consoleAreaDiv.className = 'qwebr-console-area';
+
+  // Create editor div
+  var editorDiv = document.createElement('div');
+  editorDiv.id = 'qwebr-editor-' + qwebrCounter;
+  editorDiv.className = 'qwebr-editor';
+
+  // Create output code area div
+  var outputCodeAreaDiv = document.createElement('div');
+  outputCodeAreaDiv.id = 'qwebr-output-code-area-' + qwebrCounter;
+  outputCodeAreaDiv.className = 'qwebr-output-code-area';
+  outputCodeAreaDiv.setAttribute('aria-live', 'assertive');
+
+  // Create pre element inside output code area
+  var preElement = document.createElement('pre');
+  preElement.style.visibility = 'hidden';
+  outputCodeAreaDiv.appendChild(preElement);
+
+  // Create output graph area div
+  var outputGraphAreaDiv = document.createElement('div');
+  outputGraphAreaDiv.id = 'qwebr-output-graph-area-' + qwebrCounter;
+  outputGraphAreaDiv.className = 'qwebr-output-graph-area';
+
+  // Append buttons to the toolbar
+  toolbarDiv.appendChild(leftButtonsDiv);
+  toolbarDiv.appendChild(rightButtonsDiv);
+
+  // Append all elements to the main div
+  mainDiv.appendChild(toolbarDiv);
+  consoleAreaDiv.appendChild(editorDiv);
+  consoleAreaDiv.appendChild(outputCodeAreaDiv);
+  mainDiv.appendChild(consoleAreaDiv);
+  mainDiv.appendChild(outputGraphAreaDiv);
+
+  return mainDiv;
+}
+
+// Function that adds output structure for non-interactive output
+globalThis.qwebrCreateNonInteractiveOutputElement = function(qwebrCounter, qwebrOptions) {
+  // Create main div element
+  var mainDiv = document.createElement('div');
+  mainDiv.id = 'qwebr-noninteractive-area-' + qwebrCounter;
+  mainDiv.className = `qwebr-noninteractive-area`;
+  if (qwebrOptions.classes) {
+    mainDiv.className += " " + qwebrOptions.classes
+  }
+  
+  // Add a unique cell identifier that users can customize
+  if (qwebrOptions.label) {
+    mainDiv.setAttribute('data-id', qwebrOptions.label);
+  }
+  
+  // Create a status container div
+  var statusContainer = createLoadingContainer(qwebrCounter);
+
+  // Create output code area div
+  var outputCodeAreaDiv = document.createElement('div');
+  outputCodeAreaDiv.id = 'qwebr-output-code-area-' + qwebrCounter;
+  outputCodeAreaDiv.className = 'qwebr-output-code-area';
+  outputCodeAreaDiv.setAttribute('aria-live', 'assertive');
+
+  // Create pre element inside output code area
+  var preElement = document.createElement('pre');
+  preElement.style.visibility = 'hidden';
+  outputCodeAreaDiv.appendChild(preElement);
+
+  // Create output graph area div
+  var outputGraphAreaDiv = document.createElement('div');
+  outputGraphAreaDiv.id = 'qwebr-output-graph-area-' + qwebrCounter;
+  outputGraphAreaDiv.className = 'qwebr-output-graph-area';
+
+  // Append all elements to the main div
+  mainDiv.appendChild(statusContainer);
+  mainDiv.appendChild(outputCodeAreaDiv);
+  mainDiv.appendChild(outputGraphAreaDiv);
+
+  return mainDiv;
+};
+
+// Function that adds a stub in the page to indicate a setup cell was used.
+globalThis.qwebrCreateNonInteractiveSetupElement = function(qwebrCounter, qwebrOptions) {
+  // Create main div element
+  var mainDiv = document.createElement('div');
+  mainDiv.id = `qwebr-noninteractive-setup-area-${qwebrCounter}`;
+  mainDiv.className = `qwebr-noninteractive-setup-area`;
+  if (qwebrOptions.classes) {
+    mainDiv.className += " " + qwebrOptions.classes
+  }
+
+
+  // Add a unique cell identifier that users can customize
+  if (qwebrOptions.label) {
+    mainDiv.setAttribute('data-id', qwebrOptions.label);
+  }
+
+  // Create a status container div
+  var statusContainer = createLoadingContainer(qwebrCounter);
+
+  // Append status onto the main div
+  mainDiv.appendChild(statusContainer);
+
+  return mainDiv;
+}
+
+
+// Function to create loading container with specified ID
+globalThis.createLoadingContainer = function(qwebrCounter) {
+
+  // Create a status container
+  const container = document.createElement('div');
+  container.id = `qwebr-non-interactive-loading-container-${qwebrCounter}`;
+  container.className = 'qwebr-non-interactive-loading-container qwebr-cell-needs-evaluation';
+
+  // Create an R project logo to indicate its a code space
+  const rProjectIcon = document.createElement('i');
+  rProjectIcon.className = 'fa-brands fa-r-project fa-3x qwebr-r-project-logo';
+
+  // Setup a loading icon from font awesome
+  const spinnerIcon = document.createElement('i');
+  spinnerIcon.className = 'fa-solid fa-spinner fa-spin fa-1x qwebr-icon-status-spinner';
+
+  // Add a section for status text
+  const statusText = document.createElement('p');
+  statusText.id = `qwebr-status-text-${qwebrCounter}`;
+  statusText.className = `qwebr-status-text qwebr-cell-needs-evaluation`;
+  statusText.innerText = 'Loading webR...';
+
+  // Incorporate an inner container
+  const innerContainer = document.createElement('div');
+
+  // Append elements to the inner container
+  innerContainer.appendChild(spinnerIcon);
+  innerContainer.appendChild(statusText);
+
+  // Append elements to the main container
+  container.appendChild(rProjectIcon);
+  container.appendChild(innerContainer);
+
+  return container;
+}
+</script>
+<script type="module">
+// Function to install a single package
+async function qwebrInstallRPackage(packageName) {
+  await mainWebR.evalRVoid(`webr::install('${packageName}');`);
+}
+
+// Function to load a single package
+async function qwebrLoadRPackage(packageName) {
+  await mainWebR.evalRVoid(`require('${packageName}', quietly = TRUE)`);
+}
+
+// Generic function to process R packages
+async function qwebrProcessRPackagesWithStatus(packages, processType, displayStatusMessageUpdate = true) {
+  // Switch between contexts
+  const messagePrefix = processType === 'install' ? 'Installing' : 'Loading';
+
+  // Modify button state
+  qwebrSetInteractiveButtonState(`🟡 ${messagePrefix} package ...`, false);
+
+  // Iterate over packages
+  for (let i = 0; i < packages.length; i++) {
+    const activePackage = packages[i];
+    const formattedMessage = `${messagePrefix} package ${i + 1} out of ${packages.length}: ${activePackage}`;
+
+    // Display the update in header
+    if (displayStatusMessageUpdate) {
+      qwebrUpdateStatusHeader(formattedMessage);
+    }
+
+    // Display the update in non-active areas
+    qwebrUpdateStatusMessage(formattedMessage);
+
+    // Run package installation
+    if (processType === 'install') {
+      await qwebrInstallRPackage(activePackage);
+    } else {
+      await qwebrLoadRPackage(activePackage);
+    }
+  }
+
+  // Clean slate
+  if (processType === 'load') {
+    await mainWebR.flush();
+  }
+}
+
+// Start a timer
+const initializeWebRTimerStart = performance.now();
+
+// Encase with a dynamic import statement
+globalThis.qwebrInstance = import(qwebrCustomizedWebROptions.baseURL + "webr.mjs").then(
+  async ({ WebR, ChannelType }) => {
+    // Populate WebR options with defaults or new values based on `webr` meta
+    globalThis.mainWebR = new WebR(qwebrCustomizedWebROptions);
+
+    // Initialization WebR
+    await mainWebR.init();
+
+    // Setup a shelter
+    globalThis.mainWebRCodeShelter = await new mainWebR.Shelter();
+
+    // Setup a pager to allow processing help documentation 
+    await mainWebR.evalRVoid('webr::pager_install()'); 
+
+    // Override the existing install.packages() to use webr::install()
+    await mainWebR.evalRVoid('webr::shim_install()'); 
+
+    // Specify the repositories to pull from
+    // Note: webR does not use the `repos` option, but instead uses `webr_pkg_repos`
+    // inside of `install()`. However, other R functions still pull from `repos`.
+    await mainWebR.evalRVoid(`
+      options(
+        webr_pkg_repos = c(${qwebrPackageRepoURLS.map(repoURL => `'${repoURL}'`).join(',')}),
+        repos = c(${qwebrPackageRepoURLS.map(repoURL => `'${repoURL}'`).join(',')})
+      )
+    `);
+
+    // Check to see if any packages need to be installed
+    if (qwebrSetupRPackages) {
+      // Obtain only a unique list of packages
+      const uniqueRPackageList = Array.from(new Set(qwebrInstallRPackagesList));
+
+      // Install R packages one at a time (either silently or with a status update)
+      await qwebrProcessRPackagesWithStatus(uniqueRPackageList, 'install', qwebrShowStartupMessage);
+
+      if (qwebrAutoloadRPackages) {
+        // Load R packages one at a time (either silently or with a status update)
+        await qwebrProcessRPackagesWithStatus(uniqueRPackageList, 'load', qwebrShowStartupMessage);
+      }
+    }
+  }
+);
+
+// Stop timer
+const initializeWebRTimerEnd = performance.now();
+
+</script>
+<script type="module">
+// Function to verify a given JavaScript Object is empty
+globalThis.qwebrIsObjectEmpty = function (arr) {
+    return Object.keys(arr).length === 0;
+}
+
+// Global version of the Escape HTML function that converts HTML 
+// characters to their HTML entities.
+globalThis.qwebrEscapeHTMLCharacters = function(unsafe) {
+    return unsafe
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#039;");
+  };
+
+// Passthrough results
+globalThis.qwebrIdentity = function(x) {
+    return x;
+};
+
+// Append a comment
+globalThis.qwebrPrefixComment = function(x, comment) {
+    return `${comment}${x}`;
+};
+
+// Function to parse the pager results
+globalThis.qwebrParseTypePager = async function (msg) { 
+
+    // Split out the event data
+    const { path, title, deleteFile } = msg.data; 
+
+    // Process the pager data by reading the information from disk
+    const paged_data = await mainWebR.FS.readFile(path).then((data) => {
+        // Obtain the file content
+        let content = new TextDecoder().decode(data);
+
+        // Remove excessive backspace characters until none remain
+        while(content.match(/.[\b]/)){
+        content = content.replace(/.[\b]/g, '');
+        }
+
+        // Returned cleaned data
+        return content;
+    });
+
+    // Unlink file if needed
+    if (deleteFile) { 
+        await mainWebR.FS.unlink(path); 
+    } 
+
+    // Return extracted data with spaces
+    return paged_data;
+} 
+
+// Function to run the code using webR and parse the output
+globalThis.qwebrComputeEngine = async function(
+    codeToRun, 
+    elements, 
+    options) {
+
+    // Call into the R compute engine that persists within the document scope.
+    // To be prepared for all scenarios, the following happens: 
+    // 1. We setup a canvas device to write to by making a namespace call into the {webr} package
+    // 2. We use values inside of the options array to set the figure size.
+    // 3. We capture the output stream information (STDOUT and STERR)
+    // 4. We disable the current device's image creation.
+    // 5. Piece-wise parse the results into the different output areas
+
+    // Create a pager variable for help/file contents
+    let pager = [];
+
+    // Handle how output is processed
+    let showMarkup = options.results === "markup" && options.output !== "asis";
+    let processOutput;
+
+    if (showMarkup) {
+        processOutput = qwebrEscapeHTMLCharacters;
+    } else {
+        processOutput = qwebrIdentity;
+    }
+
+    // ---- 
+    // Convert from Inches to Pixels by using DPI (dots per inch)
+    // for bitmap devices (dpi * inches = pixels)
+    let fig_width = options["fig-width"] * options["dpi"]
+    let fig_height = options["fig-height"] * options["dpi"]
+
+    // Initialize webR
+    await mainWebR.init();
+
+    // Setup a webR canvas by making a namespace call into the {webr} package
+    // Evaluate the R code
+    // Remove the active canvas silently
+    const result = await mainWebRCodeShelter.captureR(
+        `webr::canvas(width=${fig_width}, height=${fig_height}, capture = TRUE)
+        .webr_cvs_id <- dev.cur()
+        ${codeToRun}
+        invisible(dev.off(.webr_cvs_id))
+        `, {
+        withAutoprint: true,
+        captureStreams: true,
+        captureConditions: false//,
+        // env: webR.objs.emptyEnv, // maintain a global environment for webR v0.2.0
+    });
+
+    // -----
+
+    // Start attempting to parse the result data
+    processResultOutput:try {
+        
+        // Avoid running through output processing
+        if (options.results === "hide" || options.output === "false") { 
+            break processResultOutput; 
+        }
+
+        // Merge output streams of STDOUT and STDErr (messages and errors are combined.)
+        // Require both `warning` and `message` to be true to display `STDErr`. 
+        const out = result.output
+        .filter(
+            evt => evt.type === "stdout" || 
+            ( evt.type === "stderr" && (options.warning === "true" && options.message === "true")) 
+        )
+        .map((evt, index) => {
+            const className = `qwebr-output-code-${evt.type}`;
+            const outputResult = qwebrPrefixComment(processOutput(evt.data), options.comment);
+            return `<code id="${className}-editor-${elements.id}-result-${index + 1}" class="${className}">${outputResult}</code>`;
+        })
+        .join("\n");
+
+
+        // Clean the state
+        // We're now able to process pager events.
+        // As a result, we cannot maintain a true 1-to-1 output order 
+        // without individually feeding each line
+        const msgs = await mainWebR.flush();
+
+        // Use `map` to process the filtered "pager" events asynchronously
+        const pager = await Promise.all(
+            msgs.filter(msg => msg.type === 'pager').map(
+                async (msg) => {
+                    return await qwebrParseTypePager(msg);
+                }
+            )
+        );
+
+        // Nullify the output area of content
+        elements.outputCodeDiv.innerHTML = "";
+        elements.outputGraphDiv.innerHTML = "";
+
+        // Design an output object for messages
+        const pre = document.createElement("pre");
+        if (/\S/.test(out)) {
+            // Display results as HTML elements to retain output styling
+            const div = document.createElement("div");
+            div.innerHTML = out;
+            pre.appendChild(div);
+        } else {
+            // If nothing is present, hide the element.
+            pre.style.visibility = "hidden";
+        }
+
+        elements.outputCodeDiv.appendChild(pre);
+
+        // Determine if we have graphs to display
+        if (result.images.length > 0) {
+            // Create figure element
+            const figureElement = document.createElement('figure');
+
+            // Place each rendered graphic onto a canvas element
+            result.images.forEach((img) => {
+                // Construct canvas for object
+                const canvas = document.createElement("canvas");
+
+                // Set canvas size to image
+                canvas.width = img.width;
+                canvas.height = img.height;
+
+                // Apply output truncations
+                canvas.style.width = options["out-width"] ? options["out-width"] : `${fig_width}px`;
+                if (options["out-height"]) {
+                    canvas.style.height = options["out-height"];
+                }
+
+                // Apply styling
+                canvas.style.display = "block";
+                canvas.style.margin = "auto";
+
+                // Draw image onto Canvas
+                const ctx = canvas.getContext("2d");
+                ctx.drawImage(img, 0, 0, img.width, img.height);
+          
+                // Append canvas to figure output area
+                figureElement.appendChild(canvas);
+            });
+
+            if (options['fig-cap']) {
+                // Create figcaption element
+                const figcaptionElement = document.createElement('figcaption');
+                figcaptionElement.innerText = options['fig-cap'];
+                // Append figcaption to figure
+                figureElement.appendChild(figcaptionElement);    
+            }
+
+            elements.outputGraphDiv.appendChild(figureElement);
+        }
+
+        // Display the pager data
+        if (pager) {
+        // Use the `pre` element to preserve whitespace.
+        pager.forEach((paged_data, index) => {
+            let pre_pager = document.createElement("pre");
+            pre_pager.innerText = paged_data;
+            pre_pager.classList.add("qwebr-output-code-pager");
+            pre_pager.setAttribute("id", `qwebr-output-code-pager-editor-${elements.id}-result-${index + 1}`);
+            elements.outputCodeDiv.appendChild(pre_pager);
+        });
+        }
+    } finally {
+        // Clean up the remaining code
+        mainWebRCodeShelter.purge();
+    }
+}
+
+// Function to execute the code (accepts code as an argument)
+globalThis.qwebrExecuteCode = async function (
+    codeToRun,
+    id,
+    options = {}) {
+
+    // If options are not passed, we fall back on the bare minimum to handle the computation
+    if (qwebrIsObjectEmpty(options)) {
+        options = { 
+            "context": "interactive", 
+            "fig-width": 7, "fig-height": 5, 
+            "out-width": "700px", "out-height": "", 
+            "dpi": 72,
+            "results": "markup", 
+            "warning": "true", "message": "true",
+        };
+    }
+
+    // Next, we access the compute areas values
+    const elements = {
+        runButton: document.getElementById(`qwebr-button-run-${id}`),
+        outputCodeDiv: document.getElementById(`qwebr-output-code-area-${id}`),
+        outputGraphDiv: document.getElementById(`qwebr-output-graph-area-${id}`),
+        id: id,
+    }
+
+    // Disallowing execution of other code cells
+    document.querySelectorAll(".qwebr-button-run").forEach((btn) => {
+        btn.disabled = true;
+    });
+
+    if (options.context == EvalTypes.Interactive) {
+        // Emphasize the active code cell
+        elements.runButton.innerHTML = '<i class="fa-solid fa-spinner fa-spin qwebr-icon-status-spinner"></i> <span>Run Code</span>';
+    }
+
+    // Evaluate the code and parse the output into the document
+    await qwebrComputeEngine(codeToRun, elements, options);
+
+    // Switch to allowing execution of code
+    document.querySelectorAll(".qwebr-button-run").forEach((btn) => {
+        btn.disabled = false;
+    });
+
+    if (options.context == EvalTypes.Interactive) {
+        // Revert to the initial code cell state
+        elements.runButton.innerHTML = '<i class="fa-solid fa-play qwebr-icon-run-code"></i> <span>Run Code</span>';
+    }
+}
+
+</script>
 
   <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
   <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
@@ -164,17 +1013,190 @@ window.Quarto = {
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#motivational-problem" id="toc-motivational-problem" class="nav-link active" data-scroll-target="#motivational-problem">Motivational Problem</a></li>
-  <li><a href="#ab-testing" id="toc-ab-testing" class="nav-link" data-scroll-target="#ab-testing">A/B Testing</a>
+  <li><a href="#ab-testing" id="toc-ab-testing" class="nav-link active" data-scroll-target="#ab-testing">A/B Testing</a>
   <ul class="collapse">
-  <li><a href="#comparing-the-two-groups" id="toc-comparing-the-two-groups" class="nav-link" data-scroll-target="#comparing-the-two-groups">Comparing the two groups</a></li>
-  <li><a href="#early-stopping" id="toc-early-stopping" class="nav-link" data-scroll-target="#early-stopping">Early Stopping</a></li>
+  <li><a href="#review-of-hypothesis-testing" id="toc-review-of-hypothesis-testing" class="nav-link" data-scroll-target="#review-of-hypothesis-testing">Review of Hypothesis Testing</a></li>
+  <li><a href="#peeking-and-early-stopping" id="toc-peeking-and-early-stopping" class="nav-link" data-scroll-target="#peeking-and-early-stopping">Peeking and Early Stopping</a></li>
   </ul></li>
   </ul>
 </nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
+<script src="https://cdn.jsdelivr.net/npm/monaco-editor@0.47.0/min/vs/loader.js"></script>
+<script type="module" id="qwebr-monaco-editor-init">
+
+  // Configure the Monaco Editor's loader
+  require.config({
+    paths: {
+      'vs': 'https://cdn.jsdelivr.net/npm/monaco-editor@0.47.0/min/vs'
+    }
+  });
+</script>
+<script type="module">
+// Global dictionary to store Monaco Editor instances
+globalThis.qwebrEditorInstances = {};
+
+// Function that builds and registers a Monaco Editor instance    
+globalThis.qwebrCreateMonacoEditorInstance = function (cellData) {
+
+  const initialCode = cellData.code;
+  const qwebrCounter = cellData.id;
+  const qwebrOptions = cellData.options;
+
+  // Retrieve the previously created document elements
+  let runButton = document.getElementById(`qwebr-button-run-${qwebrCounter}`);
+  let resetButton = document.getElementById(`qwebr-button-reset-${qwebrCounter}`);
+  let copyButton = document.getElementById(`qwebr-button-copy-${qwebrCounter}`);
+  let editorDiv = document.getElementById(`qwebr-editor-${qwebrCounter}`);
+  
+  // Load the Monaco Editor and create an instance
+  let editor;
+  require(['vs/editor/editor.main'], function () {
+    editor = monaco.editor.create(editorDiv, {
+      value: initialCode,
+      language: 'r',
+      theme: 'vs-light',
+      automaticLayout: true,           // Works wonderfully with RevealJS
+      scrollBeyondLastLine: false,
+      minimap: {
+        enabled: false
+      },
+      fontSize: '17.5pt',              // Bootstrap is 1 rem
+      renderLineHighlight: "none",     // Disable current line highlighting
+      hideCursorInOverviewRuler: true,  // Remove cursor indictor in right hand side scroll bar
+      readOnly: qwebrOptions['read-only'] ?? false
+    });
+
+    // Store the official counter ID to be used in keyboard shortcuts
+    editor.__qwebrCounter = qwebrCounter;
+
+    // Store the official div container ID
+    editor.__qwebrEditorId = `qwebr-editor-${qwebrCounter}`;
+
+    // Store the initial code value and options
+    editor.__qwebrinitialCode = initialCode;
+    editor.__qwebrOptions = qwebrOptions;
+
+    // Set at the model level the preferred end of line (EOL) character to LF.
+    // This prevent `\r\n` from being given to the webR engine if the user is on Windows.
+    // See details in: https://github.com/coatless/quarto-webr/issues/94
+    // Associated error text: 
+    // Error: <text>:1:7 unexpected input
+
+    // Retrieve the underlying model
+    const model = editor.getModel();
+    // Set EOL for the model
+    model.setEOL(monaco.editor.EndOfLineSequence.LF);
+
+    // Dynamically modify the height of the editor window if new lines are added.
+    let ignoreEvent = false;
+    const updateHeight = () => {
+      const contentHeight = editor.getContentHeight();
+      // We're avoiding a width change
+      //editorDiv.style.width = `${width}px`;
+      editorDiv.style.height = `${contentHeight}px`;
+      try {
+        ignoreEvent = true;
+
+        // The key to resizing is this call
+        editor.layout();
+      } finally {
+        ignoreEvent = false;
+      }
+    };
+
+    // Helper function to check if selected text is empty
+    function isEmptyCodeText(selectedCodeText) {
+      return (selectedCodeText === null || selectedCodeText === undefined || selectedCodeText === "");
+    }
+
+    // Registry of keyboard shortcuts that should be re-added to each editor window
+    // when focus changes.
+    const addWebRKeyboardShortCutCommands = () => {
+      // Add a keydown event listener for Shift+Enter to run all code in cell
+      editor.addCommand(monaco.KeyMod.Shift | monaco.KeyCode.Enter, () => {
+
+        // Retrieve all text inside the editor
+        qwebrExecuteCode(editor.getValue(), editor.__qwebrCounter, editor.__qwebrOptions);
+      });
+
+      // Add a keydown event listener for CMD/Ctrl+Enter to run selected code
+      editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.Enter, () => {
+
+        // Get the selected text from the editor
+        const selectedText = editor.getModel().getValueInRange(editor.getSelection());
+        // Check if no code is selected
+        if (isEmptyCodeText(selectedText)) {
+          // Obtain the current cursor position
+          let currentPosition = editor.getPosition();
+          // Retrieve the current line content
+          let currentLine = editor.getModel().getLineContent(currentPosition.lineNumber);
+
+          // Propose a new position to move the cursor to
+          let newPosition = new monaco.Position(currentPosition.lineNumber + 1, 1);
+
+          // Check if the new position is beyond the last line of the editor
+          if (newPosition.lineNumber > editor.getModel().getLineCount()) {
+            // Add a new line at the end of the editor
+            editor.executeEdits("addNewLine", [{
+            range: new monaco.Range(newPosition.lineNumber, 1, newPosition.lineNumber, 1),
+            text: "\n", 
+            forceMoveMarkers: true,
+            }]);
+          }
+          
+          // Run the entire line of code.
+          qwebrExecuteCode(currentLine, editor.__qwebrCounter, editor.__qwebrOptions);
+
+          // Move cursor to new position
+          editor.setPosition(newPosition);
+        } else {
+          // Code to run when Ctrl+Enter is pressed with selected code
+          qwebrExecuteCode(selectedText, editor.__qwebrCounter, editor.__qwebrOptions);
+        }
+      });
+    }
+
+    // Register an on focus event handler for when a code cell is selected to update
+    // what keyboard shortcut commands should work.
+    // This is a workaround to fix a regression that happened with multiple
+    // editor windows since Monaco 0.32.0 
+    // https://github.com/microsoft/monaco-editor/issues/2947
+    editor.onDidFocusEditorText(addWebRKeyboardShortCutCommands);
+
+    // Register an on change event for when new code is added to the editor window
+    editor.onDidContentSizeChange(updateHeight);
+
+    // Manually re-update height to account for the content we inserted into the call
+    updateHeight();
+
+    // Store the editor instance in the global dictionary
+    qwebrEditorInstances[editor.__qwebrCounter] = editor;
+
+  });
+
+  // Add a click event listener to the run button
+  runButton.onclick = function () {
+    qwebrExecuteCode(editor.getValue(), editor.__qwebrCounter, editor.__qwebrOptions);
+  };
+
+  // Add a click event listener to the reset button
+  copyButton.onclick = function () {
+    // Retrieve current code data
+    const data = editor.getValue();
+    
+    // Write code data onto the clipboard.
+    navigator.clipboard.writeText(data || "");
+  };
+  
+  // Add a click event listener to the copy button
+  resetButton.onclick = function () {
+    editor.setValue(editor.__qwebrinitialCode);
+  };
+  
+}
+</script>
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
@@ -199,23 +1221,7 @@ window.Quarto = {
 <!--Load local scripts-->
 <script defer="" src="../../scripts/controller.js"></script>
 <script defer="" src="../../scripts/random.js"></script>
-<p>Previously, we studied situations where the main interest is not the exact value of a population parameter but, instead, which of the two mutually exclusive possible scenarios, namely <span class="math inline">\(H_0\)</span> or <span class="math inline">\(H_1\)</span>, is true. For example, we are not interested in the exact value of the population mean, <span class="math inline">\(\mu\)</span>, but we are interested in knowing if <span class="math inline">\(\mu\)</span> is higher than <span class="math inline">\(35\)</span>mm or not.</p>
-<p>In a classical hypothesis test, we generally use <span class="math inline">\(H_0\)</span> as the status quo hypothesis (i.e., the hypothesis of nochange, no difference), where <span class="math inline">\(H_1\)</span> represents the anticipated change. Note that <span class="math inline">\(H_1\)</span> is the alternative hypothesis, in the sense that if <span class="math inline">\(H_0\)</span> is false, then <span class="math inline">\(H_1\)</span> is true. It is not allowed for both hypotheses to be false; one of the two hypotheses must be true. Also, the hypotheses are mutually exclusive (i.e., both hypotheses cannot be true simultaneously).</p>
-<p style="text-indent: 0;">
-The general procedure for hypothesis testing is always the same:
-</p>
-<ol type="1">
-<li><p>Define the hypotheses: <span class="math inline">\(H_0\)</span> and <span class="math inline">\(H_1\)</span>;</p></li>
-<li><p>Specify the desired significance level.</p></li>
-<li><p>Define a test statistic, <span class="math inline">\(T\)</span>, appropriate to test the hypothesis.</p></li>
-<li><p>Study the distribution of the test statistic as if <span class="math inline">\(H_0\)</span> were true. This distribution is called the <em>null distribution</em>.</p></li>
-<li><p>Check the actual value of the test statistic using the data you collected.</p></li>
-<li><p>Contrast the value of the test statistic with the null distribution by calculating the <em>p-value</em>.</p></li>
-<li><p>If the p-value is smaller than the significance level, reject <span class="math inline">\(H_0\)</span>, otherwise do not reject <span class="math inline">\(H_0\)</span>.</p></li>
-</ol>
-<section id="motivational-problem" class="level2">
-<h2 class="anchored" data-anchor-id="motivational-problem">Motivational Problem</h2>
-<p>In 2008, Obama’s campaign was looking to increase the total amount of donations to the campaign. To donate online, people needed to subscribe to the campaign e-mail by clicking on a red button saying “Sign Up”.</p>
+<p>In 2008, during Barack Obama’s groundbreaking presidential campaign, the team faced a critical challenge: how to maximize online donations. Their website featured a prominent red button inviting visitors to “Sign Up” for campaign emails. But was this design truly effective in driving subscriptions?</p>
 <figure class="figure">
 <img src="imgs/obama_homepage_original.png" class="figure-img">
 <figcaption>
@@ -225,13 +1231,14 @@ Source: <a href="https://blog.optimizely.com/2010/11/29/how-obama-raised-60-mill
 </p>
 </figcaption>
 </figure>
-<p>After a while, they started wondering: Is this website’s design effective? They decided to test it! The campaign created three alternative button designs (with text: <em>SIGN UP NOW</em>, <em>LEARN MORE</em>, <em>JOIN US NOW</em>) and five different media choices to replace the original photo: two alternative photos and three videos. In total, they compared 24 website designs. they measured the subscription rate of each design. As it turns out, the best design had over 40% higher subscription rate than the original website being used. It was estimated that the additional subscription generated an additional 60 million dollars worth of donations and 288,000 additional volunteers. You can learn more about this application of A/B testing <a href="https://www.optimizely.com/insights/blog/how-obama-raised-60-million-by-running-a-simple-experiment/%22">here</a>.</p>
+<p>To find out, the campaign embarked on an A/B testing journey. They created three alternative button designs – each with different text: “<em>SIGN UP NOW</em>,” “<em>LEARN MORE</em>,” and “<em>JOIN US NOW</em>.” Additionally, they explored five media options to replace the original photo: two alternative images and three videos. In total, they evaluated a staggering 24 website designs. The metric of interest? The subscription rate—the number of people who subscribed divided by the total number of visitors.</p>
+<p>The results were astonishing. The best-performing design achieved a subscription rate over 40% higher than the original website. This seemingly small improvement translated into an estimated $60 million in additional donations and 288,000 extra volunteers. A/B testing had unlocked the potential to optimize their website and drive meaningful impact. You can learn more about it <a href="https://www.optimizely.com/insights/blog/how-obama-raised-60-million-by-running-a-simple-experiment/%22">here</a>.</p>
 <p style="text-indent: 0;">
 But how do we compare websites?
 </p>
 <section id="the-response-variable" class="level5">
 <h5 class="anchored" data-anchor-id="the-response-variable">The response variable</h5>
-<p>The first step is to understand the purpose of the website. This is a fundamental step because it guides the creation of useful metrics of success. Defining the main purpose of a website is not always a simple task. For example, in their case:</p>
+<p>The first step is to understand the purpose of the website. This is a fundamental step because it guides the creation of useful metrics of success. Defining the main purpose of a website can be a challenging task. For example, in their case:</p>
 <ul>
 <li>
 <p>
@@ -245,24 +1252,24 @@ Do they want a high proportion of visitors to become donors?
 </li>
 <li>
 <p>
-Do they want to increase the size of donation per visitor?
+Do they want to increase the size of donations per visitor?
 </p>
 </li>
 </ul>
-<p>What is a good metric to measure how effective the website is? Such metric will be the <strong>response variable</strong> of the study. Although the campaign wanted to increase the total amount of donations, this was not the website’s purpose. The purpose of the website was to attract subscribers. For this reason, they used the rate of subscription, i.e., the number of people that subscribed divided by the number of people that visited the website. If the website’s purpose is not very well defined, you might (and probably will) come up with metrics that are misleading on how effective your website is.</p>
+<p>What is a good metric to measure how effective the website is? Such a metric will be the response variable of the study. Although the campaign wanted to increase the total amount of donations, this was not the website’s purpose. The purpose of the website was to attract subscribers. For this reason, they used the subscription rate, i.e., the number of people that subscribed divided by the number of people that visited the website. If the website’s purpose is not very well defined, you might (and probably will) come up with misleading metrics of how effective your website is.</p>
 </section>
 <section id="the-covariates" class="level5">
 <h5 class="anchored" data-anchor-id="the-covariates">The covariates</h5>
-<p>The second step is to identify the elements that could be optimized. In their case, they considered the media and the button. But they could consider other factors too, such as the background colour, for example. In essence, they are trying to find the configuration of the covariates, media and button, that would yield the highest subscriber rate.</p>
+<p>Next, pinpoint the elements that can be optimized. In the Obama campaign’s case, they focused on media (images and videos) and the call-to-action button. However, other factors—such as background color—could also play a role. The goal is to find the winning combination of covariates that yields the highest subscriber rate.</p>
 </section>
 <section id="randomization" class="level5">
 <h5 class="anchored" data-anchor-id="randomization">Randomization</h5>
 <p>To avoid bias, each visitor saw a randomly chosen website design. This is a key step to be able to conclude that the reason for the increase in the subscription was the website’s design, and not a hidden factor that is not even being considered, <em>lurking variable</em>. The idea is that randomization will “average out” all these hidden differences between the visitors, and the only difference between the groups would be the website seen.</p>
 </section>
-</section>
 <section id="ab-testing" class="level2">
 <h2 class="anchored" data-anchor-id="ab-testing">A/B Testing</h2>
-<p>A/B testing is not only about website optimization. In general, we have two populations (or groups), namely Group A and Group B (hence A/B), and we want to compare these two populations with respect to a variable of interest (response variable). Let’s see a few examples:</p>
+<p>A/B testing, often associated with website optimization, extends far beyond the digital realm. It’s a powerful tool used to compare two or more treatments or interventions, whether in clinical trials, marketing campaigns, or product development. Let’s explore how A/B testing works and its key distinctions.</p>
+<p>At its core, A/B testing involves comparing two populations (Group A and Group B – hence A/B) to assess their performance regarding a specific variable of interest (the response variable). Here are some real-world scenarios:</p>
 <p><span class="example"></span>A new vaccine has been developed for cancer. The drug company wants to check the efficacy of the vaccine. The company randomly split 50,000 volunteers into two groups, where 25,000 will receive the vaccine (Group A) and 25,000 will receive the placebo (Group B). They measure if the individuals develop cancer in the next ten years.</p>
 <ul>
 <li><p><u><em>Response variable</em></u> (<span class="math inline">\(Y\)</span>): whether the individuals develop cancer;</p></li>
@@ -293,13 +1300,27 @@ Do they want to increase the size of donation per visitor?
 <div class="end-part">
 
 </div>
+<br>
 <p style="text-indent: 0;">
-</p><p>In general, the structure of A/B Testing consists of:</p>
+Although the name A/B testing suggests only two groups, we may encounter scenarios where more than two groups need to be analyzed. For instance, in the Obama Campaign problem, we have:
+</p>
+<ul>
+<li><p><u><em>Response variable:</em></u> the subscription rate;</p></li>
+<li><p>Covariates:</p>
+<ul>
+<li><u><em>Button Design:</em></u> four options;</li>
+<li><u><em>Media used:</em></u> six options;</li>
+</ul></li>
+<li><p><u><em>Total groups:</em></u> 24 (combining button design and media)</p></li>
+</ul>
+<p style="text-indent: 0;">
+In general, the structure of A/B Testing consists of:
+</p>
 <ol type="1">
 <li><p>a response variable, <span class="math inline">\(Y\)</span>;</p></li>
-<li><p>a covariate, <span class="math inline">\(X\)</span>, that splits the population into two groups;</p></li>
-<li><p>randomization, individuals are randomly assigned to the groups; and</p></li>
-<li><p>statistical comparison of the groups’ parameter of interest (remember that all we have is a sample, so we need to account for the sampling variability.</p></li>
+<li><p>one or more covariates that split the population into groups;</p></li>
+<li><p>randomization, individuals are randomly assigned to the groups to avoid bias; and</p></li>
+<li><p>statistical comparison of the groups’ parameter of interest (remember that all we have is a sample, so we need to account for the sampling variability.)</p></li>
 </ol>
 <figure class="figure">
 <img src="imgs/ab-diagram.png" width="75%" class="figure-img">
@@ -307,35 +1328,64 @@ Do they want to increase the size of donation per visitor?
 A/B Testing Workflow
 </figcaption>
 </figure>
-<section id="how-is-obamas-campaign-problem-different" class="level4">
-<h4 class="anchored" data-anchor-id="how-is-obamas-campaign-problem-different">How is Obama’s Campaign Problem Different?</h4>
-<p>Note that in case of the Obama’s campaign website, we have:</p>
+<p><br></p>
+<p>In A/B testing, our main objective is to compare two or more groups and determine whether any observed differences are statistically significant or merely due to chance (Item 4 above). Statistical hypothesis testing provides a rigorous framework for making these assessments. However, unlike the hypothesis testing problems we have seen, in A/B testing, there’s usually a critical caveat (or constraint): data are analyzed as they come. In other words, we don’t wait for the entire sample data to arrive before testing the hypothesis.</p>
+<p>There is often a significant opportunity cost or even ethical reasons for us to want to speed up the study. For example, in Obama’s campaign, it is much better to implement the best website design for all users accessing the website than to keep presenting sub-optimal designs to a high percentage of users. Similarly, in the vaccine study, being able to quickly decide whether a vaccine works can save numerous lives.</p>
+<p>Therefore, while A/B Testing also uses the traditional hypothesis testing methods you’ve learned to compare the groups, it is highly specialized in dynamic real-world applications. The constraints of these applications set A/B Testing methodologies apart from traditional hypothesis testing in the following ways:</p>
+<div class="columns" style="margin: 25px;">
+<div class="column" style="width:40%;">
+<div style="width: 260px; margin-left: auto; margin-right: auto;">
+<p><strong>Traditional Hypothesis Testing</strong></p>
+</div>
+<ul>
+<li><strong>Sample size:</strong> Fixed – determined before the experiment begins and remains unchanged.</li>
+<li><strong>Testing Framework:</strong> Static – set in advance, including the significance level and decision rules.</li>
+</ul>
+</div><div class="column" style="width:10%;">
+<div style="height: 200px; border-right: dashed black; margin-right: 20px;">
+
+</div>
+</div><div class="column" style="width:40%;">
+<div style="width: 100px; margin-left: auto; margin-right: auto;">
+<p><strong>A/B Test</strong></p>
+</div>
+<ul>
+<li><strong>Sample size:</strong> Flexible – data is monitored as they come. <br><br></li>
+<li><strong>Testing Framework:</strong> Dynamic – decisions are made as the experiment goes for a more iterative process.</li>
+</ul>
+</div>
+</div>
+<p>Unfortunately, peeking at the data before the full sample arrives has grave consequences. If not controlled properly, it drastically increases the rate of false positives (Type I Error). However, since businesses want to stop the experiment as soon as possible to avoid large opportunity costs, we must learn how to deal with these problems.</p>
+<p>Before we investigate the implications of data peeking, let us review the basic concepts of hypothesis testing.</p>
+<section id="review-of-hypothesis-testing" class="level3">
+<h3 class="anchored" data-anchor-id="review-of-hypothesis-testing">Review of Hypothesis Testing</h3>
+<p>In a classical hypothesis test, we generally use <span class="math inline">\(H_0\)</span> as the status quo hypothesis (i.e., the hypothesis of no change, no difference), where <span class="math inline">\(H_1\)</span> represents the anticipated change. It is not allowed for both hypotheses to be simultaneously false or simultaneously true; one, and only one, of the two hypotheses must be true.</p>
+<p style="text-indent: 0;">
+The general procedure for hypothesis testing is always the same:
+</p>
 <ol type="1">
-<li><p>Response variable: the subscription rate; ✅</p></li>
-<li><p>Randomization; ✅</p></li>
-<li><p>One covariate that splits the population into two groups; <span style="color: red;">✘</span></p></li>
+<li><p>Define the hypotheses: <span class="math inline">\(H_0\)</span> and <span class="math inline">\(H_1\)</span>;</p></li>
+<li><p>Specify the desired significance level.</p></li>
+<li><p>Define a test statistic, <span class="math inline">\(T\)</span>, appropriate to test the hypothesis.</p></li>
 </ol>
-<p>We had <strong>two</strong> covariates, <span class="math inline">\(X_1\)</span> and <span class="math inline">\(X_2\)</span>, which are the button design and the media used, respectively. Besides, <span class="math inline">\(X_1\)</span> had four levels (i.e., possible values): the four design options or the button. This would split the population into four groups, not into two. <span class="math inline">\(X_2\)</span>, the media variable, had six levels, three photos and three videos. Combining <span class="math inline">\(X_1\)</span> and <span class="math inline">\(X_2\)</span> results in a total of 24 groups.</p>
-<p>This problem is slightly more complex than having only two groups. If we performed pairwise comparisons, we would need 276 tests to compare all 24 groups. As we learned previously, this would considerably inflate the probability of error. For now, let us restrict our focus to only two groups. We will discuss more groups later.</p>
-</section>
-<section id="comparing-the-two-groups" class="level3">
-<h3 class="anchored" data-anchor-id="comparing-the-two-groups">Comparing the two groups</h3>
-<p>Once the appropriate response variable and covariate have been specified, we start collecting the data. The data collected will be only a sample of the population; therefore, we need to take into account the sampling variability. We are already familiar with the methodology to conduct this statistical analysis, namely two-samples confidence intervals and hypothesis tests. Let’s refresh our memory!</p>
-<p>When estimating or testing hypotheses, the parameter of interest affects which statistic we are going to use. For example, when testing the mean, we want to use the sample mean <span class="math inline">\(\bar{X}\)</span>, when testing difference in proportion, we want to use the difference in sample proportions, <span class="math inline">\(\hat{p}_1 - \hat{p}_2\)</span>, and so on.</p>
-<p>Naturally, the way these statistics behave are different, i.e., the sampling distributions (and null models) of these statistics are different. We have explored two main approaches to approximate the sampling distribution (for confidence intervals) and the null model (for hypothesis testing): (1) the Central Limit Theorem (CLT); and (2) Simulation Based Approaches.</p>
-<section id="central-limit-theorem" class="level4">
-<h4 class="anchored" data-anchor-id="central-limit-theorem">Central Limit Theorem</h4>
-<p>When estimating or testing hypotheses, the parameter of interest affects which statistic we are going to use. For example, when testing the mean, we want to use <span class="math inline">\(\bar{X}\)</span>, whereas when testing the median, we want to use the sample median, and so on. The Central Limit Theorem provides an approximation for the distribution of certain test statistics for large sample size.</p>
-<section id="comparing-two-means" class="level5">
-<h5 class="anchored" data-anchor-id="comparing-two-means">Comparing two means</h5>
+<p>. Study the distribution of the test statistic as if <span class="math inline">\(H_0\)</span> were true. This distribution is called the <em>null distribution</em>.</p>
+<ol start="5" type="1">
+<li><p>Check the actual value of the test statistic using the data you collected.</p></li>
+<li><p>Contrast the value of the test statistic with the null distribution by calculating the <em>p-value</em>.</p></li>
+<li><p>If the p-value is smaller than the significance level, reject <span class="math inline">\(H_0\)</span>; otherwise, do not reject <span class="math inline">\(H_0\)</span>.</p></li>
+</ol>
+<p>When estimating or testing hypotheses, the parameter of interest affects which statistic we will use. For example, when testing the mean, we want to use the sample mean <span class="math inline">\(\bar{X}\)</span>; when testing the difference in proportion, we want to use the difference in sample proportions, <span class="math inline">\(\hat{p}_1 - \hat{p}_2\)</span>, and so on.</p>
+<p>Naturally, the way these statistics behave is different, i.e., the sampling distributions (and null models) of these statistics are different. We have explored two main approaches to approximate the null model (for hypothesis testing) of certain statistics: (1) the Central Limit Theorem (CLT); and (2) Simulation-Based Approaches. Here, we will focus on methods based on the CLT.</p>
+<section id="comparing-two-means" class="level4">
+<h4 class="anchored" data-anchor-id="comparing-two-means">Comparing two means</h4>
 <p>Suppose you want to test the difference between two <em>independent</em> populations’ means. The scenarios to be considered:</p>
 <ul>
 <li><p><span class="math inline">\(H_0: \mu_A - \mu_B = d_0\)</span> vs <span class="math inline">\(H_1: \mu_A - \mu_B \neq d_0\)</span></p></li>
 <li><p><span class="math inline">\(H_0: \mu_A - \mu_B = d_0\)</span> vs <span class="math inline">\(H_1: \mu_A - \mu_B &gt; d_0\)</span></p></li>
 <li><p><span class="math inline">\(H_0: \mu_A - \mu_B = d_0\)</span> vs <span class="math inline">\(H_1: \mu_A - \mu_B &lt; d_0\)</span></p></li>
 </ul>
-<p>To conduct this hypothesis test, we take two independent samples, one from each population. By independent samples, we meant that the individuals are selected independently from each population.</p>
-<p>Suppose Group A has <span class="math inline">\(n_A\)</span> elements drawn at random from Population A, and Group B has <span class="math inline">\(n_B\)</span> elements drawn at random from Population B. Let’s use <span class="math inline">\(x\)</span> to refer to Group A and <span class="math inline">\(y\)</span> to refer to Group B. For large samples sizes, the test statistic given by <span class="math display">\[
+<p>To conduct this hypothesis test, we take two independent samples, one from each population. By independent samples, we mean that the individuals are selected independently from each population.</p>
+<p>Suppose Group A has <span class="math inline">\(n_A\)</span> elements drawn at random from Population A, and Group B has <span class="math inline">\(n_B\)</span> elements drawn at random from Population B. Let’s use <span class="math inline">\(x\)</span> to refer to Group A and <span class="math inline">\(y\)</span> to refer to Group B. For large sample sizes, the test statistic given by <span class="math display">\[
 T = \frac{\bar{x}-\bar{y} - d_0}{\sqrt{\frac{s_A^2}{n_A} - \frac{s_B^2}{n_B}} }
 \]</span> follows a <span class="math inline">\(t\)</span>-distribution with approximately <span class="math inline">\(\nu\)</span> degrees of freedom under <span class="math inline">\(H_0\)</span>, where <span class="math display">\[
 \nu = \frac{
@@ -346,65 +1396,28 @@ T = \frac{\bar{x}-\bar{y} - d_0}{\sqrt{\frac{s_A^2}{n_A} - \frac{s_B^2}{n_B}} }
 }.
 \]</span></p>
 <p style="text-indent: 0;">
-In other words, the <em>null model</em> of the test statistic above is <span class="math inline">\(t_\nu\)</span>. Of course, we are never going to calculate this weird formula by hand! Our computers can do this for us.
+In other words, the <em>null model</em> of the test statistic above is <span class="math inline">\(t_\nu\)</span>. Of course, we will never calculate this weird formula by hand! Our computers can do this for us.
 </p>
-<p><span class="example"></span> Suppose Obama’s campaign wanted to test which of two websites, <em>Website A</em> or <em>Website B</em>, results in a larger amount of donations. The next 60 users who visit the campaign’s website will access one of the websites chosen at random until 30 users have seen one of the designs. We have collected (actually simulated!) this data for you and stored it in the <code>sample_money_donated</code> object.</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">suppressMessages</span>(<span class="fu">library</span>(tidyverse))</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1</span>)</span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Simulating a sample of 30 individuals for group A and Group B</span></span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>sample_money_donated <span class="ot">&lt;-</span> </span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="fu">tibble</span>(<span class="at">group =</span> <span class="fu">c</span>(<span class="st">"Website A"</span>, <span class="st">"Website B"</span>), </span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">amount =</span> <span class="fu">list</span>(</span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>        <span class="fu">if_else</span>(<span class="fu">runif</span>(<span class="dv">30</span>) <span class="sc">&lt;</span> <span class="fl">0.5</span>, <span class="dv">0</span>, <span class="fu">rnorm</span>(<span class="dv">30</span>, <span class="dv">80</span>, <span class="dv">10</span>) ), </span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>        <span class="fu">if_else</span>(<span class="fu">runif</span>(<span class="dv">30</span>) <span class="sc">&lt;</span> <span class="fl">0.6</span>, <span class="dv">0</span>, <span class="fu">rnorm</span>(<span class="dv">30</span>, <span class="dv">100</span>, <span class="dv">20</span>) ))</span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">%&gt;%</span> </span>
-<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="fu">unnest</span>(<span class="at">cols =</span> amount) <span class="sc">%&gt;%</span></span>
-<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="fu">sample_n</span>(<span class="dv">60</span>)</span>
-<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>sample_money_donated</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 60 × 2
-   group     amount
-   &lt;chr&gt;      &lt;dbl&gt;
- 1 Website B    0  
- 2 Website B    0  
- 3 Website B    0  
- 4 Website A    0  
- 5 Website A   87.8
- 6 Website B    0  
- 7 Website A   66.2
- 8 Website A    0  
- 9 Website B   88.6
-10 Website A    0  
-# ℹ 50 more rows</code></pre>
-</div>
-</div>
-<p>Next, to test <span class="math inline">\(H_0: \mu_A - \mu_B = d_0\)</span> vs <span class="math inline">\(H_1: \mu_A - \mu_B \neq d_0\)</span>, we can use the <code><a href="https://www.rdocumentation.org/packages/stats/versions/3.6.2/topics/t.test" target="_blank">t.test</a></code> function in R.</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">t.test</span>(amount <span class="sc">~</span> group,  <span class="co"># The formula: "website affects amount".</span></span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>       <span class="at">mu =</span> <span class="dv">0</span>, <span class="co"># the value of d0</span></span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>       <span class="at">alternative =</span> <span class="st">"two.sided"</span>, <span class="co"># "less" for &lt; and "greater" for &gt;;</span></span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>       <span class="at">data =</span> sample_money_donated)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>
-    Welch Two Sample t-test
+<p><span class="example"></span> Suppose Obama’s campaign wanted to test which of two websites, <em>Website A</em> or <em>Website B</em>, results in a larger amount of donations. The next 60 users who visit the campaign’s website will access one of the websites chosen at random until 30 users have seen one of the designs. We have collected (actually simulated!) this data for you and stored it in the <code>sample_money_donated</code> object. Run the code cell below to take a look.</p>
+<div id="qwebr-insertion-location-1"></div>
+<noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
+<div id="qwebr-insertion-location-2"></div>
+<noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
+<p><br></p>
+<p style="text-indent: 0;">
+Next, to test <span class="math inline">\(H_0: \mu_A - \mu_B = d_0\)</span> vs <span class="math inline">\(H_1: \mu_A - \mu_B \neq d_0\)</span>, we can use the <code><a href="https://www.rdocumentation.org/packages/stats/versions/3.6.2/topics/t.test" target="_blank">t.test</a></code> function in R.
+</p>
+<div id="qwebr-insertion-location-3"></div>
+<noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
+Therefore, at <span class="math inline">\(5\%\)</span> significance level, we do not have strong enough evidence to conclude that the average donations of the websites A and B are different.
+<div class="end-part">
 
-data:  amount by group
-t = -0.85694, df = 54.453, p-value = 0.3952
-alternative hypothesis: true difference in means between group Website A and group Website B is not equal to 0
-95 percent confidence interval:
- -35.02343  14.04580
-sample estimates:
-mean in group Website A mean in group Website B 
-               37.16292                47.65173 </code></pre>
 </div>
-</div>
+<p><br></p>
 </section>
-<section id="comparing-two-proportions" class="level5">
-<h5 class="anchored" data-anchor-id="comparing-two-proportions">Comparing two proportions</h5>
-<p>Obama’s campaign wanted the website to increase the number of subscribers and, for this reason, they used the rate of subscription. In this case, the variable of interest, <em>“whether a visitor subscribes”</em>, is not numerical, is dichotomic: “yes” or “no”. Consequently, we would want to compare the proportions of visitors who subscribes using <em>Website A</em> and <em>Website B</em>.</p>
+<section id="comparing-two-proportions" class="level4">
+<h4 class="anchored" data-anchor-id="comparing-two-proportions">Comparing two proportions</h4>
+<p>Obama’s campaign wanted the website to increase the number of subscribers, so they used the subscription rate. In this case, the variable of interest, <em>“whether a visitor subscribes”</em>, is not numerical and is dichotomic: “yes” or “no.” Consequently, we would want to compare the proportions of visitors who subscribe using <em>Website A</em> and <em>Website B</em>.</p>
 <p>To test for the equality of proportions between two groups, i.e., <span class="math inline">\(H_0: p_A - p_B = 0\)</span> vs <span class="math inline">\(H_1: p_A - p_B
 \neq 0\)</span>, we can use the following test statistics: <span class="math display">\[
 Z = \frac{\hat{p}_A-\hat{p}_B}{\sqrt{\hat{p}(1-\hat{p})\left(\frac{1}{n_A}+\frac{1}{n_B}\right)}},
@@ -412,195 +1425,33 @@ Z = \frac{\hat{p}_A-\hat{p}_B}{\sqrt{\hat{p}(1-\hat{p})\left(\frac{1}{n_A}+\frac
 <p style="text-indent: 0;">
 where <span class="math inline">\(\hat{p}=\frac{n_A\hat{p}_A+n_B\hat{p}_B}{n_A+n_B}\)</span> is the overall proportion. For large sample sizes, the null model of the <span class="math inline">\(Z\)</span> statistic is the Standard Normal distribution, <span class="math inline">\(N(0,1)\)</span>. Again, we will not do this manually, as we can easily calculate using the computer.
 </p>
-<p><span class="example"></span> Suppose Obama’s campaign wanted to test which of two websites, <em>Website A</em> or <em>Website B</em>, results in a higher rate of subscribers. The next 60 users who visit the campaign’s website will access one of the websites chosen at random until 30 users have seen one of the designs. We have collected this data for you and stored it in the <code>sample_subscriber</code> object.</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(infer)</span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1</span>)</span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Simulating a sample of 30 individuals for group A and Group B</span></span>
-<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>sample_subscriber <span class="ot">&lt;-</span> </span>
-<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a><span class="fu">tibble</span>(<span class="at">website =</span> <span class="fu">factor</span>(<span class="fu">c</span>(<span class="st">"A"</span>, <span class="st">"B"</span>)), </span>
-<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">subscribed =</span> <span class="fu">list</span>(</span>
-<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>        <span class="fu">sample</span>(<span class="fu">factor</span>(<span class="fu">c</span>(<span class="st">"yes"</span>, <span class="st">"no"</span>)), <span class="dv">30</span>, <span class="at">replace =</span> <span class="cn">TRUE</span>, <span class="at">p=</span><span class="fu">c</span>(<span class="fl">0.42</span>, <span class="fl">0.58</span>)), </span>
-<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>        <span class="fu">sample</span>(<span class="fu">factor</span>(<span class="fu">c</span>(<span class="st">"yes"</span>, <span class="st">"no"</span>)), <span class="dv">30</span>, <span class="at">replace =</span> <span class="cn">TRUE</span>, <span class="at">p=</span><span class="fu">c</span>(<span class="fl">0.37</span>, <span class="fl">0.58</span>)))</span>
-<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">%&gt;%</span> </span>
-<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a><span class="fu">unnest</span>(<span class="at">cols =</span> subscribed) <span class="sc">%&gt;%</span></span>
-<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a><span class="fu">sample_n</span>(<span class="dv">60</span>)</span>
-<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a>sample_subscriber</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 60 × 2
-   website subscribed
-   &lt;fct&gt;   &lt;fct&gt;     
- 1 B       no        
- 2 B       yes       
- 3 A       yes       
- 4 A       no        
- 5 B       no        
- 6 A       no        
- 7 A       no        
- 8 B       no        
- 9 A       yes       
-10 A       no        
-# ℹ 50 more rows</code></pre>
-</div>
-</div>
-<p>Once the data is collected, we can run <code><a href="https://www.rdocumentation.org/packages/stats/versions/3.6.2/topics/prop.test" target="_blank">prop.test</a></code> in R to test the hypothesis.</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">prop.test</span>(</span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>    sample_subscriber <span class="sc">%&gt;%</span> </span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">group_by</span>(website) <span class="sc">%&gt;%</span> </span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">summarise</span>(<span class="at">n_successes =</span> <span class="fu">sum</span>(subscribed <span class="sc">==</span> <span class="st">"yes"</span>), </span>
-<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>            <span class="at">n_failures =</span> <span class="fu">sum</span>(subscribed <span class="sc">==</span> <span class="st">"no"</span>)) <span class="sc">%&gt;%</span> </span>
-<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">select</span>(<span class="sc">-</span>website) <span class="sc">%&gt;%</span> </span>
-<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>    <span class="fu">as.matrix</span>())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>
-    2-sample test for equality of proportions with continuity correction
-
-data:  sample_subscriber %&gt;% group_by(website) %&gt;% summarise(n_successes = sum(subscribed == "yes"), n_failures = sum(subscribed == "no")) %&gt;% select(-website) %&gt;% as.matrix()
-X-squared = 1.4459e-30, df = 1, p-value = 1
-alternative hypothesis: two.sided
-95 percent confidence interval:
- -0.2493486  0.3160153
-sample estimates:
-   prop 1    prop 2 
-0.4333333 0.4000000 </code></pre>
-</div>
-</div>
-</section>
-</section>
-<section id="simulation-based-approach" class="level4">
-<h4 class="anchored" data-anchor-id="simulation-based-approach">Simulation Based Approach</h4>
-<p>Alternatively to the CLT, we could use computer simulations to compare the groups. The same idea we discussed previously:</p>
-<ol type="1">
-<li><p>Collect the samples of Group A and Group B;</p></li>
-<li><p>Calculate the observed test statistic;</p></li>
-<li><p>Put the sample of both groups together;</p></li>
-<li><p>Select <span class="math inline">\(n_1\)</span> elements at random, <strong>without</strong> replacement, from the two samples combined.</p></li>
-<li><p>The selected elements will be your “new” Group A, and the remaining will be your “new” Group B.</p></li>
-<li><p>Calculate the appropriate test statistic (e.g., the difference of sample proportions or of sample means).</p></li>
-<li><p>Perform Steps 4, 5 and 6, multiple times to obtain a sample from the <em>Null Distribution </em>.</p></li>
-<li><p>Compare the observed test statistic with the simulated null model.</p></li>
-</ol>
-<p>Note that by randomizing the groups in the sample (Steps 3, 4, and 5), we are trying to remove the difference between the groups, except for those differences due to sampling variability. But why are we doing that again? Because we want to simulate a sample from the Null Model, which is the model under the assumption that there is no difference between the groups.</p>
-<p><span class="example"></span> Let’s return to Obama’s campaign problem in the example above. We want to test which website, Website A or Website B, has a higher subscription rate. The data is stored in <code>sample_subscriber</code>.</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>sample_subscriber</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 60 × 2
-   website subscribed
-   &lt;fct&gt;   &lt;fct&gt;     
- 1 B       no        
- 2 B       yes       
- 3 A       yes       
- 4 A       no        
- 5 B       no        
- 6 A       no        
- 7 A       no        
- 8 B       no        
- 9 A       yes       
-10 A       no        
-# ℹ 50 more rows</code></pre>
-</div>
-</div>
-<p>First, we calculate the observed test statistic. Since we are comparing the proportions, we can use the difference of sample proportions as our test statistic.</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>obs_test_statistic <span class="ot">&lt;-</span> </span>
-<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>    sample_subscriber <span class="sc">%&gt;%</span> </span>
-<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">specify</span>(<span class="at">formula =</span> subscribed <span class="sc">~</span> website, <span class="at">success =</span> <span class="st">"yes"</span>) <span class="sc">%&gt;%</span> </span>
-<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">calculate</span>(<span class="at">stat =</span> <span class="st">"diff in props"</span>, <span class="at">order =</span> <span class="fu">c</span>(<span class="st">"A"</span>, <span class="st">"B"</span>))</span>
-<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>obs_test_statistic</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>Response: subscribed (factor)
-Explanatory: website (factor)
-# A tibble: 1 × 1
-    stat
-   &lt;dbl&gt;
-1 0.0333</code></pre>
-</div>
-</div>
-<p>Next, we simulate a sample from the null model by following Steps 3-6. Luckily for us, we don’t need to do this manually as we are already familiar with <code>infer</code>’s workflow.</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>sample_null_model <span class="ot">&lt;-</span> </span>
-<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>    sample_subscriber <span class="sc">%&gt;%</span> </span>
-<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">specify</span>(<span class="at">formula =</span> subscribed <span class="sc">~</span> website, <span class="at">success =</span> <span class="st">"yes"</span>) <span class="sc">%&gt;%</span> </span>
-<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">hypothesise</span>(<span class="at">null =</span> <span class="st">"independence"</span>) <span class="sc">%&gt;%</span> </span>
-<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">generate</span>(<span class="at">reps =</span> <span class="dv">5000</span>, <span class="at">type =</span> <span class="st">"permute"</span>) <span class="sc">%&gt;%</span> </span>
-<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">calculate</span>(<span class="at">stat =</span> <span class="st">"diff in props"</span>, <span class="at">order =</span> <span class="fu">c</span>(<span class="st">"A"</span>, <span class="st">"B"</span>))</span>
-<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>sample_null_model</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>Response: subscribed (factor)
-Explanatory: website (factor)
-Null Hypothesis: independence
-# A tibble: 5,000 × 2
-   replicate    stat
-       &lt;int&gt;   &lt;dbl&gt;
- 1         1  0.1   
- 2         2 -0.1   
- 3         3 -0.0333
- 4         4 -0.233 
- 5         5 -0.0333
- 6         6 -0.0333
- 7         7  0.0333
- 8         8  0.167 
- 9         9 -0.1   
-10        10  0.233 
-# ℹ 4,990 more rows</code></pre>
-</div>
-</div>
-<p>Finally, we compare the observed test statistic with the null model. Since the observed test statistic is <span class="math inline">\(0.0333\)</span>, we calculate the proportion of values generated from the null model that are above <span class="math inline">\(0.0333\)</span> or below <span class="math inline">\(-0.0333\)</span>. This will be the estimated p-value of the test.</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>sample_null_model <span class="sc">%&gt;%</span> </span>
-<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">get_p_value</span>(obs_test_statistic, <span class="at">direction =</span> <span class="st">"both"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 1 × 1
-  p_value
-    &lt;dbl&gt;
-1   0.998</code></pre>
-</div>
-</div>
-<div class="end-part">
-
-</div>
-<p>There’s nothing new in these analyses, right? We have already discussed statistical inference involving two-sample. So, why are we discussing this again? As it turns out, A/B Testing is just another name that was coined in the industry for Randomized Experiments, a well-established statistical methodology for experimentation. Hence the familiarity of the methods above. That would be the end of it, except that some challenges arise in practice that requires close attention.</p>
-</section>
-</section>
-<section id="early-stopping" class="level3">
-<h3 class="anchored" data-anchor-id="early-stopping">Early Stopping</h3>
-<p>In many situations, there is crushing evidence that a group is performing better than the other. So, should a company keep spending resources and time to continue the experiment as planned? Continuing with the experiment could be unnecessarily costly.</p>
-<p style="margin-bottom: 0;">
-</p><p><span class="example"></span> Suppose Pfizer, a pharmaceutical company, is conducting a clinical trial to test the effectiveness of a new treatment. They planned to have 1,000 participants in total, 500 of which will receive the new drug, and the remaining 500 will receive the placebo. However, at the current point in time, they have data of 600 participants, where 300 received the drug and 300 received the placebo. Among the 300 who received the drug, nobody died. On the other hand, among the 300 who received the placebo, 200 died. Should the FDA (Food and Drug Administration) still wait for the result of the remaining 400 participants? Or should they stop the clinical trial early and start distributing the medicine to people in need?</p>
-<div class="end-part">
-
-</div>
-<!--Make the following two paragraphs an exercise-->
-<p>In general, we not only want to compare Groups A and B, but we also want to reach a conclusion as soon as possible. To do so, one would have to “peek” at the partially collected data to conduct the proper statistical analysis. However, when should we peek at the partially collected data?</p>
-<p>A reasonable answer could be to monitor the data online. In other words, for every new observation in each group we have, we take a peek at the data.</p>
-<p><span class="example"></span>Suppose Obama’s campaign wanted to test two website designs, and they are interested in the amount of money donated per visitor. So, they decided to conduct an A/B Test and start monitoring as soon as they had ten visitors for each design. Then, they would peek at the data again once both designs had received another visitor, and so on. If they detect a difference, they will immediately stop the experiment and make the best website version available to all visitors. They will allow a maximum number of visitors of 1,000 per design.</p>
-<figure class="figure">
-<img src="imgs/obama-experiment-1.png" width="100%" class="figure-img">
-<figcaption>
-A/B Test with two versions of Obama’s campaign website.
-<p class="source-img">
-Source: Obama’s pictures<a href="https://blog.optimizely.com/2010/11/29/how-obama-raised-60-million-by-running-a-simple-experiment/">Optimizely</a>
+<p><span class="example"></span> Suppose Obama’s campaign wanted to test which of two websites, <em>Website A</em> or <em>Website B</em>, results in a higher rate of subscribers. The next 60 users who visit the campaign’s website will access one of the websites chosen at random until 30 users have seen one of the designs. We have collected this data for you and stored it in the <code>sample_subscriber</code> object. Run the code cell below to take a look.</p>
+<div id="qwebr-insertion-location-4"></div>
+<noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
+<div id="qwebr-insertion-location-5"></div>
+<noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
+<p style="text-indent: 0;">
+Next, run <code><a href="https://infer.tidymodels.org/reference/prop_test.html" target="_blank">infer::prop_test</a></code> in R to test the hypothesis.
 </p>
-</figcaption>
-</figure>
-<figure class="figure">
-<img src="imgs/obama-online-pvalues.png" width="85%" class="figure-img">
-<figcaption>
-Multiple checks of p-value for different sample sizes
-</figcaption>
-</figure>
+<!--
+```gyfbqvle 
+prop.test(
+    sample_subscriber %>% 
+    group_by(website) %>% 
+    summarise(n_successes = sum(subscribed == "yes"), 
+            n_failures = sum(subscribed == "no")) %>% 
+    select(-website) %>% 
+    as.matrix())
+```
+-->
+<div id="qwebr-insertion-location-6"></div>
+<noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
+<p>Therefore, at <span class="math inline">\(5\%\)</span> significance level, we have enough evidence suggesting that the proportion donations of the websites A and B are different.</p>
 <div class="end-part">
 
 </div>
-<p>In the example above, Obama’s campaign wants to use a strategy that does not specify the sample size. So far, we have been discussing inference scenarios where the sample size is determined <strong>prior to the study</strong>. But in this case, the methodology will not change because the sample size will be fixed at each <em>peek</em>. The problem is that we are experimenting multiple times with different sample sizes.</p>
+<p><br></p>
+<!--#### Multiple Groups-->
 <div class="box-def box-exercise">
 <p>
 </p>
@@ -656,7 +1507,6 @@ The power of the test is just one minus the probability of Type II Error. Since 
 </dl>
 </div>
 </div>
-<p>Ok, so Obama’s campaign seems to have a good plan. The probability of Type I Error at each peek will be the same; the power of the test will be smaller, but if it is already big enough to detect a difference, kudos! No downside here, right? Wrong!While the probability of Type I Error is the same at each peek, they only need to reject the hypothesis once in multiple tests.</p>
 <div class="box-def box-exercise">
 <p>
 </p>
@@ -669,53 +1519,100 @@ When conducting multiple hypothesis testing, what happens to the family-wise err
 <p><span class="proof-title"><em>Solution</em>. </span>Since you need to make the right decision multiple times, and each time there is a chance that you make the wrong decision, when you consider whether <strong>all</strong> the decisions you made are right, there is a much lower chance of that happening compared to each hypothesis testing individually.</p>
 </div>
 </div>
-<p><span class="example"></span> Let’s continue our previous example of Obama’s campaign. The first thing we should do is to test if the plan is good. But how can we do that if we do not know the truth (i.e., if there’s actually a difference between the two websites): Here’s our we are going to do it:</p>
-<ol>
-<li>
-Let’s run the experiment 100 times.
-<figure class="figure">
-<img src="imgs/obama-experiment-100.png" width="100%" class="figure-img">
-<figcaption>
-One hundred A/B Tests with two versions of Obama’s campaign website.
-<p class="source-img">
-Source: Obama’s pictures <a href="https://blog.optimizely.com/2010/11/29/how-obama-raised-60-million-by-running-a-simple-experiment/">Optimizely</a>
-</p>
-</figcaption>
-</figure>
-</li>
-<li>
-But this time, we are going to use the same website for both groups. This way, we know the truth – there’s no difference!!
-<figure class="figure">
-<img src="imgs/obama-aa-experiment-100.png" width="100%" class="figure-img">
-<figcaption>
-One hundred A/B Test with the same version of Obama’s campaign website.
-<p class="source-img">
-Source: Obama’s pictures <a href="https://blog.optimizely.com/2010/11/29/how-obama-raised-60-million-by-running-a-simple-experiment/">Optimizely</a>
-</p>
-</figcaption>
-</figure>
-<figure class="figure">
-<img src="imgs/obama-online-monitoring-pvalue-100.png" width="100%" class="figure-img">
-<figcaption>
-Multiple checks of p-value for different sample sizes in each of the 100 experiments.
-</figcaption>
-</figure>
-</li>
-<li>
-Let’s see in how many of the 100 experiments the null hypothesis is rejected at least once. That will estimate how bad the chance of our <em>family-wise</em> Type I Error will be.
-</li>
-</ol>
-<p>In this case, using a significance level of <span class="math inline">\(5\%\)</span>, approximately <span class="math inline">\(22\%\)</span> of the <span class="math inline">\(100\)</span> A/B tests would have wrongly rejected <span class="math inline">\(H_0\)</span> and concluded that the same version of the website is different from itself. This is way above our specified significance level of <span class="math inline">\(5\%\)</span>. Terrible, isn’t it? Obama’s campaign is in a bit of a pickle now. It seems they have to wait for 2000 people to visit the website before they can examine whether there’s a difference. Do they, though?</p>
-<p>We have learned about p-value adjustments to control for Type I Error. Remember Bonferroni’s correction? So we could propose a compromise to them:</p>
-<p><em>- “Hey, don’t peek at the data for every two people that visit your website. Instead, pick a reasonable number of tests, and I’ll adjust the p-value so we can control the probability of Type I Error.”</em></p>
+</section>
+</section>
+<section id="peeking-and-early-stopping" class="level3">
+<h3 class="anchored" data-anchor-id="peeking-and-early-stopping">Peeking and Early Stopping</h3>
 <p style="text-indent: 0;">
-They can decide when to conduct the test, say for example, <span class="math inline">\(n = 50\)</span>, <span class="math inline">\(n = 100\)</span>, <span class="math inline">\(n = 250\)</span>, <span class="math inline">\(n = 500\)</span>, and <span class="math inline">\(n = 1000\)</span>. Doing this in the Obama’s problem would reduce the number of rejection to 7 experiment, much closer to the <span class="math inline">\(5\%\)</span> specified. This approach is called <em>principled peeking</em>.
+Let’s set up a fictitious problem to investigate the consequences of online data monitoring (or peeking).
 </p>
+<ul>
+<li><u><strong>Problem:</strong></u> Imagine that Obama’s campaign had two versions of a website and was trying to figure out which to use. They would conduct an A/B Test experiment.</li>
+</ul>
+<figure class="figure">
+<img src="imgs/obama-experiment-1.png" width="55%" class="figure-img">
+<figcaption>
+A/B Test with two versions of Obama’s campaign website.
+</figcaption>
+</figure>
+<p><br></p>
+<ul>
+<li><u><strong>Randomization:</strong></u> Everyone who accesses the website will be randomly directed to one of the versions.</li>
+</ul>
+<p><br></p>
+<ul>
+<li><u><strong>Peeking:</strong></u> In order to adopt the best website version as quickly as possible and move on to optimizing other aspects of the campaign, they will check the interim data on every 50 accesses (25 in each group) up to a maximum of 500 people.</li>
+</ul>
+<p><br></p>
+<ul>
+<li><u><strong>Early Stopping:</strong></u> They will stop the experiment once the p-value is less than 0.05.</li>
+</ul>
+<p><br></p>
+<p>This seems a reasonable plan, and it will address the campaign’s constraint of not wanting to wait for 2000 people to access the website to conduct the hypothesis test.</p>
+<p>Is this approach reliable, though?</p>
+<p>In other words, if we end up rejecting <span class="math inline">\(H_0\)</span>, can we safely conclude that it was due to a difference in the websites’ performance instead of just a highly inflated false positive (Type I Error) rate?</p>
+<p>To answer this question, we can use a strategy called A/A Testing, which ensures that both groups receive the same website version. This approach allows us to confirm the truthfulness of <span class="math inline">\(H_0\)</span>, and any rejection of <span class="math inline">\(H_0\)</span> would constitute a false positive.</p>
+<figure class="figure">
+<img src="imgs/aa-test.png" width="55%" class="figure-img">
+<figcaption>
+A/A Test with the same version of Obama’s campaign website for both groups.
+</figcaption>
+</figure>
+<div id="qwebr-insertion-location-7"></div>
+<noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
+<div id="qwebr-insertion-location-8"></div>
+<noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
+<p><br></p>
+<p>Again, since this is an A/A Test, <code>Website A</code> and <code>Website B</code> are, in fact, the same website version, so we should not reject <span class="math inline">\(H_0\)</span>.</p>
+<p>Next, fill in the code below to test the hypothesis that the proportion of subscribers in both groups is the same.</p>
+<div id="qwebr-insertion-location-9"></div>
+<noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
+<p><br></p>
+<p>Yay, we didn’t reject! That’s great! But this is just the first test since we are monitoring the data as they come. Let’s collect the next 50 visitors data.</p>
+<div id="qwebr-insertion-location-10"></div>
+<noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
+<div id="qwebr-insertion-location-11"></div>
+<noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
+<p><br></p>
+<p>As you can see, the p-value changed. We will monitor yet another batch of 50 visitors and another one until one of two things happens: (1) we reach 500 visitors; (2) the p-value crosses the threshold of 5%. This means that we won’t reject <span class="math inline">\(H_0\)</span> only if we don’t reject it in all 10 interim tests (for each batch). Let’s see how our p-value behaves across all 10 batches of size 50.</p>
+<div id="qwebr-insertion-location-12"></div>
+<noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
+<div id="qwebr-insertion-location-13"></div>
+<noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
+<p><br></p>
+<p>Let’s plot the p-value path throught the online data monitoring.</p>
+<div id="qwebr-insertion-location-14"></div>
+<noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
+<p><br></p>
+<p>As you can see, in this case, we would have stopped the experiment once the data from the 7th batch arrived, and we would have concluded that one of the groups had a superior version of the website, which is the wrong conclusion. However, note that we are interested in the false positive <strong>rate</strong>, not in the fact that this particular example yields the wrong decision.</p>
+<p>To investigate the rate, we need to conduct this experiment multiple times and see if the rate of false positives is close to 5% (our specified significance level). Let’s do this experiment 200 times.</p>
+<div id="qwebr-insertion-location-15"></div>
+<noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
+<p><br></p>
+<p>As you can see, following the prescribed methodology above would yield a false positive rate of 19%, roughly four times the nominal rate of 5%. The sequential hypothesis tests significantly inflate the type I error.</p>
+<section id="p-value-correction" class="level4">
+<h4 class="anchored" data-anchor-id="p-value-correction">P-value correction</h4>
+<p>We have learned about p-value adjustments to control for Type I Error. Remember BH and Bonferroni’s corrections? These methods can be useful here as well. However, as it turns out, people have also investigated many new approaches for A/B testing as well.</p>
+<section id="bonferroni-correction" class="level5">
+<h5 class="anchored" data-anchor-id="bonferroni-correction">Bonferroni Correction</h5>
+<p>Let’s use the <code>p.adjust</code> function to include Bonferroni’s correction.</p>
+<div id="qwebr-insertion-location-16"></div>
+<noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
+</section>
+<section id="pococks-boundaries" class="level5">
+<h5 class="anchored" data-anchor-id="pococks-boundaries">Pocock’s boundaries</h5>
+<p>The problem with the Bonferroni method is that it is too conservative, frequently making it very hard to reject <span class="math inline">\(H_0\)</span>. Another alternative to Bonferroni developed in the context of sequential hypothesis testing is Pocock’s boundaries. You can obtain the Pocock’s boundaries using the <code>gsDesign</code> package.</p>
+<div id="qwebr-insertion-location-17"></div>
+<noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
+<p>As with Bonferroni’s correction, Pocock’s method provides the same critical value for all the interim tests, no matter the interim sample size. This requires us to specify a priori the number of interim analyses to be conducted without the opportunity to change/adjust this after the experiment started. However, Pocock’s method is less conservative than Bonferroni’s method.</p>
+<p>Other methods are more flexible and account for the size of the interim sample, making it harder to reject the null hypothesis for smaller sample sizes than for larger sample sizes.</p>
 <div style="height: 400px;">
 
 </div>
 
 
+</section>
+</section>
 </section>
 </section>
 
@@ -1121,6 +2018,118 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     </div>
   </div>
 </footer>
+<script type="module">
+// Handle cell initialization initialization
+qwebrCellDetails.map(
+  (entry) => {
+    // Handle the creation of the element
+    qwebrCreateHTMLElement(entry);
+    // In the event of interactive, initialize the monaco editor
+    if (entry.options.context == EvalTypes.Interactive) {
+      qwebrCreateMonacoEditorInstance(entry);
+    }
+  }
+);
+
+// Identify non-interactive cells (in order)
+const filteredEntries = qwebrCellDetails.filter(entry => {
+  const contextOption = entry.options && entry.options.context;
+  return ['output', 'setup'].includes(contextOption) || (contextOption == "interactive" && entry.options && entry.options.autorun === 'true');
+});
+
+// Condition non-interactive cells to only be run after webR finishes its initialization.
+qwebrInstance.then(
+  async () => {
+    const nHiddenCells = filteredEntries.length;
+    var currentHiddenCell = 0;
+
+
+    // Modify button state
+    qwebrSetInteractiveButtonState(`🟡 Running hidden code cells ...`, false);
+
+    // Begin processing non-interactive sections
+    // Due to the iteration policy, we must use a for() loop.
+    // Otherwise, we would need to switch to using reduce with an empty
+    // starting promise
+    for (const entry of filteredEntries) {
+
+      // Determine cell being examined
+      currentHiddenCell = currentHiddenCell + 1;
+      const formattedMessage = `Evaluating hidden cell ${currentHiddenCell} out of ${nHiddenCells}`;
+
+      // Update the document status header
+      if (qwebrShowStartupMessage) {
+        qwebrUpdateStatusHeader(formattedMessage);
+      }
+
+      // Display the update in non-active areas
+      qwebrUpdateStatusMessage(formattedMessage);
+
+      // Extract details on the active cell
+      const evalType = entry.options.context;
+      const cellCode = entry.code;
+      const qwebrCounter = entry.id;
+
+      if (['output', 'setup'].includes(evalType)) {
+        // Disable further global status updates
+        const activeContainer = document.getElementById(`qwebr-non-interactive-loading-container-${qwebrCounter}`);
+        activeContainer.classList.remove('qwebr-cell-needs-evaluation');
+        activeContainer.classList.add('qwebr-cell-evaluated');
+
+        // Update status on the code cell
+        const activeStatus = document.getElementById(`qwebr-status-text-${qwebrCounter}`);
+        activeStatus.innerText = " Evaluating hidden code cell...";
+        activeStatus.classList.remove('qwebr-cell-needs-evaluation');
+        activeStatus.classList.add('qwebr-cell-evaluated');
+      }
+
+      switch (evalType) {
+        case 'interactive':
+          // TODO: Make this more standardized.
+          // At the moment, we're overriding the interactive status update by pretending its
+          // output-like. 
+          const tempOptions = entry.options;
+          tempOptions["context"] = "output"
+          // Run the code in a non-interactive state that is geared to displaying output
+          await qwebrExecuteCode(`${cellCode}`, qwebrCounter, tempOptions);
+          break;
+        case 'output':
+          // Run the code in a non-interactive state that is geared to displaying output
+          await qwebrExecuteCode(`${cellCode}`, qwebrCounter, entry.options);
+          break;
+        case 'setup':
+          const activeDiv = document.getElementById(`qwebr-noninteractive-setup-area-${qwebrCounter}`);
+          // Run the code in a non-interactive state with all output thrown away
+          await mainWebR.evalRVoid(`${cellCode}`);
+          break;
+        default: 
+          break; 
+      }
+
+      if (['output', 'setup'].includes(evalType)) {
+        // Disable further global status updates
+        const activeContainer = document.getElementById(`qwebr-non-interactive-loading-container-${qwebrCounter}`);
+        // Disable visibility
+        activeContainer.style.visibility = 'hidden';
+        activeContainer.style.display = 'none';
+      }
+    }
+  }
+).then(
+  () => {
+    // Release document status as ready
+
+    if (qwebrShowStartupMessage) {
+      qwebrStartupMessage.innerText = "🟢 Ready!"
+    }
+  
+    qwebrSetInteractiveButtonState(
+      `<i class="fa-solid fa-play qwebr-icon-run-code"></i> <span>Run Code</span>`, 
+      true
+    );  
+  }
+);
+</script>
 
 
 

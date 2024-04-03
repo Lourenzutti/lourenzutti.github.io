@@ -46,3 +46,7 @@ format:
     theme: zephyr
     css: /styles/main.css
     toc: true
+
+webr: 
+  show-startup-message: false    # Disable displaying status of webR initialization
+  packages: ['ggplot2', 'tidyverse', 'infer'] # Install R packages on document open
