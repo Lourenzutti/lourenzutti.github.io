@@ -3,6 +3,7 @@ project:
   output-dir: docs
 website:
   title: "Rodolfo Lourenzutti"
+  back-to-top-navigation: true
   favicon: logo.png
   twitter-card: true
   open-graph: true
@@ -19,13 +20,15 @@ website:
       - text: '<i class="bi bi-house-fill"></i> Home'
         file: "index.qmd"
       - text: '<i class="bi bi-pencil-fill"></i> Courses'
-        file: "blog.qmd"
+        file: "courses.qmd"
       - text: '<i class="bi bi-book"></i> Tutorials'
         file: "tutorials.qmd"
+        
       - text: '<i class="bi bi-person-workspace"></i>Teaching'
         file: "teaching.qmd"
       - text: '<i class="bi bi-info-circle-fill"></i> About'
         file: "about.qmd"
+        
     tools:
     - icon: twitter
       href: https://twitter.com/LourenzuttiR

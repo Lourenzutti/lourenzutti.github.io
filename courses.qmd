@@ -2,3 +2,9 @@
 title: "Courses"
 ---
 <script src="https://kit.fontawesome.com/9ffc1b7c87.js" crossorigin="anonymous"></script>
+
+
+- STAT 201 - Statisical Inference for Data Science
+
+
+- STAT 301 - Statisical Modelling for Data Science
