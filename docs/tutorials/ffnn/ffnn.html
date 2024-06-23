@@ -579,7 +579,7 @@ Figure&nbsp;9: Forward pass of the neural network for the input vector <span cla
 <ul>
 <li><p>Receptors: <span id="eq-matrix-receptor"><span class="math display">
 {\bf{Z}}^{(l)} = {\mathbf{X}^{(l-1)}} \mathbf{W}^{(l)} + \mathbf{1}\left(\mathbf{b}^{(l)}\right)^T
-\tag{1}</span></span> where <span class="math inline">\mathbf{1}</span> is a column vector of ones with <span class="math inline">n</span> rows and <span class="math inline">T</span> stands for transpose. The operation <span class="math inline">\mathbf{1}\left(\mathbf{b}^{(l)}\right)^T</span> is Python’s broadcast.</p></li>
+\tag{1}</span></span> where <span class="math inline">\mathbf{1}</span> is a column vector of ones with <span class="math inline">n</span> rows and <span class="math inline">T</span> stands for transpose. The operation <span class="math inline">\mathbf{1}\left(\mathbf{b}^{(l)}\right)^T</span> is Numpy’s broadcast.</p></li>
 <li><p>Neurons: <span id="eq-matrix-neuron"><span class="math display">
 {\bf{X}}^{(l)} = a\left({\bf{Z}}^{(l)}\right)
 \tag{2}</span></span> where <span class="math inline">a\left({\bf{Z}}^{(l)}\right)</span> means we apply the activation function <span class="math inline">a</span> to every single element of <span class="math inline">{\bf{Z}}^{(l)}</span>.</p></li>
@@ -661,7 +661,7 @@ Figure&nbsp;13: Values of the receptors and neurons in the third layer for all i
 
 </section>
 
-</main> <!-- /main -->
+<a onclick="window.scrollTo(0, 0); return false;" role="button" id="quarto-back-to-top"><i class="bi bi-arrow-up"></i> Back to top</a></main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
 window.document.addEventListener("DOMContentLoaded", function (event) {
   const toggleBodyColorMode = (bsSheetEl) => {

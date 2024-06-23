@@ -398,7 +398,7 @@ We will denote matrices with capital bold letters (e.g., $\bf{X}$, ${\bf{W}}^{(1
 $$
 {\bf{Z}}^{(l)} = {\mathbf{X}^{(l-1)}} \mathbf{W}^{(l)} + \mathbf{1}\left(\mathbf{b}^{(l)}\right)^T
 $$ {#eq-matrix-receptor}
-where $\mathbf{1}$ is a column vector of ones with $n$ rows and $T$ stands for transpose. The operation $\mathbf{1}\left(\mathbf{b}^{(l)}\right)^T$ is Python's broadcast.
+where $\mathbf{1}$ is a column vector of ones with $n$ rows and $T$ stands for transpose. The operation $\mathbf{1}\left(\mathbf{b}^{(l)}\right)^T$ is Numpy's broadcast.
 
 
 - Neurons:
