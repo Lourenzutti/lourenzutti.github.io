@@ -199,6 +199,8 @@ function createNeuralNetwork(layers, div_name, drawZSquares=true, neuronRadius =
 }
 ```
 
+In this tutorial, we will explore how feedforward neural networks work. We'll discuss neurons, layers, activation functions, and cost functions. Then, we'll see in detail how we train a neural network using backpropagation. We will derive the backpropagation formulae step-by-step and implement a neural network from scratch using Python's Numpy package only. 
+
 **Learning Objectives:** <br>
 
 At the end of this tutorial, the reader should be able to:
@@ -218,10 +220,7 @@ It is assumed that the reader :
  
 
 <hr>
-
-In this tutorial, we will explore how feedforward neural networks work. We'll discuss neurons, layers, activation functions, and cost functions. Then, we'll see in detail how we train a neural network using backpropagation. We will derive the backpropagation formulae step-by-step and implement a neural network from scratch using Python's Numpy package only. 
-
-We will need a neuron network diagram to help illustrate the steps of creating and training a neural network. If this is not the first post you've read about neural networks, you may have seen the diagram below.
+Neural Networks are certainly among the most "famous" models in machine learning. They power many tools that we use nowadays, from computer vision to generative models and medical applications. If this is not the first post you've read about neural networks, you surely have seen a diagram like the one below.
 
 :::{#fig-nn-regular}
 
@@ -230,7 +229,7 @@ We will need a neuron network diagram to help illustrate the steps of creating a
 The usual Neural Network diagram (bias neurons omitted).
 :::
 
-When I started learning about neural networks, I found the standard diagram confusing because it doesn't explicitly show a crucial component needed for the backpropagation algorithm. Therefore, for this tutorial, we will explicitly include this component to the diagram, as shown in @fig-nn-diagram. 
+When I started learning about neural networks, I found the standard diagram confusing because it doesn't explicitly show a crucial component that will be needed later for the backpropagation algorithm. Therefore, for this tutorial, we will explicitly include this component in the diagram, as shown in @fig-nn-diagram. 
 
 :::{#fig-nn-diagram}
 
@@ -257,6 +256,8 @@ Let's introduce some terminology:
 - **Receptors:** we will call the boxes attached to each neuron the neuron's receptor, which will collect and aggregate all the signals a neuron receives from other neurons (this is not standard language); 
 
 I've always found the terminology very confusing without looking at the equations. For example, when I say that weights amplify or reduce the signal, how exactly does that happen? How exactly do receptors collect and aggregate all the signals? How do neurons process the signals passed by the receptors? Before we go over these in detail, let's review the notation we are using.
+
+## Notation
 
 :::{#fig-nn-notation}
 
@@ -476,3 +477,12 @@ X2 = np.fmax(0, Z2)
 Z3 = X2 @ W3
 X3 = np.fmax(0, Z3)
 ```
+
+
+## Backpropagation
+
+## Implementation 
+
+### From scratch with Numpy
+
+### Using Pytorch
