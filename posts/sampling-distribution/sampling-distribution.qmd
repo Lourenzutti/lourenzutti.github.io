@@ -1,29 +1,20 @@
 ---
-title: "Sampling Distributions"
-description: "The distributions of statistics "
-author: "Rodolfo Lourenzutti"
-date: "2024-10-01"
-draft: true
-format: live-html
-css: [styles/tutorials-chapters.css]
+title: "Sampling Distribution"
+css: [/styles/tutorials.css, /styles/tutorials-chapters.css]
 ---
 
 <script src="https://d3js.org/d3.v6.min.js"></script>
-<!--
-Load local scripts
--->
+<!--Load local scripts-->
 <script defer src="/scripts/controller.js"></script>
 <script defer src="/scripts/random.js"></script>
-
 <script defer src="scripts/sampling-dist.js"></script>
-
 
 In 2020, there was a presidential election in the United States.
 Every election year, we see many surveys trying to draw a picture of how people will vote. But how do they
 do these surveys? Do these polls check how all the people are going to vote?
 According to this <a href="https://www2.census.gov/programs-surveys/demo/tables/voting/table01.xlsx">table</a> from <a href="https://www.census.gov/en.html">US Census Bureau</a> there are approximately 233.5 million
 voting-age citizens. It would certainly require a lot of resources to ask all 233.5 million voting-age American citizens (in fact, this is what the election period is for, right? and we all know how complicated
-and expensive is organizing an election).
+and expensive is organizing the election).
 
 
 <div style="display: flex; flex-flow: row nowrap; align-items: center;">
@@ -41,17 +32,28 @@ To make things more complicated, the political scenario changes quite fast. Ther
 issue. Even if you had the resources to ask everyone, many political events that swing voters' opinions
 could happen during your survey, and by the time you are finished, your results are already outdated.
 
-> <em>So, how can we learn (at least approximately) how voters are going to vote without asking every voter?</em>
+<em>So, how can we learn (at least approximately) how voters are going to vote without asking every voter?</em>
 
 A natural answer for this question is: let us ask just a small portion of the voters how they are going to
 vote. This approach does provide us with a solution, but also many problems:
 
-1. How do we choose the voters to answer the survey?
-2. How many voters should answer the survey?
-3. How do we extrapolate the knowledge obtained from the Sample to the entire population of voters?
-4. Different group of voters will have different proportion of votes.
+<ol>
+    <li>
+        <p><em>How do we choose the voters to answer the survey?</em></p>
+    </li>
+    <li>
+        <p><em>How many voters should answer the survey?</em></p>
+    </li>
+    <li>
+        <p><em>How do we <em>infer</em> the knowledge obtained from the Sample to the entire population of
+                voters?</em></p>
+    </li>
+    <li>
+        <p><em>Different group of voters will have different proportion of votes.</em></p>
+    </li>
+</ol>
 
-In this post, we are going to focus on points 3 and 4.
+In this chapter, we are going to focus on points 3 and 4.
 We will discuss points 1 and 2 in more detail later.
 Let's formalize some intuitive concepts.
 
@@ -72,9 +74,9 @@ Parameter
 A summary quantity of the population that is (usually) unknown.
 </div>
 
-Parameters are unknown, we are trying to learn them because they tell us information about the population. Let's see an example.
+Parameters are unknown, we are trying to learn them because they tell us information about the population. Let's see an example:
 
-<span class="example"></span> In the election problem above, the group of all American voters is
+<span class="example"></span> In the election example above, the group of all American voters is
 our population.
 Note that the population is not the group of all Americans. It is the group of all American <em>voters</em>.
 We are interested in the proportion of voters that will vote for each candidate, and the proportion of
@@ -8687,22 +8689,3 @@ Next, we will discuss two ways to approximate the sampling distribution from a s
 </div>
 </main>
 
-
-# Testing webr
-
-
-::: {.panel-tabset}
-
-## R
-
-```{webr}
-print(1:10)
-```
-
-## Python
-
-```{pyodide}
-print(list(range(10)))
-```
-
-:::
