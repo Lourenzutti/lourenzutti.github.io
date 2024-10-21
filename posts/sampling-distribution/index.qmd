@@ -4,5 +4,25 @@ description: "The distributions of statistics "
 author: "Rodolfo Lourenzutti"
 date: "2024-10-01"
 draft: true
+format: live-html
 ---
 
+
+# Testing webr
+
+
+::: {.panel-tabset}
+
+## R
+
+```{webr}
+print(1:10)
+```
+
+## Python
+
+```{pyodide}
+print(list(range(10)))
+```
+
+:::

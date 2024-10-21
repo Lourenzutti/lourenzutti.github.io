@@ -1,0 +1,12 @@
+{
+  "hash": "19129ebe62614d4943ec3635c967309f",
+  "result": {
+    "engine": "jupyter",
+    "markdown": "---\ntitle: \"Sampling Distribution\"\ndescription: \"The distributions of statistics \"\nauthor: \"Rodolfo Lourenzutti\"\ndate: \"2024-10-01\"\ndraft: true\nformat: live-html\n---\n\n\n\n\n\n# Testing webr\n\n\n::: {.panel-tabset}\n\n## R\n\n\n\n\n```{webr}\nprint(1:10)\n```\n\n\n\n\n## Python\n\n\n\n\n```{pyodide}\nprint(range(10))\n```\n\n\n\n\n:::\n\n",
+    "supporting": [
+      "index_files"
+    ],
+    "filters": [],
+    "includes": {}
+  }
+}
