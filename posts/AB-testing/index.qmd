@@ -5,6 +5,7 @@ date: "2024-09-30"
 categories: [confidence intervals, statistical inference, analysis]
 image: "image.jpg"
 draft: true
+draft-mode: unlinked
 format: live-html
 css: [../../styles/tutorials-chapters.css]
 ---
