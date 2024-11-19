@@ -1,0 +1,63 @@
+
+.level2 > h2 {
+    font-weight: lighter;
+    border-style: solid;
+    border-width: 0px;
+    border-bottom-width: 1px;
+    max-width: 500px;
+    margin-top: 1em;
+}
+
+.level3 > h3 {
+    font-weight: lighter;
+    margin: 0 !important;
+}
+
+.teaching_year {
+    position: relative;
+}
+
+.teaching-session{
+    display: grid;
+    column-gap: 1px;
+    grid-template-columns: 1fr  5fr;
+    margin: 5px;
+}
+
+.university-logo-ubc{
+    opacity: 0.25;  
+    size: 50%;
+    display: inherit;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 1em;
+    align-content: center;
+}    
+
+#quarto-document-content img{
+    width: 10em;
+    height: auto;
+}
+
+.university-logo-ufes{
+    opacity: 0.55;
+    display: inherit;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 1em;
+    align-content: center;
+}    
+
+.university-logo-ufmg{
+    opacity: 0.45;
+    display: inherit;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 1em;
+    align-content: center;
+}    
+
+.teaching_text{
+    margin: 0;
+    margin-left: 2em;
+}

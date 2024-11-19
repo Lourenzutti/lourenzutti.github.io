@@ -1,0 +1,44 @@
+.area-tutorial{
+    display: flex;
+}
+
+.area-title {
+    width: 60%;
+    font-size: 2em;
+    border-style: dashed;
+    border-width: 0;
+    border-bottom-width: 2px;
+    margin-bottom: .5em;
+}
+
+
+.card {
+    position: relative;
+    text-align: center;
+    height: 200px;
+    width: 200px;
+    border: 0;
+    background-color: rgba(3, 80, 3, 0.404);
+    border-radius: 50px;
+    margin: 1em
+}
+
+
+.tutorial-title {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-55%, -55%);
+    font-size: 1.4em;
+}
+
+.area-tutorial  a {
+    text-decoration: none;
+}
+
+li p {
+    margin-bottom: 5px;
+}
+li {
+    margin-bottom: 7px;
+}

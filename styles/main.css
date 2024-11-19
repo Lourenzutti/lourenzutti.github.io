@@ -1,0 +1,46 @@
+/* css styles */
+
+.sidebar-logo {
+    margin-top: 1em;
+    border-radius: 5em;
+    margin-left: 1em;
+    margin-right: auto;
+}
+
+.sidebar-header-stacked .sidebar-title{
+    text-align: center;
+    font-size: larger;
+}
+
+.sidebar-item .text-start{
+    font-size: 1.3em;
+    padding-left: 2em;
+}
+
+.sidebar-navigation .sidebar-item{
+    font-size: 1.2em;
+}
+
+#quarto-document-content{
+    width: 100%;
+}
+
+h1{
+    font-size: 2.5em;
+    width: 100%;
+    letter-spacing: 3px;
+    margin-bottom: 1em;
+    margin-top: 0.5em;
+    color:black;
+    border-style: double;
+    border-top: 0;
+    border-right: 0;
+    text-decoration: none;
+    padding-left: .5em;
+    border-radius: 22px;
+    border-width: 5px;
+}
+
+main {
+    text-align: justify;
+}

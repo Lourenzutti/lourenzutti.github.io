@@ -1,8 +1,8 @@
 ---
-title: "Post With Code"
-author: "Harlow Malloc"
+title: "A Few Notes on Confidence Intervals for Proportion"
+author: "Rodolfo Lourenzutti"
 date: "2024-09-30"
-categories: [news, code, analysis]
+categories: [confidence intervals, statistical inference, analysis]
 image: "image.jpg"
 ---
 
