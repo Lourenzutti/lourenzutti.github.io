@@ -1,0 +1,28 @@
+.annotation {
+    position: absolute;
+    font-family: Arial;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+    z-index: 10;
+    background: none;
+    border: 1px solid lightblue; /* Ensure border is visible */
+}
+.neuron-annotation {
+    position: absolute;
+    font-family: Arial;
+    text-align: center;
+    pointer-events: none;
+    transform: translate(-50%, -50%);
+}
+.weight-annotation {
+    position: absolute;
+    font-family: Arial;
+    text-align: center;
+    pointer-events: none;
+    transform-origin: left;
+    background: none;
+    border: none;
+}

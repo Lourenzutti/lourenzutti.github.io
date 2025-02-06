@@ -1,0 +1,33 @@
+---
+title: "R Playground for Exams"
+image: "image.jpg"
+draft: true
+draft-mode: unlinked
+format: live-html
+webr:
+  packages:
+    - tidyverse
+    - infer
+css: [../../styles/tutorials-chapters.css]
+---
+
+
+```{webr}
+
+```
+
+```{webr}
+
+```
+
+```{webr}
+
+```
+
+```{webr}
+
+```
+
+```{webr}
+
+```
