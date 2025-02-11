@@ -8,6 +8,7 @@ webr:
   packages:
     - tidyverse
     - infer
+    - broom
 css: [../../styles/tutorials-chapters.css]
 ---
 
