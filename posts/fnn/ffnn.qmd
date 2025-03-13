@@ -1,0 +1,700 @@
+---
+title: "Feed-Forward Neural Network"
+author: "Rodolfo Lourenzutti"
+date: "2024-09-30"
+categories: [confidence intervals, statistical inference, analysis]
+image: "image.jpg"
+draft: true
+draft-mode: unlinked
+format: live-html
+css: [../../styles/tutorials-chapters.css]
+---
+
+<script src="https://d3js.org/d3.v6.min.js"></script>
+<!--Load local scripts-->
+<script defer src="/scripts/controller.js"></script>
+<script defer src="/scripts/random.js"></script>
+
+In 2008, during Barack Obama’s groundbreaking presidential campaign, the team faced a critical challenge: how to maximize online donations. Their website featured a prominent red button inviting visitors to “Sign Up” for campaign emails. But was this design truly effective in driving subscriptions?
+
+<figure>
+<img src="imgs/obama_homepage_original.png">
+<figcaption> Original website of the campaign.
+<p class="source-img">Source: <a
+        href="https://blog.optimizely.com/2010/11/29/how-obama-raised-60-million-by-running-a-simple-experiment/">Optimizely</a>
+</p>
+</figcaption>
+</figure>
+
+To find out, the campaign embarked on an A/B testing journey. They created three alternative button designs -- each with different text: “*SIGN UP NOW*,” “*LEARN MORE*,” and “*JOIN US NOW*.” Additionally, they explored five media options to replace the original photo: two alternative images and three videos. In total, they evaluated a staggering 24 website designs. The metric of interest? The subscription rate—the number of people who subscribed divided by the total number of visitors.
+
+The results were astonishing. The best-performing design achieved a subscription rate over 40% higher than the original website. This seemingly small improvement translated into an estimated $60 million in additional donations and 288,000 extra volunteers. A/B testing had unlocked the potential to optimize their website and drive meaningful impact. You can learn more about it [here](https://www.optimizely.com/insights/blog/how-obama-raised-60-million-by-running-a-simple-experiment/").
+
+
+<p style="text-indent: 0;">But how do we compare websites?</p>
+
+##### The response variable
+
+The first step is to understand the purpose of the website. This is a fundamental step because it guides the creation of useful metrics of success. Defining the main purpose of a website can be a challenging task. For example, in their case:
+
+<ul>
+    <li>
+        <p>Do they want the website to attract more subscribers?</p>
+    </li>
+    <li>
+        <p>Do they want a high proportion of visitors to become donors?</p>
+    </li>
+    <li>
+        <p>Do they want to increase the size of donations per visitor?</p>
+    </li>
+</ul>
+
+What is a good metric to measure how effective the website is? Such a metric will be the response variable of the study. Although the campaign wanted to increase the total amount of donations, this was not the website’s purpose. The purpose of the website was to attract subscribers. For this reason, they used the subscription rate, i.e., the number of people that subscribed divided by the number of people that visited the website. If the website’s purpose is not very well defined, you might (and probably will) come up with misleading metrics of how effective your website is.
+
+##### The covariates
+
+Next, pinpoint the elements that can be optimized. In the Obama campaign’s case, they focused on media (images and videos) and the call-to-action button. However, other factors—such as background color—could also play a role. The goal is to find the winning combination of covariates that yields the highest subscriber rate.
+
+##### Randomization
+
+To avoid bias, each visitor saw a randomly chosen website design. This is a key step
+to be able to conclude that the reason for the increase in the subscription was the
+website's design, and not a hidden factor that is not even being considered,
+*lurking variable*. The idea is that randomization will "average out" all these
+hidden differences between the visitors, and the only difference between the groups would
+be the website seen.
+
+
+## A/B Testing
+
+A/B testing, often associated with website optimization, extends far beyond the digital realm. It’s a powerful tool used to compare two or more treatments or interventions, whether in clinical trials, marketing campaigns, or product development. Let’s explore how A/B testing works and its key distinctions.
+
+At its core, A/B testing involves comparing two populations (Group A and Group B -- hence A/B) to assess their performance regarding a specific variable of interest (the response variable). Here are some real-world scenarios:
+
+
+<span class="example"></span>A new vaccine has been developed for cancer. The drug company wants to check the
+efficacy of the vaccine. The company randomly split 50,000 volunteers into two groups, where 25,000 will
+receive the vaccine (Group A) and 25,000 will receive the placebo (Group B). They measure if the individuals
+develop cancer in the next ten years.
+
+- <u><em>Response variable</em></u> ($Y$): whether the individuals develop cancer;
+
+- <u><em>Covariate</em></u> ($X$): whether the individuals receives the vaccine or the placebo (two-levels);
+
+- <u><em>Parameters of interest</em></u>: $p_1$ and $p_2$, the proportions of individuals who develop cancer in Group A and Group B, respectively;
+
+- <u><em>Research question</em></u>: is the vaccine effective? In other words, is $p_1 < p_2$?
+
+<div class="end-part"></div>
+
+<span class="example"></span>
+A phone company wants to reduce the number of complaints against its customer services. They are considering
+removing the navigation menu from the support service and using support staff instead. Naturally, this will be an
+expensive move, so they first want to test it to see if it would be effective. They trained a small team and randomly
+directed the clients to the navigation menu or human support. Then, they monitor whether the clients will open a complaint at the
+Canadian Radio-television and Telecommunications Commission (CRTC).
+
+- <u><em>Response variable</em></u> ($Y$): whether the individual opens a complaint;
+
+- <u><em>Covariate</em></u> ($X$): whether the individual is directed to the navigation menu or the support staff (two-levels);
+
+- <u><em>Parameters of interest</em></u>: $p_1$ and $p_2$, the proportion of clients that open a complaint at CRTC in Group A and Group B, respectively;
+
+- <u><em>Research question</em></u>: is the support staff better? In other words, is $p_1 < p_2$?
+
+<div class="end-part"></div>
+
+<span class="example"></span> An e-commerce company wants to compare two website designs with respect to sales in dollars. For the following $N$ clients, the design each client will see will be selected at random.
+
+- <u><em>Response variable</u></em> ($Y$): the amount of dollars spent;
+
+- <u><em>Covariate ($X$)</u></em>: two website designs (two-levels);
+
+- <u><em>Parameters of interest</u></em>: $\mu_1$ and $\mu_2$, the average amount of dollars spent by the clients in each website design;
+
+- <u><em>Research question</u></em>: Is one of the designs better?
+
+<div class="end-part"></div>
+
+<br>
+<p style="text-indent: 0;">Although the name A/B testing suggests only two groups, we may encounter scenarios where more than two groups need to be analyzed. For instance, in the Obama Campaign problem, we have:</p>
+
+- <u><em>Response variable:</u></em> the subscription rate;
+
+- Covariates: 
+  - <u><em>Button Design:</u></em> four options;
+  - <u><em>Media used:</u></em> six options;
+
+- <u><em>Total groups:</u></em> 24 (combining button design and media)
+
+<p style="text-indent: 0;">In general, the structure of A/B Testing consists of: </p>
+
+1. a response variable, $Y$;
+
+2. one or more covariates that split the population into groups; 
+
+3. randomization, individuals are randomly assigned to the groups to avoid bias; and 
+
+4. statistical comparison of the groups' parameter of interest (remember that all we have is a sample, so we need to account for the sampling variability.)
+
+<figure>
+    <img src="imgs/ab-diagram.png" width="75%">
+    <figcaption> A/B Testing Workflow</figcaption>
+</figure>
+
+<br>
+
+In A/B testing, our main objective is to compare two or more groups and determine whether any observed differences are statistically significant or merely due to chance (Item 4 above). Statistical hypothesis testing provides a rigorous framework for making these assessments. However, unlike the hypothesis testing problems we have seen, in A/B testing, there's usually a critical caveat (or constraint): data are analyzed as they come. In other words, we don't wait for the entire sample data to arrive before testing the hypothesis.
+
+There is often a significant opportunity cost or even ethical reasons for us to want to speed up the study. For example, in Obama's campaign, it is much better to implement the best website design for all users accessing the website than to keep presenting sub-optimal designs to a high percentage of users. Similarly, in the vaccine study, being able to quickly decide whether a vaccine works can save numerous lives.
+
+Therefore, while A/B Testing also uses the traditional hypothesis testing methods you've learned to compare the groups, it is highly specialized in dynamic real-world applications. The constraints of these applications set A/B Testing methodologies apart from traditional hypothesis testing in the following ways:
+
+:::: {.columns style='margin: 25px;'}
+
+::: {.column width="40%"}
+
+:::{style='width: 260px; margin-left: auto; margin-right: auto;'}
+**Traditional Hypothesis Testing**
+:::
+
+- **Sample size:** Fixed -- determined before the experiment begins and remains unchanged.
+- **Testing Framework:** Static -- set in advance, including the significance level and decision rules.
+
+:::
+
+::: {.column width="10%"}
+
+:::{style='height: 200px; border-right: dashed black; margin-right: 20px;'}
+
+:::
+
+
+:::
+
+::: {.column width="40%" }
+
+:::{style='width: 100px; margin-left: auto; margin-right: auto;'}
+**A/B Test**
+:::
+
+- **Sample size:** Flexible -- data is monitored as they come. <br><br>
+- **Testing Framework:** Dynamic -- decisions are made as the experiment goes for a more iterative process. 
+
+:::
+
+::::
+
+Unfortunately, peeking at the data before the full sample arrives has grave consequences. If not controlled properly, it drastically increases the rate of false positives (Type I Error). However, since businesses want to stop the experiment as soon as possible to avoid large opportunity costs, we must learn how to deal with these problems.
+
+Before we investigate the implications of data peeking, let us review the basic concepts of hypothesis testing. 
+
+## Review of Hypothesis Testing
+
+In a classical hypothesis test, we generally use $H_0$ as the status quo hypothesis (i.e., the hypothesis of no change, no difference), where $H_1$ represents the anticipated change. It is not allowed for both hypotheses to be simultaneously false or simultaneously true; one, and only one, of the two hypotheses must be true.
+
+<p style="text-indent: 0;">The general procedure for hypothesis testing is always the same:</p>
+
+1. Define the hypotheses: $H_0$ and $H_1$; 
+
+2. Specify the desired significance level.
+
+3. Define a test statistic, $T$, appropriate to test the hypothesis.
+   
+ . Study the distribution of the test statistic as if $H_0$ were true. This distribution is called the <em>null distribution</em>.
+
+5. Check the actual value of the test statistic using the data you collected.
+
+6. Contrast the value of the test statistic with the null distribution by calculating the <em>p-value</em>.
+
+7. If the p-value is smaller than the significance level, reject $H_0$; otherwise, do not reject $H_0$.
+
+
+When estimating or testing hypotheses, the parameter of interest affects which statistic we will use. For example, when testing the mean, we want to use the sample mean $\bar{X}$; when testing the difference in proportion, we want to use the difference in sample proportions, $\hat{p}_1 - \hat{p}_2$, and so on.
+
+Naturally, the way these statistics behave is different, i.e., the sampling distributions (and null models) of these statistics are different. We have explored two main approaches to approximate the null model (for hypothesis testing) of certain statistics: (1) the Central Limit Theorem (CLT); and (2) Simulation-Based Approaches. Here, we will focus on methods based on the CLT. 
+
+
+#### Comparing two means 
+
+Suppose you want to test the difference between two <em>independent</em> populations' means. The scenarios to
+be considered:
+
+- $H_0: \mu_A - \mu_B = d_0$ vs $H_1: \mu_A - \mu_B \neq d_0$
+
+- $H_0: \mu_A - \mu_B = d_0$ vs $H_1: \mu_A - \mu_B > d_0$
+
+- $H_0: \mu_A - \mu_B = d_0$ vs $H_1: \mu_A - \mu_B < d_0$
+
+To conduct this hypothesis test, we take two independent samples, one from each population. By independent samples, we mean that the individuals are selected independently from each population.
+
+Suppose Group A has $n_A$ elements drawn at random from Population A, and Group B has $n_B$ elements
+drawn at random from Population B. Let's use $x$ to refer to Group A and $y$ to refer to Group B. For
+large sample sizes, the test statistic given by
+$$
+T = \frac{\bar{x}-\bar{y} - d_0}{\sqrt{\frac{s_A^2}{n_A} - \frac{s_B^2}{n_B}} }
+$$
+follows a $t$-distribution with approximately $\nu$ degrees of freedom under $H_0$, where
+$$
+\nu = \frac{
+\left(\frac{s_A^2}{n_A}+\frac{s_B^2}{n_B}\right)^2
+}
+{
+\frac{s_A^4}{n_A^2(n_A-1)}+\frac{s_2^4}{n_B^2(n_B-1)}
+}.
+$$
+
+<p style="text-indent: 0;">In other words, the <em>null model</em> of the test statistic above is $t_\nu$. Of course, we will never calculate this weird formula by hand! Our computers can do this for us.</p>
+
+<span class="example"></span>
+    Suppose Obama's campaign wanted to test which of two websites, <em>Website A</em> or
+    <em>Website B</em>, results in a larger amount of donations. The next 60 users who visit the campaign's
+    website will access one of the websites chosen at random until 30 users have seen one of the designs. We
+    have collected (actually simulated!) this data for you and stored it in the <code>sample_money_donated</code> object.
+    Run the code cell below to take a look.
+
+```{webr-r}
+#| context: setup
+suppressMessages(library(tidyverse))
+suppressMessages(library(infer))
+set.seed(1)
+
+# Simulating a sample of 30 individuals for group A and Group B
+sample_money_donated <- 
+tibble(group = c("Website A", "Website B"), 
+    amount = list(
+        if_else(runif(30) < 0.5, 0, rnorm(30, 80, 10) ), 
+        if_else(runif(30) < 0.6, 0, rnorm(30, 100, 20) ))
+    ) %>% 
+unnest(cols = amount) %>%
+sample_n(60)
+```
+
+```{webr-r}
+sample_money_donated
+```
+
+<br>
+
+<p style="text-indent: 0;">Next, to test $H_0: \mu_A - \mu_B = d_0$ vs $H_1: \mu_A - \mu_B \neq d_0$, we can use the
+<code><a href="https://www.rdocumentation.org/packages/stats/versions/3.6.2/topics/t.test" target="_blank">t.test</a></code>
+function in R.</p>
+
+```{webr-r}
+# Complete the code below to call the t.test function to test 
+# the equality in means between the two versions of the website. 
+
+t.test(formula = ... ,     # The formula: response ~ covariate.
+       mu = ... ,          # the value of d0
+       alternative = ... , # "less", "greater" or "two.sided";
+       data = sample_money_donated)
+
+```
+
+Therefore, at $5\%$ significance level, we do not have strong enough evidence to conclude that the average donations of the websites A and B are different. 
+<div class="end-part"></div>
+
+<br>
+
+#### Comparing two proportions
+
+Obama's campaign wanted the website to increase the number of subscribers, so they used the subscription rate. In this case, the variable of interest, <em>"whether a visitor subscribes"</em>, is not numerical and is dichotomic: "yes" or "no." Consequently, we would want to compare the proportions of visitors who subscribe using <em>Website A</em> and <em>Website B</em>.
+
+To test for the equality of proportions between two groups, i.e., $H_0: p_A - p_B = 0$ vs $H_1: p_A - p_B
+\neq 0$, we can use the following test statistics:
+$$
+Z = \frac{\hat{p}_A-\hat{p}_B}{\sqrt{\hat{p}(1-\hat{p})\left(\frac{1}{n_A}+\frac{1}{n_B}\right)}},
+$$
+
+<p style="text-indent: 0;">where $\hat{p}=\frac{n_A\hat{p}_A+n_B\hat{p}_B}{n_A+n_B}$ is the overall
+proportion. For large sample sizes, the null model of the $Z$ statistic is the Standard Normal distribution, $N(0,1)$. Again, we will not do this manually, as we can easily calculate using the computer. </p>
+
+<span class="example"></span>
+Suppose Obama's campaign wanted to test which of two websites, <em>Website A</em> or
+<em>Website B</em>, results in a higher rate of subscribers. The next 60 users who visit the campaign's
+website will access one of the websites chosen at random until 30 users have seen one of the designs. We
+have collected this data for you and stored it in the <code>sample_subscriber</code> object.
+Run the code cell below to take a look.
+
+```{webr-r}
+#| context: setup
+set.seed(1)
+
+# Simulating a sample of 200 individuals for group A and Group B
+sample_subscriber <- 
+    tibble(website = factor(c("A", "B")), 
+        subscribed = list(
+            sample(factor(c("yes", "no"), levels = c('yes', 'no')), 100, replace = TRUE, p=c(0.42, 0.58)), 
+            sample(factor(c("yes", "no"), levels = c('yes', 'no')), 100, replace = TRUE, p=c(0.60, 0.40)))
+        ) %>% 
+    unnest(cols = subscribed)
+```
+
+```{webr-r}
+sample_subscriber
+```
+
+<p style="text-indent: 0;">Next, run <code><a href="https://infer.tidymodels.org/reference/prop_test.html" target="_blank">infer::prop_test</a></code> in R to test the hypothesis.</p>
+
+<!--
+```{webr-r} 
+prop.test(
+    sample_subscriber %>% 
+    group_by(website) %>% 
+    summarise(n_successes = sum(subscribed == "yes"), 
+            n_failures = sum(subscribed == "no")) %>% 
+    select(-website) %>% 
+    as.matrix())
+```
+-->
+
+```{webr-r} 
+# Complete the code below to call the prop_test function to test 
+# the equality in proportions between the two versions of the website. 
+sample_subscriber %>% 
+    prop_test(... ~ ... ,           # The formula: response ~ covariate.
+              order = c("B", "A"))
+```
+
+Therefore, at $5\%$ significance level, we have enough evidence suggesting that the proportion donations of the websites A and B are different. 
+
+<div class="end-part"></div>
+
+<br>
+
+<!--#### Multiple Groups-->
+
+
+<div class="box-def box-exercise">
+<p></p>
+<p>When conducting hypothesis testing, what are the effects that sample size has on:</p>
+<ol>
+    <li class="question-item">
+        <p>Probability of Type I Error</p>
+        <textarea class="answer" style="height:50px;"></textarea><br>
+    </li>
+    <li class="question-item">
+        <p>Probability of Type II Error</p>
+        <textarea class="answer" style="height:50px;"></textarea><br>
+    </li>
+    <li class="question-item">
+        <p>Power of the test</p>
+        <textarea class="answer" style="height:50px;"></textarea>
+    </li>
+</ol>
+<button class="btn-show-answers">Show answers</button>
+<div class="solution">
+<dl>
+<dt>Probability of Type I Error</dt>
+<dd>None. Remember that the probability of Type I Error is the significance level, which is
+    specified by us before the test is conducted.</dd>
+
+<dt>Probability of Type II Error</dt>
+<dd>The Probability of Type II Error decreases as the sample size increases. The reason is that
+    both the null model and the sampling distribution of the test statistic will become narrower,
+    hence reducing their overlap.
+</dd>
+
+<dt>Power of the test</dt>
+<dd> The power of the test is just one minus the probability of Type II Error. Since the probability
+    of Type II Error decreases as the sample size increases, the power of the test increases as the
+    sample size increases.
+</dd>
+</dl>
+</div>
+</div>
+
+<div class="box-def box-exercise">
+<p></p>
+<p style="text-indent: 0;">
+When conducting multiple hypothesis testing, what happens to the family-wise errors?
+</p>
+<textarea class="answer" style="height:50px; width: 90%;"></textarea><br>
+<button class="btn-show-answers">Show answers</button>
+<div class="solution">
+Since you need to make the right decision multiple times, and each time there is a chance that you make
+the wrong decision,
+when you consider whether <strong>all</strong> the decisions you made are right, there is a much lower
+chance of that happening compared to each hypothesis testing individually.
+</div>
+</div>
+
+
+## Peeking and Early Stopping
+
+<p style="text-indent: 0;">Let's set up a fictitious problem to investigate the consequences of online data monitoring (or peeking). </p>
+
+- <u>**Problem:**</u> Imagine that Obama's campaign had two versions of a website and was trying to figure out which to use. They would conduct an A/B Test experiment. 
+
+<figure>
+<img src="imgs/obama-experiment-1.png" width="55%">
+<figcaption> A/B Test with two versions of Obama's campaign website.
+</figcaption>
+</figure>
+
+<br>
+
+- <u>**Randomization:**</u> Everyone who accesses the website will be randomly directed to one of the versions.
+
+<br>
+
+- <u>**Peeking:**</u> In order to adopt the best website version as quickly as possible and move on to optimizing other aspects of the campaign, they will check the interim data on every 50 accesses (25 in each group) up to a maximum of 500 people.
+
+<br>
+
+- <u>**Early Stopping:**</u> They will stop the experiment once the p-value is less than 0.05.
+
+<br> 
+
+This seems a reasonable plan, and it will address the campaign's constraint of not wanting to wait for 2000 people to access the website to conduct the hypothesis test. 
+
+Is this approach reliable, though? 
+
+In other words, if we end up rejecting $H_0$, can we safely conclude that it was due to a difference in the websites' performance instead of just a highly inflated false positive (Type I Error) rate?
+
+To answer this question, we can use a strategy called A/A Testing, which ensures that both groups receive the same website version. This approach allows us to confirm the truthfulness of $H_0$, and any rejection of $H_0$ would constitute a false positive.
+
+<figure>
+<img src="imgs/aa-test.png" width="55%">
+<figcaption> A/A Test with the same version of Obama's campaign website for both groups.
+</figcaption>
+</figure>
+
+
+
+```{webr-r}
+#| context: setup
+set.seed(12)
+
+#' Generates a random sample of website subscriptions.
+#'
+#' @param n Numeric: The desired sample size.
+#' @return tibble: A data frame containing website and subscription information.
+#' @examples
+#' take_sample(100)
+#' @note
+#' - The function creates a tibble with two columns: 'website' and 'subscribed'.
+#' - 'website' contains either "Website A" or "Website B".
+#' - 'subscribed' is randomly sampled from "yes" or "no" with 50% probability.
+take_sample <- function(n) {
+  return(
+    tibble(website = as_factor(c(rep("Website A", n/2), rep("Website B", n/2))), 
+           subscribed = sample(factor(c("yes", "no"), levels = c('yes', 'no')), n, replace = TRUE, p=c(0.5, 0.5))
+    ) %>% 
+      slice_sample(n = n)
+  )
+}
+
+#' Generates a dataset by combining multiple batches of samples.
+#'
+#' @param batch_size Numeric: The size of each batch.
+#' @param n_batches Numeric: The total number of batches to generate.
+#' @param reps Numeric: The number of repetitions.
+#' @return tibble: A data frame containing combined batches with batch and replicate information.
+#' @examples
+#' data_set_generator(batch_size = 100, n_batches = 5, reps = 3)
+#' @note
+#' - The function creates a tibble to store the combined data.
+#' - It generates 'n_batches' batches of samples using the 'take_sample' function.
+#' - Each batch contains 'batch_size' observations.
+#' - The resulting tibble includes columns for 'data', 'batch', and 'replicate'.
+#' - 'data' contains the combined samples from all batches.
+#' - 'batch' indicates the batch number.
+#' - 'replicate' represents the repetition number.
+data_set_generator <- function(batch_size, n_batches, reps) {
+  data_tbl <- tibble() 
+  for (rep in 1:reps){
+    data <- list()
+    data[[1]] <- take_sample(batch_size)
+    for(i in 2:n_batches){
+      data[[i]] = bind_rows(take_sample(batch_size), data[[i-1]])
+    }
+    data_tbl <- bind_rows(data_tbl, tibble(data = data) %>% mutate(batch = row_number(), replicate = rep))
+  }
+  return(data_tbl)
+}
+
+
+collect_new_batch_of_sample_viewer <- function() {
+    return(
+            sample_viewers_source %>% 
+            filter(batch == 2 & replicate == 1) %>% 
+            select(data) %>% 
+            unnest(cols = c(data))
+    )
+}
+
+
+sample_viewers_source <- 
+    data_set_generator(50, 10, 200) %>% 
+    mutate(pvalue = map_dbl(.x = data, 
+                      ~.x %>%
+                              prop_test(subscribed ~ website, 
+                              order = c('Website B', 'Website A') ) %>% pull(p_value)))
+
+sample_viewers <- 
+    sample_viewers_source %>% 
+    filter(batch == 1 & replicate == 1) %>% 
+    select(data) %>% 
+    unnest(cols = c(data))
+```
+
+```{webr-r}
+# Take a look at the first batch of visitors
+sample_viewers
+```
+
+<br>
+
+Again, since this is an A/A Test, `Website A` and `Website B` are, in fact, the same website version, so we should not reject $H_0$. 
+
+Next, fill in the code below to test the hypothesis that the proportion of subscribers in both groups is the same.
+
+```{webr-r}
+# Complete the code below to call the prop_test function to test 
+# the equality in proportions between the two groups with the same
+# version of the website. 
+sample_viewers %>%
+    prop_test(... ~ ..., 
+              order = c('Website B', 'Website A')) 
+```
+
+<br>
+
+Yay, we didn't reject! That's great! But this is just the first test since we are monitoring the data as they come. Let's collect the next 50 visitors data.
+
+```{webr-r}
+# The function collect_new_batch attach a 
+# new batch of visitors to our sample dataframe.
+
+# Note that we now have the more rows but the first 40 rows are the same 
+# as in the first batch.
+
+(sample_viewers <- collect_new_batch_of_sample_viewer())
+
+```
+
+```{webr-r}
+# Complete the code below to call the prop_test function to test 
+# the equality in proportions between the two groups with the same
+# version of the website. 
+
+# But this time we have a 100 visitors (50 in each group)
+sample_viewers %>%
+    prop_test(... ~ ..., 
+              order = c('Website B', 'Website A') )
+```
+
+<br>
+
+
+As you can see, the p-value changed. We will monitor yet another batch of 50 visitors and another one until one of two things happens: (1) we reach 500 visitors; (2) the p-value crosses the threshold of 5%. This means that we won't reject $H_0$ only if we don't reject it in all 10 interim tests (for each batch). Let's see how our p-value behaves across all 10 batches of size 50. 
+
+```{webr-r}
+#| context: setup
+
+# The code will conduct the proportion test using the first batch, 
+# then combine it with the second batch for the test, and 
+# continue this process with each subsequent batch.
+
+pvalues <- 
+    sample_viewers_source %>%
+    filter(replicate == 1) %>%
+    select(batch, pvalue)
+```
+
+```{webr-r}
+# These are the pvalues of the first batch alone
+# then the first and second, 
+# then the first, second, and third, 
+# and so on.
+
+pvalues
+``` 
+
+<br>
+
+
+Let's plot the p-value path throught the online data monitoring. 
+
+```{webr-r}
+# Fill in the code below. 
+
+# Plot the pvalue vs batch 
+# make the points red if they are smaller than 0.05
+# add a horizontal line to show the significance level
+pvalues %>% 
+    ggplot(aes(..., ...)) + 
+    geom_point(size = 4) + 
+    geom_line() + 
+    geom_hline(aes(yintercept = ...), lty = 2, color = 'red')+
+    geom_point(aes(..., ...), 
+               color = "red", 
+               size = 4, 
+               data = pvalues %>% filter(pvalue <= 0.05)) + 
+    ggtitle("P-values for online monitoring of an A/A test")
+``` 
+
+<br>
+
+
+As you can see, in this case, we would have stopped the experiment once the data from the 7th batch arrived, and we would have concluded that one of the groups had a superior version of the website, which is the wrong conclusion. However, note that we are interested in the false positive **rate**, not in the fact that this particular example yields the wrong decision. 
+
+
+To investigate the rate, we need to conduct this experiment multiple times and see if the rate of false positives is close to 5% (our specified significance level). Let's do this experiment 200 times.
+
+
+
+```{webr-r}
+# Fill in the code below to obtain the false positive rate 
+# of this A/A experiment. 
+sample_viewers_source %>% 
+  group_by(...) %>%
+  summarise(reject = sum(... < 0.05) > 0) %>%
+  summarise(false_positive_rate = ...(reject))
+``` 
+
+<br>
+
+As you can see, following the prescribed methodology above would yield a false positive rate of 19%, roughly four times the nominal rate of 5%. The sequential hypothesis tests significantly inflate the type I error. 
+
+#### P-value correction
+
+We have learned about p-value adjustments to control for Type I Error. Remember BH and Bonferroni's corrections? These methods can be useful here as well. However, as it turns out, people have also investigated many new approaches for A/B testing as well.
+ 
+##### Bonferroni Correction
+
+Let's use the `p.adjust` function to include Bonferroni's correction.
+
+```{webr-r}
+# Fill in the code below to adjust the p-values
+# using BH and Bonferroni's correction
+sample_viewers_source %>% 
+  group_by(replicate) %>%
+  mutate(p_bonf = ...(pvalue, method = ...),
+         p_bh = p.adjust(..., method = ...)) 
+
+``` 
+
+##### Pocock’s boundaries
+
+The problem with the Bonferroni method is that it is too conservative, frequently making it very hard to reject $H_0$. Another alternative to Bonferroni developed in the context of sequential hypothesis testing is Pocock's boundaries. You can obtain the Pocock's boundaries using the `gsDesign` package. 
+
+```{webr-r}
+# Fill in the code below to adjust the p-values
+# using Bonferroni's correction
+gsDesign(k = 20, #number of interim analysis planned
+         test.type = 2, # for two-sided symmetric
+         alpha = 0.05, #type I error rate
+         beta = 0.2, # type II error rate
+         sfu = 'Pocock')
+``` 
+
+As with Bonferroni's correction, Pocock's method provides the same critical value for all the interim tests, no matter the interim sample size. This requires us to specify a priori the number of interim analyses to be conducted without the opportunity to change/adjust this after the experiment started. However, Pocock's method is less conservative than Bonferroni's method. 
+
+Other methods are more flexible and account for the size of the interim sample, making it harder to reject the null hypothesis for smaller sample sizes than for larger sample sizes.
+
+
+<div style="height: 400px;">
+
+</div>

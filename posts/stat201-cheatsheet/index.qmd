@@ -1,0 +1,18 @@
+---
+title: "STAT 201: Cheatsheet"
+image: "image.jpg"
+draft: true
+draft-mode: unlinked
+format: live-html
+webr:
+  packages:
+    - tidyverse
+    - infer
+    - broom
+---
+
+
+
+<img src="inference_table_1.jpg" alt="Cheatsheet" style="width: 140%; height: auto; margin-left:-8em;" />
+<br><br>
+<img src="inference_table_2.jpg" alt="Cheatsheet" style="width: 140%; height: auto; margin-left:-8em;" />

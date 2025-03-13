@@ -1,0 +1,1116 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.4.553">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Rodolfo Lourenzutti - Feed Forward Neural Network</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<link href="../../logo.png" rel="icon" type="image/png">
+<script src="../../site_libs/quarto-html/quarto.js"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<script async="" src="https://www.googletagmanager.com/gtag/js?id=G-PLRMKTQGZJ"></script>
+
+<script type="text/javascript">
+
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-PLRMKTQGZJ', { 'anonymize_ip': true});
+</script>
+
+  <script>window.backupDefine = window.define; window.define = undefined;</script><script src="https://cdn.jsdelivr.net/npm/katex@0.15.1/dist/katex.min.js"></script>
+  <script>document.addEventListener("DOMContentLoaded", function () {
+ var mathElements = document.getElementsByClassName("math");
+ var macros = [];
+ for (var i = 0; i < mathElements.length; i++) {
+  var texText = mathElements[i].firstChild;
+  if (mathElements[i].tagName == "SPAN") {
+   katex.render(texText.data, mathElements[i], {
+    displayMode: mathElements[i].classList.contains('display'),
+    throwOnError: false,
+    macros: macros,
+    fleqn: false
+   });
+}}});
+  </script>
+  <script>window.define = window.backupDefine; window.backupDefine = undefined;</script><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.1/dist/katex.min.css">
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+<link rel="stylesheet" href="../../styles/main.css">
+<link rel="stylesheet" href="../../styles/tutorials.css">
+<link rel="stylesheet" href="styles/ffnn.css">
+<meta property="og:title" content="Rodolfo Lourenzutti - Feed Forward Neural Network">
+<meta property="og:description" content="">
+<meta property="og:site_name" content="Rodolfo Lourenzutti">
+<meta name="twitter:title" content="Rodolfo Lourenzutti - Feed Forward Neural Network">
+<meta name="twitter:description" content="">
+<meta name="twitter:card" content="summary">
+</head>
+
+<body>
+
+<div id="quarto-search-results"></div>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#notation" id="toc-notation" class="nav-link active" data-scroll-target="#notation">Notation</a>
+  <ul class="collapse">
+  <li><a href="#matrix-notation" id="toc-matrix-notation" class="nav-link" data-scroll-target="#matrix-notation">Matrix Notation</a></li>
+  </ul></li>
+  <li><a href="#backpropagation" id="toc-backpropagation" class="nav-link" data-scroll-target="#backpropagation">Backpropagation</a></li>
+  <li><a href="#implementation" id="toc-implementation" class="nav-link" data-scroll-target="#implementation">Implementation</a>
+  <ul class="collapse">
+  <li><a href="#from-scratch-with-numpy" id="toc-from-scratch-with-numpy" class="nav-link" data-scroll-target="#from-scratch-with-numpy">From scratch with Numpy</a></li>
+  <li><a href="#using-pytorch" id="toc-using-pytorch" class="nav-link" data-scroll-target="#using-pytorch">Using Pytorch</a></li>
+  </ul></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Feed Forward Neural Network</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<style>
+    main {
+        text-align: justify;    
+    }
+</style>
+<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+<script src="https://d3js.org/d3.v6.min.js"></script>
+<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+<script id="MathJax-script" async="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<!--<script defer src="scripts/plot_nn.js"></script>-->
+<div class="cell">
+<script>
+function createNeuralNetwork(layers, div_name, drawZSquares=true, neuronRadius = 20, squareSize = 20, width = 1000, height = 400) {
+
+    const layerWidth = width / layers.length;
+    //const fontSize = neuronRadius / 2; // Set font size proportional to neuron radius
+    const fontSize = 14;
+    squareSize = drawZSquares ? squareSize : -2;
+    
+    // Clear previous content
+    //d3.select(`#${div_name}`).html('');
+
+    // Create SVG element for lines and neurons
+    const svg = d3.select(`#${div_name}`).append("svg")
+        .attr("width", width)
+        .attr("height", height)
+        .style("position", "absolute");
+
+    // Function to calculate Y positions
+    const calculateY = (layerIndex, nodeIndex, totalNodes) => {
+        const spacing = height / (totalNodes + 1);
+        return (nodeIndex + 1) * spacing;
+    };
+
+    // Draw connections (lines) and weight annotations
+    for (let l = 0; l < layers.length - 1; l++) {
+        for (let i = 0; i < layers[l]; i++) {
+            for (let j = 0; j < layers[l + 1]; j++) {
+                const x1 = (l + 0.5) * layerWidth;
+                const y1 = calculateY(l, i, layers[l]);
+                const x2 = (l + 1.5) * layerWidth - neuronRadius - squareSize - 2;
+                const y2 = calculateY(l + 1, j, layers[l + 1]);
+
+                // Draw line
+                svg.append("line")
+                    .attr("x1", x1)
+                    .attr("y1", y1)
+                    .attr("x2", x2)
+                    .attr("y2", y2)
+                    .attr("stroke", "black")
+                    .attr("stroke-width", 1);
+
+                // Calculate position and rotation for weight annotation
+                const scaler = 0.8;
+                const annotationX = x1 + neuronRadius + (drawZSquares ? 10 : 20);
+                const slope = (y2 - y1) / (x2 - x1);
+                const angle = Math.atan(slope) * (180 / Math.PI);
+                const annotationY = y1 + slope * (annotationX - x1) - scaler*fontSize - 2;
+
+                const weightAnnotation = `w_{${j + 1}${i + 1}}^{(${l + 1})}`;
+                d3.select(`#${div_name}`).append("div")
+                    .attr("class", "weight-annotation")
+                    .style("left", `${annotationX}px`)
+                    .style("top", `${annotationY}px`)
+                    .style("font-size", `${scaler*fontSize}px`)
+                    .style("transform", `translateY(-50%) rotate(${angle}deg)`)
+                    .html(`\\(${weightAnnotation}\\)`);
+            }
+        }
+    }
+
+    // Draw neurons and neuron annotations
+    layers.forEach((numNeurons, layerIndex) => {
+        const x = (layerIndex + 0.5) * layerWidth;
+        const layerAnnotation = `Layer ${layerIndex}`;
+        svg.append("text")
+            .attr("x", x)
+            .attr("y", 20) // Position at the top, you can adjust this value
+            .attr("text-anchor", "middle")
+            .attr("font-family", "Arial")
+            .attr("font-size", "16px")
+            .text(layerAnnotation);
+        for (let i = 0; i < numNeurons; i++) {
+            const y = calculateY(layerIndex, i, numNeurons);
+
+            // Draw neuron
+            svg.append("circle")
+                .attr("cx", x)
+                .attr("cy", y)
+                .attr("r", neuronRadius)
+                .attr("fill", "steelblue");
+
+            // Add neuron annotation
+            const neuronAnnotation = `x_{${i + 1}}^{(${layerIndex})}`;
+            d3.select(`#${div_name}`).append("div")
+                .attr("class", "neuron-annotation")
+                .style("left", `${x}px`)
+                .style("top", `${y}px`)
+                .style("font-size", `${fontSize}px`)
+                .style('color', 'white')
+                .html(`\\(${neuronAnnotation}\\)`);
+
+            // Draw annotation for non-input neurons
+            if (layerIndex > 0 && drawZSquares) {
+                const rectX = x - neuronRadius - squareSize - 1;
+                const rectY = y - squareSize / 2;
+
+                const squareAnnotation = `z_{${i + 1}}^{(${layerIndex})}`;
+                d3.select(`#${div_name}`).append("div")
+                    .attr("class", "annotation")
+                    .style("left", `${rectX}px`)
+                    .style("top", `${rectY}px`)
+                    .style("width", `${squareSize}px`)
+                    .style("height", `${squareSize}px`)
+                    .style("line-height", `${squareSize}px`)
+                    .style("font-size", `${0.8*fontSize}px`)
+                    .html(`\\(${squareAnnotation}\\)`)
+                    .on("click", () => propagateFromZSquare(layerIndex, i));;
+            }
+        }
+    });
+    
+    // Function to animate impulse
+    function animateImpulse(startX, startY, endX, endY, duration) {
+        const impulse = svg.append("circle")
+            .attr("cx", startX)
+            .attr("cy", startY)
+            .attr("r", 5)
+            .attr("fill", "red");
+
+        impulse.transition()
+            .duration(duration)
+            .attr("cx", endX)
+            .attr("cy", endY)
+            .on("end", () => impulse.remove());
+    }
+
+    // Function to propagate impulse
+    function propagateImpulse(layerIndex, neuronIndex) {
+        if (layerIndex < layers.length - 1) {
+            for (let j = 0; j < layers[layerIndex + 1]; j++) {
+                const startX = (layerIndex + 0.5) * layerWidth;
+                const startY = calculateY(layerIndex, neuronIndex, layers[layerIndex]);
+                const endX = (layerIndex + 1.5) * layerWidth - neuronRadius - squareSize - 2;
+                const endY = calculateY(layerIndex + 1, j, layers[layerIndex + 1]);
+
+                animateImpulse(startX, startY, endX, endY, 1200);
+
+                // Recursive call for next layer
+                setTimeout(() => propagateImpulse(layerIndex + 1, j), 1000);
+            }
+        }
+    }
+
+    // Function to propagate impulse from a Z square
+    function propagateFromZSquare(layerIndex, neuronIndex) {
+        if (layerIndex < layers.length - 1) {
+            for (let j = 0; j < layers[layerIndex + 1]; j++) {
+                const startX = (layerIndex + 0.5) * layerWidth;
+                const startY = calculateY(layerIndex, neuronIndex, layers[layerIndex]) + squareSize / 2;
+                const endX = (layerIndex + 1.5) * layerWidth - neuronRadius - squareSize - 2;
+                const endY = calculateY(layerIndex + 1, j, layers[layerIndex + 1]);
+
+                animateImpulse(startX, startY, endX, endY, 1200);
+            }
+        }
+    }
+
+    // Draw neurons and neuron annotations
+    layers.forEach((numNeurons, layerIndex) => {
+        for (let i = 0; i < numNeurons; i++) {
+            const x = (layerIndex + 0.5) * layerWidth;
+            const y = calculateY(layerIndex, i, numNeurons);
+
+            // Draw neuron
+            svg.append("circle")
+                .attr("cx", x)
+                .attr("cy", y)
+                .attr("r", neuronRadius)
+                .attr("fill", "steelblue")
+                .attr("cursor", "pointer")
+                .on("click", () => propagateImpulse(layerIndex, i));
+
+        }
+    });
+    // Render MathJax
+    MathJax.typesetPromise();
+}
+</script>
+</div>
+<p>In this tutorial, we will explore how feedforward neural networks work. We’ll discuss neurons, layers, activation functions, and cost functions. Then, we’ll see in detail how we train a neural network using backpropagation. We will derive the backpropagation formulae step-by-step and implement a neural network from scratch using Python’s Numpy package only.</p>
+<p><strong>Learning Objectives:</strong> <br></p>
+<p>At the end of this tutorial, the reader should be able to:</p>
+<ul>
+<li>Calculate the forward pass of a neural network;</li>
+<li>Calculate the backpropagation of a neural network;</li>
+<li>Implement a neural network from scratch in Python;</li>
+<li>Implement a neural network using PyTorch;</li>
+</ul>
+<p><strong>Prerequisites:</strong> <br></p>
+<p>It is assumed that the reader :</p>
+<ul>
+<li>possesses a level of proficiency in computing derivatives, particularly in the application of the Chain Rule.</li>
+<li>has some Python knowledge;</li>
+<li>is able to perform matrix multiplication;</li>
+</ul>
+<hr>
+<p>Neural Networks are certainly among the most “famous” models in machine learning. They power many tools that we use nowadays, from computer vision to generative models and medical applications. If this is not the first post you’ve read about neural networks, you surely have seen a diagram like the one below.</p>
+<div id="fig-nn-regular" class="quarto-figure quarto-figure-center quarto-float anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-nn-regular-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<p><img src="images/nn1.svg" width="100%" class="figure-img"></p>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-nn-regular-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;1: The usual Neural Network diagram (bias neurons omitted).
+</figcaption>
+</figure>
+</div>
+<p>When I started learning about neural networks, I found the standard diagram confusing because it doesn’t explicitly show a crucial component that will be needed later for the backpropagation algorithm. Therefore, for this tutorial, we will explicitly include this component in the diagram, as shown in <a href="#fig-nn-diagram" class="quarto-xref">Figure&nbsp;2</a>.</p>
+<div id="fig-nn-diagram" class="quarto-figure quarto-figure-center quarto-float anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-nn-diagram-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<p><img src="images/nn2.svg" width="100%" class="figure-img"></p>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-nn-diagram-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;2: A Neural Network diagram including the linear aggregator <span class="math inline">z^{(l)}_{i}</span> (again, bias neurons omitted).
+</figcaption>
+</figure>
+</div>
+<p>Let’s introduce some terminology:</p>
+<ul>
+<li><p><strong>Layers</strong>: This neuron network has four layers.</p>
+<ul>
+<li><strong>Input layer:</strong> the first layer is known as the input layer; it brings the data into the network.</li>
+<li><strong>Output layer:</strong> the last layer is known as the output layer; it provides the numerical outputs of the neural network.</li>
+<li><strong>Hidden layers:</strong> the layers between the input and output layers are known as the hidden layers; in this case, layers 1 and 2 are hidden layers.</li>
+</ul></li>
+<li><p><strong>Neurons:</strong> the blue circles are the so-called neurons; neurons send a numerical value as a signal for the neurons in the following layer.</p>
+<ul>
+<li>Different layers can have different numbers of neurons.</li>
+<li>The signals neurons in the input layer send are the data.</li>
+<li>The number of neurons in the input layer is the number of attributes in the dataset.</li>
+<li><strong>Activation function:</strong> a non-linear function that specifies how neurons process the signals they receive. This function is not explicitly showed in the graph, but it is “inside” the neuron.</li>
+</ul></li>
+<li><p><strong>Weights:</strong> the weights are numerical values (positive or negative) that amplify or reduce the strength of a neuron’s signal to another neuron; they are represented in the graph by the lines;</p></li>
+<li><p><strong>Receptors:</strong> we will call the boxes attached to each neuron the neuron’s receptor, which will collect and aggregate all the signals a neuron receives from other neurons (this is not standard language);</p></li>
+</ul>
+<p>I’ve always found the terminology very confusing without looking at the equations. For example, when I say that weights amplify or reduce the signal, how exactly does that happen? How exactly do receptors collect and aggregate all the signals? How do neurons process the signals passed by the receptors? Before we go over these in detail, let’s review the notation we are using.</p>
+<section id="notation" class="level2">
+<h2 class="anchored" data-anchor-id="notation">Notation</h2>
+<div id="fig-nn-notation" class="quarto-figure quarto-figure-center quarto-float anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-nn-notation-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<p><img src="images/nn3.svg" width="100%" class="figure-img"></p>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-nn-notation-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;3: The weight <span class="math inline">w_{1,2}^{(1)}</span> connects the neurons <span class="math inline">X^{(0)}_1</span> and <span class="math inline">X^{(1)}_2</span>.
+</figcaption>
+</figure>
+</div>
+<ul>
+<li><span class="math inline">(l)</span> refers to the layer, and goes from 0 to <span class="math inline">L</span>, where the <span class="math inline">L</span>th layer is the output layer.</li>
+<li><span class="math inline">n^{(l)}</span> is the number of neurons in layer <span class="math inline">l</span>.</li>
+<li><span class="math inline">x^{(l)}_{k}</span> is the <span class="math inline">k</span>th neuron in layer <span class="math inline">l</span>.
+<ul>
+<li><span class="math inline">x^{(l)}_{i,k}</span> is the value of the <span class="math inline">k</span>th neuron in layer <span class="math inline">l</span> for the <span class="math inline">i</span>th training sample.</li>
+</ul></li>
+<li><span class="math inline">z^{(l)}_{k}</span> is the receptor of neuron <span class="math inline">x^{(l)}_k</span>.
+<ul>
+<li><span class="math inline">z^{(l)}_{i,k}</span> is the value of the receptor of neuron <span class="math inline">x^{(l)}_k</span> for the <span class="math inline">i</span>th training sample.</li>
+</ul></li>
+<li><span class="math inline">w_{i,j}^{(l)}</span> is the weight connecting the <span class="math inline">i</span>th neuron in layer <span class="math inline">l-1</span> to the <span class="math inline">j</span>th neuron in layer <span class="math inline">l</span>.</li>
+<li><span class="math inline">b^{(l)}_k</span> the bias term added by the receptor of neuron <span class="math inline">k</span> in layer <span class="math inline">l</span>.</li>
+</ul>
+<p>Since we have a ton of weights, it is helpful for us to organize them into matrices. We will have one weight matrix per layer (except for layer 0). We will denote the matrices as <span class="math inline">{\bf{W}}^{(l)}</span>. <a href="#fig-nn-matrix-weights" class="quarto-xref">Figure&nbsp;4</a> illustrates how the weights are organized into matrices for our example neural network.</p>
+<div id="fig-nn-matrix-weights" class="quarto-figure quarto-figure-center quarto-float anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-nn-matrix-weights-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<p><img src="images/nn4.svg" width="100%" class="figure-img"></p>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-nn-matrix-weights-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;4: The weight <span class="math inline">w_{1,2}^{(1)}</span> connects the neurons <span class="math inline">X^{(0)}_1</span> and <span class="math inline">X^{(1)}_2</span>.
+</figcaption>
+</figure>
+</div>
+<p>The matrix <span class="math inline">{\bf{W}}^{(l)}</span> contains the weights connecting neurons in layer <span class="math inline">l-1</span> to neurons in layer <span class="math inline">l</span>. It has <span class="math inline">n^{(l-1)}</span> rows and <span class="math inline">n^{(l)}</span> columns. The <span class="math inline">i</span>th row of <span class="math inline">{\bf{W}}^{(l)}</span> are all weights “leaving” neuron <span class="math inline">i</span> from layer <span class="math inline">l-1</span>. The <span class="math inline">j</span>th column of <span class="math inline">{\bf{W}}^{(l)}</span> are all the weights arriving to neuron <span class="math inline">j</span> in layer <span class="math inline">l-1</span>. <a href="#fig-weight-matrix-shape" class="quarto-xref">Figure&nbsp;5</a> illustrates these points.</p>
+<div id="fig-weight-matrix-shape" class="quarto-figure quarto-figure-center quarto-float anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-weight-matrix-shape-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<p><img src="images/nn5.svg" width="100%" class="figure-img"></p>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-weight-matrix-shape-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;5: Shape of matrix <span class="math inline">{\bf{W}}^{(1)}</span>.
+</figcaption>
+</figure>
+</div>
+<p>For example, the second row of <span class="math inline">{\bf{W}}^{(2)}</span> has all the weights leaving neuron 2 from layer 1, as shown in <a href="#fig-weight-matrix-row" class="quarto-xref">Figure&nbsp;6</a>; while the second column has all the weights arriving at neuron 2 in layer 2, as illustrated in <a href="#fig-weight-matrix-column" class="quarto-xref">Figure&nbsp;9</a>.</p>
+<div id="fig-weight-matrix-row" class="quarto-figure quarto-figure-center quarto-float anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-weight-matrix-row-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<p><img src="images/nn6.svg" width="100%" class="figure-img"></p>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-weight-matrix-row-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;6: The second row of <span class="math inline">{\bf{W}}^{(2)}</span> has all weights “leaving” neuron 2 in layer 1.
+</figcaption>
+</figure>
+</div>
+<div id="fig-weight-matrix-column" class="quarto-figure quarto-figure-center quarto-float anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-weight-matrix-column-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<p><img src="images/nn7.svg" width="100%" class="figure-img"></p>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-weight-matrix-column-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;7: The second column of <span class="math inline">{\bf{W}}^{(2)}</span> has all weights “arriving” at neuron 2 in layer 2.
+</figcaption>
+</figure>
+</div>
+<p>Now that we understand the notation, we are ready to introduce the necessary equations.</p>
+<ul>
+<li><strong>Receptors</strong> (for the <span class="math inline">i</span>th training sample): <span class="math display">z^{(l)}_{i, k} =\sum_{j=1}^{n^{(l-1)}} w^{(l)}_{j, k}x^{(l-1)}_{i,j} + b^{(l)}_k,\quad l=1,...,L, \quad \text{and} \quad j=1,...,n^{(l)}</span></li>
+<li><strong>Neurons</strong> (for the <span class="math inline">i</span>th training sample): <span class="math display">x^{(l)}_{i, k}=a\left(z^{(l)}_{i, k}\right),\quad l=1,...,L, \quad \text{and} \quad j=1,...,n^{(l)}</span> where <span class="math inline">a</span> is a non-linear function called <strong>activation function</strong>. We will discuss activation functions in more detail later. For now, we will use <span class="math inline">a(x)=\max\left\{0, x\right\}</span>.
+<ul>
+<li>Note: for the input layer, <span class="math inline">l=0</span>, <span class="math inline">x^{(0)}_j</span> is just the feature <span class="math inline">j</span> of the input vector.</li>
+</ul></li>
+</ul>
+<p>Okay, I agree; the notation is heavy. We have a lot of things to keep track of, such as layers, receptors, neurons, and weights, so we need a lot of symbols and indices. For this reason, I encourage the reader to go back to <a href="#fig-nn-diagram" class="quarto-xref">Figure&nbsp;2</a>, pick a neuron in a hidden layer, and write down the equations for that neuron while identifying the elements being used in the diagram.</p>
+<div id="exm-forward-pass" class="theorem example">
+<p><span class="theorem-title"><strong>Example 1</strong></span> For us to go through an example of the feedforward part of the neural network, let us get some synthetic data with two features as well as define some values for the weights.</p>
+<div id="fig-weight-matrix-column" class="quarto-figure quarto-figure-center quarto-float anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-weight-matrix-column-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<p><img src="images/nn8.svg" width="60%" class="figure-img"></p>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-weight-matrix-column-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;8: Some synthetic data and weights for our neural network.
+</figcaption>
+</figure>
+</div>
+<p>Now, we can calculate the forward pass of the neural network. Let’s do it for the first row in our data, i.e., for the input vector <span class="math inline">x=(6.1, 8.7)</span>.</p>
+<div class="columns">
+<div class="column" style="width:45%;">
+<ul>
+<li><p>Receptors in Layer 1: <span class="math display">z^{(1)}_1 =\sum_{i=1}^{2} w^{(1)}_{i, 1}x^{(0)}_i = -0.314</span> <span class="math display">z^{(1)}_2 =\sum_{i=1}^{2} w^{(1)}_{i, 2}x^{(0)}_i =  0.818</span> <span class="math display">z^{(1)}_3 =\sum_{i=1}^{2} w^{(1)}_{i, 3}x^{(0)}_i = -0.417</span></p></li>
+<li><p>Receptors in Layer 2: <span class="math display">z^{(2)}_1 =\sum_{i=1}^{3} w^{(2)}_{i, 1}x^{(1)}_i = -0.07362</span> <span class="math display">z^{(2)}_2 =\sum_{i=1}^{3} w^{(2)}_{i, 2}x^{(1)}_i =  0.02454</span></p></li>
+<li><p>Receptor in Layer 3: <span class="math display">z^{(3)}_1 =\sum_{i=1}^{2} w^{(3)}_{i, 1}x^{(1)}_i = 0.0017178</span></p></li>
+</ul>
+</div><div class="column" style="width:5%;">
+<!-- empty column to create gap -->
+</div><div class="column" style="width:45%;">
+<ul>
+<li><p>Neurons in Layer 1: <span class="math display">x^{(1)}_1 = \max\left\{0, z^{(1)}_1\right\}  = 0\ \ \ \ \ \ \textcolor{white}{\sum_{i=1}^{2}}</span> <span class="math display">x^{(1)}_2 = \max\left\{0, z^{(1)}_2\right\} = 0.818 \textcolor{white}{\sum_{i=1}^{2}}</span> <span class="math display">x^{(1)}_3 = \max\left\{0, z^{(1)}_3\right\} = 0\ \ \ \ \ \ \textcolor{white}{\sum_{i=1}^{2}}</span></p></li>
+<li><p>Neurons in Layer 2: <span class="math display">x^{(2)}_1 = \max\left\{0, z^{(2)}_1\right\} = 0\ \ \ \ \ \ \ \ \ \ \textcolor{white}{\sum_{i=1}^{2}}</span> <span class="math display">x^{(2)}_2 = \max\left\{0, z^{(2)}_2\right\} = 0.02454 \textcolor{white}{\sum_{i=1}^{2}}</span></p></li>
+<li><p>Neuron in Layer 3: <span class="math display">x^{(3)}_1 = \max\left\{0, z^{(3)}_1\right\} = 0.0017178 \textcolor{white}{\sum_{i=1}^{2}}</span></p></li>
+</ul>
+</div>
+</div>
+<p>Let’s now visualize this result in the diagram. We will use two decimal places due to space constraints.</p>
+<div id="fig-weight-matrix-column" class="quarto-figure quarto-figure-center quarto-float anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-weight-matrix-column-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<p><img src="images/nn9.svg" width="100%" class="figure-img"></p>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-weight-matrix-column-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;9: Forward pass of the neural network for the input vector <span class="math inline">x=(6.1, 8.7)</span>.
+</figcaption>
+</figure>
+</div>
+</div>
+<p>Congratulations! You have completed the forward pass of the neural network.</p>
+<p>I’ll just note here that the activation function used in the output layer usually changes according to the problem. For example, for regression problems, a common choice is the identity function <span class="math inline">f(z) = z</span>. If we used <span class="math inline">f(z) = \max\left\{0, z\right\}</span>, we would never be able to predict a negative value, an undesirable property. We won’t worry about this for now.</p>
+<section id="matrix-notation" class="level3">
+<h3 class="anchored" data-anchor-id="matrix-notation">Matrix Notation</h3>
+<p>To implement a Neural Network in Python from scratch, we will need to use the highly optimized Numpy’s vectorization; so, let’s introduce the matrix notation here. The matrix notation also has the advantage of simplifying the steps. Note that everything is almost exactly the same; the only difference is that, with the matrix notation, we will be considering the entire dataset.</p>
+<p>We will denote matrices with capital bold letters (e.g., <span class="math inline">\bf{X}</span>, <span class="math inline">{\bf{W}}^{(1)}</span>), vectors as lowercase bold letters (e.g., <span class="math inline">{\bf{x}}_1</span>). Also, vectors are always column vectors (multiple rows, one column). Here are the equations in matrix format:</p>
+<ul>
+<li><p>Receptors: <span id="eq-matrix-receptor"><span class="math display">
+{\bf{Z}}^{(l)} = {\mathbf{X}^{(l-1)}} \mathbf{W}^{(l)} + \mathbf{1}\left(\mathbf{b}^{(l)}\right)^T
+\tag{1}</span></span> where <span class="math inline">\mathbf{1}</span> is a column vector of ones with <span class="math inline">n</span> rows and <span class="math inline">T</span> stands for transpose. The operation <span class="math inline">\mathbf{1}\left(\mathbf{b}^{(l)}\right)^T</span> is Numpy’s broadcast.</p></li>
+<li><p>Neurons: <span id="eq-matrix-neuron"><span class="math display">
+{\bf{X}}^{(l)} = a\left({\bf{Z}}^{(l)}\right)
+\tag{2}</span></span> where <span class="math inline">a\left({\bf{Z}}^{(l)}\right)</span> means we apply the activation function <span class="math inline">a</span> to every single element of <span class="math inline">{\bf{Z}}^{(l)}</span>.</p></li>
+</ul>
+<p>The notation becomes much simpler, doesn’t it? Let’s take a closer look at <span class="math inline">{\bf{Z}}^{(l)}</span> in <a href="#fig-matrix-receptor" class="quarto-xref">Figure&nbsp;10</a> .</p>
+<div id="fig-matrix-receptor" class="quarto-figure quarto-figure-center quarto-float anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-matrix-receptor-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<p><img src="images/nn10.svg" width="100%" class="figure-img"></p>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-matrix-receptor-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;10: The representation of <span class="math inline">{\bf{Z}}^{(l)}</span>.
+</figcaption>
+</figure>
+</div>
+<p>Now, let’s go through <a href="#exm-forward-pass" class="quarto-xref">Example&nbsp;1</a> again, but this time, we will use matrix notation.</p>
+<div id="exm-forward-pass-matrix" class="theorem example">
+<p><span class="theorem-title"><strong>Example 2</strong></span> &nbsp;</p>
+<div id="fig-matrix-example-layer1" class="quarto-figure quarto-figure-center quarto-float anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-matrix-example-layer1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<p><img src="images/nn11.svg" width="100%" class="figure-img"></p>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-matrix-example-layer1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;11: Values of the receptors and neurons in the first layer for all input vectors.
+</figcaption>
+</figure>
+</div>
+<div id="fig-matrix-example-layer2" class="quarto-figure quarto-figure-center quarto-float anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-matrix-example-layer2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<p><img src="images/nn12.svg" width="100%" class="figure-img"></p>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-matrix-example-layer2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;12: Values of the receptors and neurons in the second layer for all input vectors.
+</figcaption>
+</figure>
+</div>
+<div id="fig-matrix-example-layer3" class="quarto-figure quarto-figure-center quarto-float anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-matrix-example-layer3-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<p><img src="images/nn13.svg" width="85%" class="figure-img"></p>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-matrix-example-layer3-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;13: Values of the receptors and neurons in the third layer for all input vectors.
+</figcaption>
+</figure>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># We need the numpy library</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Creating a random number generator (set seed=1)</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>rng <span class="op">=</span> np.random.default_rng(seed<span class="op">=</span><span class="dv">1</span>)</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Creating data</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>data <span class="op">=</span> np.<span class="bu">round</span>(rng.uniform(<span class="dv">3</span>, <span class="dv">9</span>, size<span class="op">=</span>(<span class="dv">10</span>,<span class="dv">2</span>)), <span class="dv">1</span>)</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>Y <span class="op">=</span> np.<span class="bu">round</span>(np.<span class="bu">sum</span>(data<span class="op">**</span><span class="dv">2</span>, axis<span class="op">=</span><span class="dv">1</span>) <span class="op">+</span> rng.normal(loc<span class="op">=</span><span class="dv">0</span>, scale <span class="op">=</span> <span class="dv">3</span>, size<span class="op">=</span><span class="dv">10</span>), <span class="dv">1</span>)</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>Y_binary <span class="op">=</span> (np.<span class="bu">sum</span>(data<span class="op">**</span><span class="dv">2</span>, axis<span class="op">=</span><span class="dv">1</span>) <span class="op">&gt;</span> <span class="dv">80</span> ) <span class="op">+</span> <span class="dv">0</span> </span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Initializing weights</span></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>W1 <span class="op">=</span> np.<span class="bu">round</span>(rng.uniform(<span class="op">-</span><span class="fl">0.1</span>, <span class="fl">0.1</span>, size<span class="op">=</span>(<span class="dv">2</span>,<span class="dv">3</span>)), <span class="dv">2</span>)</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>W2 <span class="op">=</span> np.<span class="bu">round</span>(rng.uniform(<span class="op">-</span><span class="fl">0.1</span>, <span class="fl">0.1</span>, size<span class="op">=</span>(<span class="dv">3</span>,<span class="dv">2</span>)), <span class="dv">2</span>)</span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>W3 <span class="op">=</span> np.<span class="bu">round</span>(rng.uniform(<span class="op">-</span><span class="fl">0.1</span>, <span class="fl">0.1</span>, size<span class="op">=</span>(<span class="dv">2</span>,<span class="dv">1</span>)), <span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Next, we can calculate <span class="math inline">{\bf{Z}}^{(1)}</span>, <span class="math inline">{\bf{Z}}^{(2)}</span>, and <span class="math inline">{\bf{Z}}^{(3)}</span> and <span class="math inline">{\bf{X}}^{(1)}</span>, <span class="math inline">{\bf{X}}^{(2)}</span>, and <span class="math inline">{\bf{X}}^{(3)}</span></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>Z1 <span class="op">=</span> data <span class="op">@</span> W1</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>X1 <span class="op">=</span> np.fmax(<span class="dv">0</span>, Z1)</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>Z2 <span class="op">=</span> X1 <span class="op">@</span> W2</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>X2 <span class="op">=</span> np.fmax(<span class="dv">0</span>, Z2)</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>Z3 <span class="op">=</span> X2 <span class="op">@</span> W3</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>X3 <span class="op">=</span> np.fmax(<span class="dv">0</span>, Z3)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+</section>
+<section id="backpropagation" class="level2">
+<h2 class="anchored" data-anchor-id="backpropagation">Backpropagation</h2>
+</section>
+<section id="implementation" class="level2">
+<h2 class="anchored" data-anchor-id="implementation">Implementation</h2>
+<section id="from-scratch-with-numpy" class="level3">
+<h3 class="anchored" data-anchor-id="from-scratch-with-numpy">From scratch with Numpy</h3>
+</section>
+<section id="using-pytorch" class="level3">
+<h3 class="anchored" data-anchor-id="using-pytorch">Using Pytorch</h3>
+
+
+</section>
+</section>
+
+<a onclick="window.scrollTo(0, 0); return false;" role="button" id="quarto-back-to-top"><i class="bi bi-arrow-up"></i> Back to top</a></main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp("https:\/\/lourenzutti\.github\.io\/");
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+      &nbsp;
+    </div>   
+    <div class="nav-footer-center">
+<p>Copyright 2023, Rodolfo Lourenzutti – Powered by Quarto</p>
+</div>
+    <div class="nav-footer-right">
+      &nbsp;
+    </div>
+  </div>
+</footer>
+
+
+
+
+</body></html>

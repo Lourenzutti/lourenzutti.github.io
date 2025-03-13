@@ -1,0 +1,13 @@
+figure {
+    text-align: center;
+    margin: auto;
+    margin-bottom: 3em !important;  
+    margin-top: 3em;  
+}
+
+figcaption{
+    /*font-size: 2em;*/
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 0;
+}
