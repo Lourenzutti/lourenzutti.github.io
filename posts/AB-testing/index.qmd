@@ -2,7 +2,7 @@
 title: "A/B Testing -- What is it?"
 author: "Rodolfo Lourenzutti"
 date: "2024-09-30"
-categories: [confidence intervals, statistical inference, analysis]
+categories: [statistical inference, multiple hypothesis testing, A/B testing]
 image: "image.jpg"
 draft: true
 draft-mode: unlinked
