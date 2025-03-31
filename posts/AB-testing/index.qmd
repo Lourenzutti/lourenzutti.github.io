@@ -8,6 +8,11 @@ draft: true
 draft-mode: unlinked
 format: live-html
 css: [../../styles/tutorials-chapters.css]
+webr:
+  packages:
+    - tidyverse
+    - infer
+    - gsDesign
 ---
 
 <script src="https://d3js.org/d3.v6.min.js"></script>
@@ -158,7 +163,7 @@ Therefore, while A/B Testing also uses the traditional hypothesis testing method
 **Traditional Hypothesis Testing**
 :::
 
-- **Sample size:** Fixed -- determined before the experiment begins and remains unchanged.
+- **Sample size:** Fixed -- determined before the experiment begins and remains unchanged.<br><br>
 - **Testing Framework:** Static -- set in advance, including the significance level and decision rules.
 
 :::
@@ -185,9 +190,7 @@ Therefore, while A/B Testing also uses the traditional hypothesis testing method
 
 ::::
 
-Unfortunately, peeking at the data before the full sample arrives has grave consequences. If not controlled properly, it drastically increases the rate of false positives (Type I Error). However, since businesses want to stop the experiment as soon as possible to avoid large opportunity costs, we must learn how to deal with these problems.
-
-Before we investigate the implications of data peeking, let us review the basic concepts of hypothesis testing. 
+Unfortunately, peeking at the data before the full sample arrives has grave consequences. If not controlled properly, it drastically increases the rate of false positives (Type I Error). However, since businesses want to stop the experiment as soon as possible to avoid large opportunity costs, we must learn how to deal with these problems. Before we investigate the implications of data peeking, let us review the basic concepts of hypothesis testing. 
 
 ## Review of Hypothesis Testing
 
@@ -201,7 +204,7 @@ In a classical hypothesis test, we generally use $H_0$ as the status quo hypothe
 
 3. Define a test statistic, $T$, appropriate to test the hypothesis.
    
- . Study the distribution of the test statistic as if $H_0$ were true. This distribution is called the <em>null distribution</em>.
+4. Study the distribution of the test statistic as if $H_0$ were true. This distribution is called the <em>null distribution</em>.
 
 5. Check the actual value of the test statistic using the data you collected.
 
@@ -217,7 +220,7 @@ Naturally, the way these statistics behave is different, i.e., the sampling dist
 
 #### Comparing two means 
 
-Suppose you want to test the difference between two <em>independent</em> populations' means. The scenarios to
+Suppose you want to test the difference between two <em>independent</em> samples' means. The scenarios to
 be considered:
 
 - $H_0: \mu_A - \mu_B = d_0$ vs $H_1: \mu_A - \mu_B \neq d_0$
@@ -259,18 +262,19 @@ suppressMessages(library(tidyverse))
 suppressMessages(library(infer))
 set.seed(1)
 
-# Simulating a sample of 30 individuals for group A and Group B
-sample_money_donated <- 
-tibble(group = c("Website A", "Website B"), 
-    amount = list(
-        if_else(runif(30) < 0.5, 0, rnorm(30, 80, 10) ), 
-        if_else(runif(30) < 0.6, 0, rnorm(30, 100, 20) ))
-    ) %>% 
-unnest(cols = amount) %>%
-sample_n(60)
-```
+#################################################################
+# Simulating a sample of 30 individuals for group A and Group B #
+#################################################################
 
-```{webr-r}
+sample_money_donated <- 
+    tibble(group = c("Website A", "Website B"), 
+           amount = list(
+                if_else(runif(30) < 0.5, 0, rnorm(30, 80, 10) ), 
+                if_else(runif(30) < 0.6, 0, rnorm(30, 100, 20) ))
+    ) %>% 
+    unnest(cols = amount) %>%
+        sample_n(60)
+
 sample_money_donated
 ```
 
@@ -281,8 +285,10 @@ sample_money_donated
 function in R.</p>
 
 ```{webr-r}
-# Complete the code below to call the t.test function to test 
-# the equality in means between the two versions of the website. 
+##################################################################
+# Complete the code below to call the t.test function to test    #
+# the equality in means between the two versions of the website. #
+##################################################################
 
 t.test(formula = ... ,     # The formula: response ~ covariate.
        mu = ... ,          # the value of d0
@@ -320,7 +326,10 @@ Run the code cell below to take a look.
 #| context: setup
 set.seed(1)
 
-# Simulating a sample of 200 individuals for group A and Group B
+##################################################################
+# Simulating a sample of 200 individuals for group A and Group B #
+##################################################################
+
 sample_subscriber <- 
     tibble(website = factor(c("A", "B")), 
         subscribed = list(
@@ -328,9 +337,7 @@ sample_subscriber <-
             sample(factor(c("yes", "no"), levels = c('yes', 'no')), 100, replace = TRUE, p=c(0.60, 0.40)))
         ) %>% 
     unnest(cols = subscribed)
-```
 
-```{webr-r}
 sample_subscriber
 ```
 
@@ -349,8 +356,11 @@ prop.test(
 -->
 
 ```{webr-r} 
-# Complete the code below to call the prop_test function to test 
-# the equality in proportions between the two versions of the website. 
+########################################################################
+# Complete the code below to call the prop_test function to test       #
+# the equality in proportions between the two versions of the website. #
+########################################################################
+
 sample_subscriber %>% 
     prop_test(... ~ ... ,           # The formula: response ~ covariate.
               order = c("B", "A"))
@@ -464,84 +474,72 @@ To answer this question, we can use a strategy called A/A Testing, which ensures
 
 ```{webr-r}
 #| context: setup
+# Don't worry about the code below.
+# It is just a function to simulate the data.
 set.seed(12)
 
-#' Generates a random sample of website subscriptions.
-#'
-#' @param n Numeric: The desired sample size.
-#' @return tibble: A data frame containing website and subscription information.
-#' @examples
-#' take_sample(100)
-#' @note
-#' - The function creates a tibble with two columns: 'website' and 'subscribed'.
-#' - 'website' contains either "Website A" or "Website B".
-#' - 'subscribed' is randomly sampled from "yes" or "no" with 50% probability.
-take_sample <- function(n) {
-  return(
-    tibble(website = as_factor(c(rep("Website A", n/2), rep("Website B", n/2))), 
-           subscribed = sample(factor(c("yes", "no"), levels = c('yes', 'no')), n, replace = TRUE, p=c(0.5, 0.5))
-    ) %>% 
-      slice_sample(n = n)
-  )
-}
-
-#' Generates a dataset by combining multiple batches of samples.
-#'
-#' @param batch_size Numeric: The size of each batch.
-#' @param n_batches Numeric: The total number of batches to generate.
-#' @param reps Numeric: The number of repetitions.
-#' @return tibble: A data frame containing combined batches with batch and replicate information.
-#' @examples
-#' data_set_generator(batch_size = 100, n_batches = 5, reps = 3)
-#' @note
-#' - The function creates a tibble to store the combined data.
-#' - It generates 'n_batches' batches of samples using the 'take_sample' function.
-#' - Each batch contains 'batch_size' observations.
-#' - The resulting tibble includes columns for 'data', 'batch', and 'replicate'.
-#' - 'data' contains the combined samples from all batches.
-#' - 'batch' indicates the batch number.
-#' - 'replicate' represents the repetition number.
-data_set_generator <- function(batch_size, n_batches, reps) {
-  data_tbl <- tibble() 
-  for (rep in 1:reps){
-    data <- list()
-    data[[1]] <- take_sample(batch_size)
-    for(i in 2:n_batches){
-      data[[i]] = bind_rows(take_sample(batch_size), data[[i-1]])
-    }
-    data_tbl <- bind_rows(data_tbl, tibble(data = data) %>% mutate(batch = row_number(), replicate = rep))
-  }
-  return(data_tbl)
-}
-
-
-collect_new_batch_of_sample_viewer <- function() {
+#########################################################
+# Generate a Simulated Dataset of Website Subscriptions #
+#########################################################
+take_sample <- function(batch_size, n_batches, replicates) {
     return(
-            sample_viewers_source %>% 
-            filter(batch == 2 & replicate == 1) %>% 
-            select(data) %>% 
-            unnest(cols = c(data))
+        tibble(
+            replicate = rep(1:replicates, 
+                            each = batch_size * n_batches),
+            batch = rep(rep(1:n_batches, each = batch_size), 
+                        times = replicates),
+            website = as_factor(rep(c("Website A", "Website B"), 
+                                    each = batch_size/2, 
+                                    times = n_batches * replicates)),
+            subscribed = sample(factor(c("yes", "no"), levels = c('yes', 'no')), 
+                                batch_size * n_batches * replicates, 
+                                replace = TRUE, p=c(0.5, 0.5))
+        ) 
     )
 }
+##########################################
+# Simulate all the data that we will use #
+##########################################
+sample_viewers_source <- take_sample(50, 10, 100)     
 
+sample_viewers_source_pvalue <- 
+  map_dfr(1:10, function(b) {
+    sample_viewers_source %>%
+      filter(batch <= b) %>%  # Include all batches up to current batch number
+      group_by(replicate) %>%
+      nest() %>%
+      mutate(
+        cumulative_batch = b,
+        pvalue = map_dbl(data, function(df) {
+          prop_test(df, subscribed ~ website, 
+                   order = c("Website B", "Website A")) %>% 
+            pull(p_value)
+        })
+      )
+  }) %>% 
+  rename(batch = cumulative_batch)
+    
+################################################
+# Function to collect extra batches of viewers #
+################################################
+collect_new_batch_of_sample_viewer <- function(sample_viewers){
+  rep <- sample_viewers$replicate[1] 
+  b <- max(sample_viewers$batch)
+  return(
+      sample_viewers_source %>% filter(replicate == rep, batch <= b + 1)
+  ) 
+}
 
-sample_viewers_source <- 
-    data_set_generator(50, 10, 200) %>% 
-    mutate(pvalue = map_dbl(.x = data, 
-                      ~.x %>%
-                              prop_test(subscribed ~ website, 
-                              order = c('Website B', 'Website A') ) %>% pull(p_value)))
-
+##########################################
+# Get the first batch of first replicate #
+##########################################
 sample_viewers <- 
     sample_viewers_source %>% 
-    filter(batch == 1 & replicate == 1) %>% 
-    select(data) %>% 
-    unnest(cols = c(data))
-```
+    filter(batch == 1 & replicate == 24)
 
-```{webr-r}
-# Take a look at the first batch of visitors
-sample_viewers
+sample_viewers %>%
+    print(n = 50)
+
 ```
 
 <br>
@@ -567,11 +565,12 @@ Yay, we didn't reject! That's great! But this is just the first test since we ar
 # The function collect_new_batch attach a 
 # new batch of visitors to our sample dataframe.
 
-# Note that we now have the more rows but the first 40 rows are the same 
+# Note that we now have the more rows but the first 50 rows are the same 
 # as in the first batch.
 
-(sample_viewers <- collect_new_batch_of_sample_viewer())
+sample_viewers <- collect_new_batch_of_sample_viewer(sample_viewers)
 
+sample_viewers %>% print(n = 100) 
 ```
 
 ```{webr-r}
@@ -588,7 +587,7 @@ sample_viewers %>%
 <br>
 
 
-As you can see, the p-value changed. We will monitor yet another batch of 50 visitors and another one until one of two things happens: (1) we reach 500 visitors; (2) the p-value crosses the threshold of 5%. This means that we won't reject $H_0$ only if we don't reject it in all 10 interim tests (for each batch). Let's see how our p-value behaves across all 10 batches of size 50. 
+Phew! We still don't reject the null hypothesis but, as you can see, the p-value changed. Let's keep monitoring the p-value while more batches of data arrive. We will keep doing this until one of two things happens: (1) we reach 500 visitors; (2) the p-value crosses the threshold of 5%. This means that we won't reject $H_0$ only if we don't reject it in all 10 interim tests (for each batch). Let's see how our p-value behaves across all 10 batches of size 50. 
 
 ```{webr-r}
 #| context: setup
@@ -598,8 +597,8 @@ As you can see, the p-value changed. We will monitor yet another batch of 50 vis
 # continue this process with each subsequent batch.
 
 pvalues <- 
-    sample_viewers_source %>%
-    filter(replicate == 1) %>%
+    sample_viewers_source_pvalue %>%
+    filter(replicate == 24) %>%
     select(batch, pvalue)
 ```
 
@@ -628,8 +627,7 @@ pvalues %>%
     geom_point(size = 4) + 
     geom_line() + 
     geom_hline(aes(yintercept = ...), lty = 2, color = 'red')+
-    geom_point(aes(..., ...), 
-               color = "red", 
+    geom_point(color = "red", 
                size = 4, 
                data = pvalues %>% filter(pvalue <= 0.05)) + 
     ggtitle("P-values for online monitoring of an A/A test")
@@ -641,14 +639,14 @@ pvalues %>%
 As you can see, in this case, we would have stopped the experiment once the data from the 7th batch arrived, and we would have concluded that one of the groups had a superior version of the website, which is the wrong conclusion. However, note that we are interested in the false positive **rate**, not in the fact that this particular example yields the wrong decision. 
 
 
-To investigate the rate, we need to conduct this experiment multiple times and see if the rate of false positives is close to 5% (our specified significance level). Let's do this experiment 200 times.
+To investigate the rate, we need to conduct this experiment multiple times and see if the rate of false positives is close to 5% (our specified significance level). Let's do this experiment 100 times.
 
 
 
 ```{webr-r}
 # Fill in the code below to obtain the false positive rate 
 # of this A/A experiment. 
-sample_viewers_source %>% 
+sample_viewers_source_pvalue %>% 
   group_by(...) %>%
   summarise(reject = sum(... < 0.05) > 0) %>%
   summarise(false_positive_rate = ...(reject))
@@ -656,7 +654,7 @@ sample_viewers_source %>%
 
 <br>
 
-As you can see, following the prescribed methodology above would yield a false positive rate of 19%, roughly four times the nominal rate of 5%. The sequential hypothesis tests significantly inflate the type I error. 
+As you can see, following the prescribed methodology above would yield a false positive rate of 15%, roughly four times the nominal rate of 5%. The sequential hypothesis tests significantly inflate the type I error. 
 
 #### P-value correction
 
@@ -669,7 +667,7 @@ Let's use the `p.adjust` function to include Bonferroni's correction.
 ```{webr-r}
 # Fill in the code below to adjust the p-values
 # using BH and Bonferroni's correction
-sample_viewers_source %>% 
+sample_viewers_source_pvalue %>% 
   group_by(replicate) %>%
   mutate(p_bonf = ...(pvalue, method = ...),
          p_bh = p.adjust(..., method = ...)) 
@@ -683,14 +681,13 @@ The problem with the Bonferroni method is that it is too conservative, frequentl
 ```{webr-r}
 # Fill in the code below to adjust the p-values
 # using Bonferroni's correction
-gsDesign(k = 20, #number of interim analysis planned
+gsDesign(k = 10, #number of interim analysis planned
          test.type = 2, # for two-sided symmetric
          alpha = 0.05, #type I error rate
-         beta = 0.2, # type II error rate
          sfu = 'Pocock')
 ``` 
 
-As with Bonferroni's correction, Pocock's method provides the same critical value for all the interim tests, no matter the interim sample size. This requires us to specify a priori the number of interim analyses to be conducted without the opportunity to change/adjust this after the experiment started. However, Pocock's method is less conservative than Bonferroni's method. 
+As with Bonferroni's correction, Pocock's method provides the same critical value for all the interim tests, no matter the interim sample size. This requires us to specify a priori the number of interim analyses to be conducted without the opportunity to change/adjust this after the experiment started. However, Pocock's method is less conservative than Bonferroni's method. In this case, Bonferroni would yield a critical value around 2.575829 while Pocock's method yields a critical value around 2.27. 
 
 Other methods are more flexible and account for the size of the interim sample, making it harder to reject the null hypothesis for smaller sample sizes than for larger sample sizes.
 
