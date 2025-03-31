@@ -654,7 +654,7 @@ sample_viewers_source_pvalue %>%
 
 <br>
 
-As you can see, following the prescribed methodology above would yield a false positive rate of 15%, roughly four times the nominal rate of 5%. The sequential hypothesis tests significantly inflate the type I error. 
+As you can see, following the prescribed methodology above would yield a false positive rate of 15%, three times the nominal rate of 5%. The sequential hypothesis tests significantly inflate the type I error. 
 
 #### P-value correction
 
