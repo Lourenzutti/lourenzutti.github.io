@@ -9,6 +9,7 @@ webr:
     - tidyverse
     - infer
     - broom
+    - gsDesign
 css: [../../styles/tutorials-chapters.css]
 ---
 

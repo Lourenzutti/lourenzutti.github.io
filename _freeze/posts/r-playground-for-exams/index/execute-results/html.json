@@ -1,8 +1,8 @@
 {
-  "hash": "a4fd9eb4bb72c6c5271da432c7b6d73c",
+  "hash": "3c8c30aadbf7524e164d8e0f7110e165",
   "result": {
     "engine": "jupyter",
-    "markdown": "---\ntitle: \"R Playground for Exams\"\nimage: \"image.jpg\"\ndraft: true\ndraft-mode: unlinked\nformat: live-html\nwebr:\n  packages:\n    - tidyverse\n    - infer\n    - broom\ncss: [../../styles/tutorials-chapters.css]\n---\n\n```{webr}\n\n```\n\n```{webr}\n\n```\n\n```{webr}\n\n```\n\n```{webr}\n\n```\n\n```{webr}\n\n```\n\n",
+    "markdown": "---\ntitle: \"R Playground for Exams\"\nimage: \"image.jpg\"\ndraft: true\ndraft-mode: unlinked\nformat: live-html\nwebr:\n  packages:\n    - tidyverse\n    - infer\n    - broom\n    - gsDesign\ncss: [../../styles/tutorials-chapters.css]\n---\n\n```{webr}\n\n```\n\n```{webr}\n\n```\n\n```{webr}\n\n```\n\n```{webr}\n\n```\n\n```{webr}\n\n```\n\n",
     "supporting": [
       "index_files"
     ],
