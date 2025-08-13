@@ -20,6 +20,7 @@ css: [../../styles/tutorials-chapters.css]
 #| output: false
 
 options(digits=8)
+options(pillar.sigfig = 8)
 ```
 
 ```{webr}
