@@ -15,6 +15,14 @@ css: [../../styles/tutorials-chapters.css]
 
 
 ```{webr}
+#| echo: false
+#| autorun: true
+#| output: false
+
+options(digits=8)
+```
+
+```{webr}
 
 ```
 
